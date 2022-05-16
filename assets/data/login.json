@@ -1,0 +1,39 @@
+{
+  "status": 200,
+  "data": {
+    "id": 1,
+    "full_name": "Steve Garrett",
+    "nickname": "Steve",
+    "photo": "assets/images/avata.png",
+    "url": "http://passionui.com",
+    "level": "Developer",
+    "description": "from Singapore, Golden Mile",
+    "tag": "@steve.garrett",
+    "rate": 4.5,
+    "values": [
+      {
+        "title": "Subscribers",
+        "value": "971"
+      },
+      {
+        "title": "Review Clips",
+        "value": "245"
+      },
+      {
+        "title": "Replays",
+        "value": "78"
+      }
+    ],
+    "cvalues": [
+      {
+        "title": "Review Clips",
+        "value": "245"
+      },
+      {
+        "title": "Replays",
+        "value": "78"
+      }
+    ]
+  },
+  "msg": "login success"
+}

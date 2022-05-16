@@ -1,0 +1,116 @@
+{
+  "status": 200,
+  "data": {
+    "category": [
+      {
+        "id": 1,
+        "title": "Automobiles",
+        "count": 52,
+        "image": "assets/images/category-1.jpg",
+        "icon": "directions_car",
+        "color": "#A569BD",
+        "type": "shop"
+      },
+      {
+        "id": 2,
+        "title": "Colleges",
+        "count": 54,
+        "image": "assets/images/category-2.jpg",
+        "icon": "school",
+        "color": "#5d6d7e",
+        "type": "drink"
+      },
+      {
+        "id": 3,
+        "title": "Companies",
+        "count": 32,
+        "image": "assets/images/category-3.jpg",
+        "icon": "business",
+        "color": "#3BBEE3",
+        "type": "event"
+      },
+      {
+        "id": 4,
+        "title": "Healthcare",
+        "count": 12,
+        "image": "assets/images/category-4.jpg",
+        "icon": "local_hospital",
+        "color": "#5dade2",
+        "type": "estate"
+      },
+      {
+        "id": 5,
+        "title": "Hotels",
+        "count": 54,
+        "image": "assets/images/location-1.jpg",
+        "icon": "hotel",
+        "color": "#4a90a4",
+        "type": "job"
+      },
+      {
+        "id": 6,
+        "title": "Movies & TV",
+        "count": 63,
+        "image": "assets/images/location-2.jpg",
+        "icon": "movie",
+        "color": "#58d68d",
+        "type": "restaurant"
+      },
+      {
+        "id": 7,
+        "title": "Products",
+        "count": 22,
+        "image": "assets/images/location-3.jpg",
+        "icon": "inventory_2",
+        "color": "#ff8a65",
+        "type": "automotive"
+      },
+      {
+        "id": 8,
+        "title": "Real Estate",
+        "count": 25,
+        "image": "assets/images/room-1.jpg",
+        "icon": "other_houses",
+        "color": "#E00072",
+        "type": "hotel"
+      },
+      {
+        "id": 9,
+        "title": "Restaurants",
+        "count": 25,
+        "image": "assets/images/room-1.jpg",
+        "icon": "restaurant_menu",
+        "color": "#FE0000",
+        "type": "hotel"
+      },
+      {
+        "id": 10,
+        "title": "Salon & Spa",
+        "count": 25,
+        "image": "assets/images/room-1.jpg",
+        "icon": "spa",
+        "color": "#8AFF24",
+        "type": "hotel"
+      },
+      {
+        "id": 11,
+        "title": "Shopping",
+        "count": 25,
+        "image": "assets/images/room-1.jpg",
+        "icon": "shopping_cart",
+        "color": "#8C27FF",
+        "type": "hotel"
+      },
+      {
+        "id": 12,
+        "title": "Tourism",
+        "count": 25,
+        "image": "assets/images/room-1.jpg",
+        "icon": "tour",
+        "color": "#FF6889",
+        "type": "hotel"
+      }
+    ]
+  },
+  "msg": "get data success"
+}

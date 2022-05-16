@@ -1,0 +1,14 @@
+{
+  "status": 200,
+  "data": {
+    "country": [
+      { "code": "in","name": "India", "image": "assets/images/in.png" },
+      { "code": "vi","name": "Vietnam", "image": "assets/images/vn.png" },
+      { "code": "cn","name": "China", "image": "assets/images/cn.png" },
+      { "code": "id","name":"Indonesia", "image": "assets/images/id.png" },
+      { "code": "kr", "name":"Korean","image": "assets/images/kr.png" },
+      { "code": "sg","name": "Singapore", "image": "assets/images/sg.png" }
+    ]
+  },
+  "msg": "get data success"
+}
