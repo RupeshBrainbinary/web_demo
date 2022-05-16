@@ -203,7 +203,7 @@ bool dataGet= false;
 bool loder = false;
   void _loadData() async {
     loder= true;
-    _reviewersProfile = await Api.getReviewerDetail(132);
+    _reviewersProfile = await Api.getReviewerDetail(widget.id);
     print(_reviewersProfile);
     _reviewsList =
         await Api.getVideosByReviewer(int.parse(_reviewersProfile!.id));
@@ -298,7 +298,7 @@ bool loder = false;
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: loder == true? SizedBox(): Column(
+          child: loder == true?Center(child: CircularProgressIndicator(),): Column(
             children: <Widget>[
               Container(
                 height: 180,
@@ -306,7 +306,7 @@ bool loder = false;
                   // shape: BoxShape.circle,
                   color: Colors.white,
                   image: DecorationImage(
-                    image:  CachedNetworkImageProvider(widget.image),
+                    image:  CachedNetworkImageProvider(_reviewersProfile!.bannerImg),
                     fit: BoxFit.cover,
                   ),
                 ),
