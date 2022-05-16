@@ -101,7 +101,8 @@ class _ProfileState extends State<Profile> {
                       child: AppUserInfo(
                         user: user,
                         type: AppUserType.information,
-                        onPressed: () {},
+                        onPressed: () {
+                          },
                       ),
                     ),
                     const SizedBox(height: 16),

@@ -101,7 +101,7 @@ class AppReviewItem extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        item!.comment,
+                        item!.comment,overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
                             .textTheme
                             .caption!
@@ -136,12 +136,14 @@ class AppReviewItem extends StatelessWidget {
                             width: 1.5,
                             color: Theme.of(context).textTheme.caption!.color,
                           ),
-                          Text(
-                            item!.channelName,
-                            style: Theme.of(context)
-                                .textTheme
-                                .caption!
-                                .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                          SizedBox(width: MediaQuery.of(context).size.width /3,
+                            child: Text(
+                              item!.channelName,overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .caption!
+                                  .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                            ),
                           ),
                         ],
                       ),
@@ -295,7 +297,7 @@ class AppReviewItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    /*Text(
+                    Text(
                       item!.clientName,
                       maxLines: 1,
                       style: Theme.of(context)
@@ -303,9 +305,9 @@ class AppReviewItem extends StatelessWidget {
                           .subtitle2!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 4),*/
+                    const SizedBox(height: 4),
                     Text(
-                      item!.comment,
+                      item!.comment,maxLines: 1,overflow: TextOverflow.ellipsis,
                       style: Theme.of(context)
                           .textTheme
                           .caption!

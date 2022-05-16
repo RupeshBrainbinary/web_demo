@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:web_demo/api/api.dart';
@@ -13,10 +14,11 @@ import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProfileReviewer extends StatefulWidget {
-  const ProfileReviewer({Key? key, required this.id, required this.name})
+  const ProfileReviewer({Key? key, required this.id, required this.name,required this.image})
       : super(key: key);
   final int id;
   final String name;
+  final String image;
 
   @override
   State<ProfileReviewer> createState() => _ProfileReviewerState();
@@ -233,7 +235,26 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
     final safeRight = MediaQuery.of(context).padding.right;
     final itemWidth = (deviceWidth - 16 * 3 - safeLeft - safeRight) / 2;
     final ratio = itemWidth / itemHeight;
-    return GridView.count(
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: _reviewsList.length,
+      itemBuilder: (context, index) {
+        final item = _reviewsList[index];
+
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: AppReviewItem(
+            onPressed: () {
+              _onProductDetail(item);
+            },
+            item: item,
+            type: ProductViewType.small,
+          ),
+        );
+      },
+    );
+    /* GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -250,7 +271,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
           type: ProductViewType.gird,
         );
       }).toList(),
-    );
+    );*/
   }
 
   @override
@@ -270,11 +291,11 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
             children: <Widget>[
               Container(
                 height: 180,
-                decoration: const BoxDecoration(
+                decoration:  BoxDecoration(
                   // shape: BoxShape.circle,
                   color: Colors.white,
                   image: DecorationImage(
-                    image: AssetImage(Images.avatar),
+                    image:  CachedNetworkImageProvider(widget.image),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -282,7 +303,6 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
                 // margin: const EdgeInsets.symmetric(horizontal: 8),
               ),
               const SizedBox(height: 16),
-
               Container(
                 padding: const EdgeInsets.all(8),
                 margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -292,8 +312,8 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
                   boxShadow: [
                     BoxShadow(
                       color: Theme.of(context).dividerColor.withOpacity(
-                        .05,
-                      ),
+                            .05,
+                          ),
                       spreadRadius: 4,
                       blurRadius: 4,
                       offset: const Offset(
@@ -544,10 +564,9 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    Translate.of(context).translate('Related Review Clips'),
+                    Translate.of(context).translate('recorded_review_clips'),
                     style: Theme.of(context).textTheme.headline6!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "ProximaNova"),
+                        fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                   ),
                 ),
               ),
@@ -556,8 +575,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    Translate.of(context)
-                        .translate('let_find_more_location'),
+                    Translate.of(context).translate('let_find_more_location'),
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2!

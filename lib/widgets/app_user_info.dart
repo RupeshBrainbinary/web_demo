@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -178,8 +179,8 @@ class AppUserInfo extends StatelessWidget {
                   //   width: 12,
                   // ),
 
-                  ElevatedButton(
-                      onPressed: () {
+            /*      ElevatedButton(
+                      onPressed: ()  {
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
@@ -189,7 +190,7 @@ class AppUserInfo extends StatelessWidget {
                       },
                       child:  Text('Subscribe', style: Theme.of(context)
                           .textTheme
-                          .button!.copyWith(fontFamily: "ProximaNova"))),
+                          .button!.copyWith(fontFamily: "ProximaNova"))),*/
                 ],
               ),
               // RotatedBox(

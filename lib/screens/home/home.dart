@@ -303,6 +303,11 @@ class _HomeState extends State<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Divider(
+                thickness: 1.0,
+                height: 1.0,
+              ),
+              SizedBox(height: 20,),
               Text(
                 Translate.of(context).translate('review_channels'),
                 style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -386,11 +391,16 @@ class _HomeState extends State<Home> {
       children: [
         Padding(
           padding:
-              const EdgeInsets.only(left: 16, right: 16, bottom: 8, top: 8),
+              const EdgeInsets.only(left: 16, right: 16, bottom: 10, top: 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Divider(
+                thickness: 1.0,
+                height: 1.0,
+              ),
+              SizedBox(height: 20,),
               Text(
                 Translate.of(context).translate('trending_reviews'),
                 style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -403,6 +413,7 @@ class _HomeState extends State<Home> {
                     .bodyText2!
                     .copyWith(fontFamily: "ProximaNova"),
               ),
+
             ],
           ),
         ),
@@ -516,7 +527,9 @@ class _HomeState extends State<Home> {
                 ),
               ),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+
+                },
                 child: Text(
                   "View All",
                   style: Theme.of(context)

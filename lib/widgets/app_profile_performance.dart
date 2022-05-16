@@ -50,10 +50,10 @@ class AppProfilePerformance extends StatelessWidget {
                   .subtitle2!
                   .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
             ),
-            /*Text(
+            Text(
               Translate.of(context).translate('Subscribers'),
               style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
-            ),*/
+            ),
           ],
         ),
         Column(
