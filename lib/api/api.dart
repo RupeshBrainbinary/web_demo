@@ -13,7 +13,7 @@ import 'package:web_demo/utils/utils.dart';
 
 class Api {
   ///URL API
-  static const String domain = "https://www.thereviewclip.com";
+    static const String domain = "https://www.thereviewclip.com";
   static const String categoryURL = "$domain/services/videosByCategory";
   static const String reviewersHomeURL = "$domain/services/reviewersHome";
   static const String topReviewsURL = "$domain/services/getTopReviews";
@@ -41,6 +41,9 @@ class Api {
   static const String getCommentsLikes = "$domain/review/getCommentsLikes";
   static const String postReport = "$domain/reviewer/postReport";
   static const String companyProfile = "$domain/profile/companyProfile";
+  static const String countIncrease = "$domain/review/viewCountIncrease";
+  static const String relatedClips =
+      "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -53,7 +56,7 @@ class Api {
     // final result = await UtilData.login();
     return ResultApiModel.fromJson(
         result is String ? jsonDecode(result) : result);
-}
+  }
 
   ///SignUp api
   static Future<dynamic> signUp(params) async {
@@ -256,12 +259,12 @@ class Api {
 
   ///Reviewers Profile
   static Future<ReviewerProfileModel> reviewersProfile(String slug) async {
-    Map<String,dynamic> map = {
+    Map<String, dynamic> map = {
       'slug': slug,
     };
     final result = await httpManager.post(
       url: reviewerProfile,
-      data:map,
+      data: map,
     );
     print(result);
     return ReviewerProfileModel.fromJson(json.decode(result));
@@ -344,6 +347,28 @@ class Api {
     };
     final result = await httpManager.post(url: companyProfile, data: body);
     return companyModelFromJson(result);
+  }
+
+  static Future<dynamic> getIncreaseCount(String slug) async {
+    final result =
+        await httpManager.post(url: countIncrease, data: {"video_slug": slug});
+    return result;
+  }
+
+  static Future<List<ReviewModel>>  getRelatedClips(params) async {
+    String uid = UtilPreferences.getString(Preferences.clientId).toString();
+    Map<String,dynamic>map = {
+      "client_id": uid
+    };
+    print(map);
+
+    final result =await httpManager.post(url: relatedClips, data: map);
+    print("data1");
+    print(result['data']);
+    print(result);
+     return result['data']
+        .map<ReviewModel>((e) => ReviewModel.fromJson(e))
+        .toList();
   }
 
   ///Singleton factory

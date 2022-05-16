@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
@@ -10,8 +12,6 @@ import 'package:web_demo/models/model.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_comp_performance.dart';
 import 'package:web_demo/widgets/widget.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfileCompany extends StatefulWidget {
   const ProfileCompany({Key? key, required this.slug}) : super(key: key);
@@ -28,6 +28,8 @@ class _ProfileCompanyState extends State<ProfileCompany> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+  ResultApiModel? resultApiModel;
+  List<ReviewModel> reviewModel=[];
 
   bool _favorite = false;
 
@@ -205,6 +207,13 @@ class _ProfileCompanyState extends State<ProfileCompany> {
     _loader = true;
     setState(() {});
     _detailPage = await Api.getCompanyDetail(slug: widget.slug);
+    reviewModel=  await Api.getRelatedClips({
+      "client_id": UtilPreferences.getString(Preferences.clientId).toString()
+    });
+    print("data");
+    print(reviewModel);
+    print(reviewModel);
+
     _loader = false;
     setState(() {});
     /*if (result.success) {
@@ -506,48 +515,48 @@ class _ProfileCompanyState extends State<ProfileCompany> {
                                 ],
                               ),
                               const SizedBox(width: 8),
-                              InkWell(
-                                onTap: () async {
-                                  String phonNumber = _detailPage != null
-                                      ? "+91"
-                                      : _detailPage!.address!.phone ?? '';
-
-                                  if (await canLaunch(phonNumber)) {
-                                    await launch(phonNumber);
-                                  } else {
-                                    throw 'Could not launch $phonNumber';
-                                  }
-                                },
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Theme.of(context)
-                                            .primaryColor
-                                            .withOpacity(.8),
-                                      ),
-                                      child: const Icon(
-                                        Icons.phone,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "Phone",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodySmall!
-                                          .copyWith(
-                                              color: Theme.of(context)
-                                                  .primaryColor),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              // InkWell(
+                              //   onTap: () async {
+                              //     String phonNumber = _detailPage != null
+                              //         ? "+91"
+                              //         : _detailPage!.address!.phone ?? '';
+                              //
+                              //     if (await canLaunch(phonNumber)) {
+                              //       await launch(phonNumber);
+                              //     } else {
+                              //       throw 'Could not launch $phonNumber';
+                              //     }
+                              //   },
+                              //   child: Column(
+                              //     children: [
+                              //       Container(
+                              //         width: 40,
+                              //         height: 40,
+                              //         decoration: BoxDecoration(
+                              //           shape: BoxShape.circle,
+                              //           color: Theme.of(context)
+                              //               .primaryColor
+                              //               .withOpacity(.8),
+                              //         ),
+                              //         child: const Icon(
+                              //           Icons.phone,
+                              //           color: Colors.white,
+                              //           size: 20,
+                              //         ),
+                              //       ),
+                              //       const SizedBox(height: 5),
+                              //       Text(
+                              //         "Phone",
+                              //         style: Theme.of(context)
+                              //             .textTheme
+                              //             .bodySmall!
+                              //             .copyWith(
+                              //                 color: Theme.of(context)
+                              //                     .primaryColor),
+                              //       ),
+                              //     ],
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),

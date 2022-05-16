@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -8,8 +9,10 @@ import 'package:web_demo/widgets/widget.dart';
 
 class AppCommentItem extends StatelessWidget {
   final Comment? item;
+  final CommentRes? reviewPage;
 
-  const AppCommentItem({Key? key, this.item}) : super(key: key);
+
+  const AppCommentItem({Key? key, this.item,this.reviewPage}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,10 +132,10 @@ class AppCommentItem extends StatelessWidget {
                   Container(
                     width: 48,
                     height: 48,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: AssetImage('assets/images/avata.png'),
+                        image:  CachedNetworkImageProvider(reviewPage!.chanel!.avatar!),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -185,15 +188,15 @@ class AppCommentItem extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(height: 4),
+           /*   const SizedBox(height: 4),
               Text(
-                item!.videoId.toString(),
+               " item!.videoId.toString()",
                 maxLines: 1,
                 style: Theme.of(context)
                     .textTheme
                     .subtitle2!
                     .copyWith(fontWeight: FontWeight.bold),
-              ),
+              ),*/
               const SizedBox(height: 8),
               Text(
                 item!.content ?? '',

@@ -70,6 +70,7 @@ class HTTPManager {
       );
       return response.data;
     } on DioError catch (error) {
+      
       return dioErrorHandle(error);
     }
   }

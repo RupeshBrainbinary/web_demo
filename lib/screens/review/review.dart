@@ -95,7 +95,7 @@ class _ReviewState extends State<Review> {
           final item = _reviewPage!.comments![index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: AppCommentItem(item: item),
+            child: AppCommentItem(item: item,reviewPage: _reviewPage,),
           );
         },
       ),

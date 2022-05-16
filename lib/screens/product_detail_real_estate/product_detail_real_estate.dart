@@ -107,6 +107,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         }
       });
       await getComments();
+
       /*   listVideos.add(VideoData(
           name: 'Network Video 1',
           path: _detailPage?.review.video ?? '',
@@ -118,6 +119,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       await player.setOption(FijkOption.hostCategory, "request-audio-focus", 1);
       await player.setDataSource(_detailPage?.review.video ?? '',
           autoPlay: true);
+      await Api.getIncreaseCount(_detailPage!.review.videoSlug);
       /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '');
       await Future.wait([
