@@ -256,13 +256,15 @@ class Api {
 
   ///Reviewers Profile
   static Future<ReviewerProfileModel> reviewersProfile(String slug) async {
+    Map<String,dynamic> map = {
+      'slug': slug,
+    };
     final result = await httpManager.post(
       url: reviewerProfile,
-      data: {
-        'slug': slug,
-      },
+      data:map,
     );
-    return ReviewerProfileModel.fromJson(result);
+    print(result);
+    return ReviewerProfileModel.fromJson(json.decode(result));
   }
 
   ///Reviewers Profile

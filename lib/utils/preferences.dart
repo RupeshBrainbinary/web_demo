@@ -29,7 +29,7 @@ class UtilPreferences {
     return Preferences.instance!.getKeys();
   }
 
-  static String? getString(String key) {
+  static String?  getString(String key) {
     return Preferences.instance!.getString(key);
   }
 

@@ -774,7 +774,7 @@ class _SubmitState extends State<Submit> {
                 await validateRweview();
 
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const ReviewWebView()));
+                    builder: (context) =>  ReviewWebView(comment:videoController.text,)));
                 /*if ((await Permission.camera.isGranted) == false) {
                   await Permission.camera.request();
                 }

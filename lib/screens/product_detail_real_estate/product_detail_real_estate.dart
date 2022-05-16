@@ -185,7 +185,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             padding: const EdgeInsets.only(bottom: 16),
             child: AppReviewItem(
               onPressed: () {
+                player.dispose();
+                player.stop();
+                setState(() {});
+
+              Future.delayed(Duration(seconds: 1),(){
                 _onProductDetail(item);
+              });
               },
               item: item,
               type: ProductViewType.small,

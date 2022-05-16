@@ -1,17 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_reviewers_profile.dart';
+import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/models/screen_models/product_detail_real_estate_page_model.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_reviewer_info.dart';
 import 'package:web_demo/widgets/widget.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ProfileReviewer extends StatefulWidget {
   const ProfileReviewer({Key? key, required this.id, required this.name,required this.image})
@@ -39,6 +40,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
   UserModel? _reviewersProfile;
   ReviewerProfile? _detail;
   List<ReviewModel> _reviewsList = [];
+  ReviewerProfileModel? reviewerProfileModel;
 
   @override
   void initState() {
@@ -202,6 +204,10 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
     print(_reviewersProfile);
     _reviewsList =
         await Api.getVideosByReviewer(int.parse(_reviewersProfile!.id));
+    reviewerProfileModel = await Api.reviewersProfile(
+        _reviewersProfile!.slug.toString() == null
+            ? ""
+            : _reviewersProfile!.slug.toString());
     setState(() {});
     // setState(() {
     //   // print(result.data);
@@ -333,7 +339,11 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
 
               Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
-                child: AppProfilePerformance(user: _reviewersProfile),
+                child: AppProfilePerformance(
+                    reviewerProfileModel!.subscribers!.length.toString(),
+                    reviewerProfileModel!.profileStats!.totalVideos.toString(),
+                    reviewerProfileModel!.profileStats!.replays,
+                    user: _reviewersProfile),
               ),
               const SizedBox(height: 16),
               // Padding(

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
+import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/screens/my_video/my_videos.dart';
 import 'package:web_demo/screens/privacy_policy/privacy_policy.dart';
 import 'package:web_demo/screens/profile_link/profile_link.dart';
@@ -108,7 +109,7 @@ class _ProfileState extends State<Profile> {
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: AppProfilePerformance(user: user),
+                      child: AppProfilePerformance("","","",user: user),
                     ),
                     const SizedBox(height: 16),
                     Column(
