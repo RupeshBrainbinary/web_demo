@@ -191,7 +191,7 @@ class _AboutUsState extends State<AboutUs> {
                     .textTheme
                     .headline6!.copyWith(fontFamily: "ProximaNova")
             ),
-            /*  expandedHeight: 200.0,
+         /*     expandedHeight: 200.0,
             pinned: true,
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,

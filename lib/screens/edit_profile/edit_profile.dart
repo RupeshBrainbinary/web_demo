@@ -90,6 +90,7 @@ class _EditProfileState extends State<EditProfile> {
         _textInfoController.text,
       );
     });
+
     if (_validName == null &&
         _validEmail == null &&
         _validAddress == null &&

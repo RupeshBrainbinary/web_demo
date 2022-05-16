@@ -15,11 +15,13 @@ import 'package:web_demo/widgets/app_reviewer_info.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class ProfileReviewer extends StatefulWidget {
-  const ProfileReviewer({Key? key, required this.id, required this.name,required this.image})
+  const ProfileReviewer({Key? key, required this.id, required this.name,required this.image,required this.ch,required this.slug})
       : super(key: key);
   final int id;
   final String name;
   final String image;
+  final String ch;
+  final String slug;
 
   @override
   State<ProfileReviewer> createState() => _ProfileReviewerState();
@@ -32,7 +34,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-
+bool dataGet= false;
   bool _favorite = false;
   ProductDetailRealEstatePageModel? _detailPage;
 
@@ -198,8 +200,9 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
   void _onNavigate(String route) {
     Navigator.pushNamed(context, route);
   }
-
+bool loder = false;
   void _loadData() async {
+    loder= true;
     _reviewersProfile = await Api.getReviewerDetail(132);
     print(_reviewersProfile);
     _reviewsList =
@@ -208,7 +211,9 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
         _reviewersProfile!.slug.toString() == null
             ? ""
             : _reviewersProfile!.slug.toString());
+    loder = false;
     setState(() {});
+
     // setState(() {
     //   // print(result.data);
     //   _detailPage = ProductDetailRealEstatePageModel.fromJson(result.data);
@@ -293,7 +298,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Column(
+          child: loder == true? SizedBox(): Column(
             children: <Widget>[
               Container(
                 height: 180,
@@ -329,9 +334,10 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
                     ),
                   ],
                 ),
-                child: AppReviewerInfo(
+                child: AppReviewerInfo(image: widget.image,
+                  name: widget.name,
                   user: _reviewersProfile,
-                  type: AppReviewerType.information,
+                  type: AppReviewerType.information,ch: widget.ch,slug: widget.slug,
                   onPressed: () {},
                 ),
               ),

@@ -2,6 +2,7 @@ class ChannelModel {
   final int id;
   final String name;
   final String channelName;
+  final String slug;
   final String about;
   final String location;
   final String avatar;
@@ -14,7 +15,8 @@ class ChannelModel {
       {required this.id,
       required this.name,
       required this.channelName,
-      required this.about,
+        required this.slug,
+        required this.about,
       required this.location,
       required this.avatar,
       required this.videoCount,
@@ -27,6 +29,7 @@ class ChannelModel {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       channelName: json['ch'] ?? '',
+      slug: json['slug'] ?? '',
       about: json['about'] ?? '',
       location: json['location'] ?? '',
       avatar: json['avatar'] ?? '',

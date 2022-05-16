@@ -28,8 +28,10 @@ class AppTheme {
   ///Default Theme
   static final ThemeModel defaultTheme = ThemeModel.fromJson({
     "name": "default",
-    "primary": 'ffe5634d',
-    "secondary": "ff4a91a4",
+    // "primary": 'ffe5634d',
+    "primary": 'ff2777d8',
+    "secondary": "ff2777d8",
+    // "secondary": "ff4a91a4",
   });
 
   ///List Theme Support in Application

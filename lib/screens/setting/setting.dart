@@ -146,7 +146,7 @@ class _SettingState extends State<Setting> {
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 8),
           children: <Widget>[
-            AppListTitle(
+         /*   AppListTitle(
               title: Translate.of(context).translate('language'),
               onPressed: () {
                 _onNavigate(Routes.changeLanguage);
@@ -168,7 +168,7 @@ class _SettingState extends State<Setting> {
                   ),
                 ],
               ),
-            ),
+            ),*/
             AppListTitle(
               title: Translate.of(context).translate('notification'),
               trailing: CupertinoSwitch(
@@ -181,7 +181,7 @@ class _SettingState extends State<Setting> {
                 },
               ),
             ),
-            AppListTitle(
+           /* AppListTitle(
               title: Translate.of(context).translate('theme'),
               onPressed: () {
                 _onNavigate(Routes.themeSetting);
@@ -192,7 +192,7 @@ class _SettingState extends State<Setting> {
                 height: 16,
                 color: Theme.of(context).primaryColor,
               ),
-            ),
+            ),*/
             AppListTitle(
               title: Translate.of(context).translate('dark_mode'),
               onPressed: _onDarkModeSetting,
@@ -216,7 +216,7 @@ class _SettingState extends State<Setting> {
                 ],
               ),
             ),
-            AppListTitle(
+      /*      AppListTitle(
               title: Translate.of(context).translate('font'),
               onPressed: () {
                 _onNavigate(Routes.fontSetting);
@@ -236,7 +236,7 @@ class _SettingState extends State<Setting> {
                   ),
                 ],
               ),
-            ),
+            ),*/
             AppListTitle(
               title: Translate.of(context).translate('version'),
               onPressed: () {},

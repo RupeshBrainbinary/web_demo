@@ -10,12 +10,20 @@ class AppReviewerInfo extends StatelessWidget {
   final UserModel? user;
   final VoidCallback? onPressed;
   final AppReviewerType type;
+  final String image;
+  final String name;
+  final String ch;
+  final String slug;
 
   const AppReviewerInfo({
     Key? key,
     this.user,
     this.onPressed,
     this.type = AppReviewerType.basic,
+    required this.image,
+    required this.name,
+    required this.ch,
+    required this.slug,
   }) : super(key: key);
 
   @override
@@ -125,7 +133,7 @@ class AppReviewerInfo extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: AssetImage(user!.avatar),
+                        image: NetworkImage(image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -152,19 +160,19 @@ class AppReviewerInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      user!.name,
+                     name,
                       maxLines: 1,
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user!.chanel,
+                      ch,
                       maxLines: 1,
                       style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user!.slug,
+                      slug,
                       maxLines: 1,
                       style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
                     ),

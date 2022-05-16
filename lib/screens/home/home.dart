@@ -73,7 +73,6 @@ class _HomeState extends State<Home> {
 
   ///On navigate channel detail
   void _onChannelDetail(ChannelModel item) {
-
     Navigator.pushNamed(context, Routes.profileReviewer, arguments: {'id': item.id,'name': item.name});
   }
 
@@ -98,10 +97,8 @@ class _HomeState extends State<Home> {
     if (item != null) {
       UtilPreferences.setInt(Preferences.countryId, item.id);
       await AppBloc.categoryCubit.loadCategories();
-
       _countrySelected = item;
       setState(() {
-
       });
     }
   }
@@ -307,7 +304,7 @@ class _HomeState extends State<Home> {
                 thickness: 1.0,
                 height: 1.0,
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20,),
               Text(
                 Translate.of(context).translate('review_channels'),
                 style: Theme.of(context).textTheme.headline6!.copyWith(

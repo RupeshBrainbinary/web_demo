@@ -212,7 +212,7 @@ class _ProfileState extends State<Profile> {
                         ),*/
                         AppListTitle(
                           title:
-                          Translate.of(context).translate('about'),
+                          Translate.of(context).translate('about_us'),
                           onPressed: () {
                             _onNavigate(Routes.aboutUs);
                           },

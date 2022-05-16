@@ -136,9 +136,9 @@ class AppReviewItem extends StatelessWidget {
                             width: 1.5,
                             color: Theme.of(context).textTheme.caption!.color,
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width /3,
+                          SizedBox(width: MediaQuery.of(context).size.width /4,
                             child: Text(
-                              item!.channelName,overflow: TextOverflow.ellipsis,
+                              item!.channelName,overflow: TextOverflow.ellipsis,maxLines: 1,
                               style: Theme.of(context)
                                   .textTheme
                                   .caption!
