@@ -645,6 +645,11 @@ class _ProfileCompanyState extends State<ProfileCompany> {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        if (reviewModel.isEmpty)
+                          const SizedBox()
+                        else
+                          _buildRelatedVideos(),
                         /*const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -800,5 +805,50 @@ class _ProfileCompanyState extends State<ProfileCompany> {
               },
             ),
     );
+  }
+  Widget _buildRelatedVideos() {
+    final deviceWidth = MediaQuery.of(context).size.width;
+    const itemHeight = 230;
+    final safeLeft = MediaQuery.of(context).padding.left;
+    final safeRight = MediaQuery.of(context).padding.right;
+    final itemWidth = (deviceWidth - 16 * 3 - safeLeft - safeRight) / 2;
+    final ratio = itemWidth / itemHeight;
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: reviewModel.length,
+      itemBuilder: (context, index) {
+        final item = reviewModel[index];
+
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: AppReviewItem(
+            onPressed: () {
+              _onProductDetail(item);
+            },
+            item: item,
+            type: ProductViewType.small,
+          ),
+        );
+      },
+    );
+    /* GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      crossAxisCount: 2,
+      childAspectRatio: ratio,
+      children: _reviewsList.map((item) {
+        return AppReviewItem(
+          onPressed: () {
+            _onProductDetail(item);
+          },
+          item: item,
+          type: ProductViewType.gird,
+        );
+      }).toList(),
+    );*/
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:web_demo/api/http_manager.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/configs/preferences.dart';
@@ -358,14 +359,15 @@ class Api {
   }
 
   static Future<List<ReviewModel>> getRelatedClips(params) async {
+
+
+
+
     String uid = UtilPreferences.getString(Preferences.clientId).toString();
     Map<String, dynamic> map = {"client_id": uid};
     print(map);
 
-    final result = await httpManager.post(url: relatedClips, data: map);
-    print("data1");
-    print(result['data']);
-    print(result);
+    final result = await httpManager.post(url: relatedClips, options: Options(headers: map));
     return result['data']
         .map<ReviewModel>((e) => ReviewModel.fromJson(e))
         .toList();
