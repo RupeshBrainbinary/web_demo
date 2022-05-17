@@ -118,15 +118,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           path: _detailPage?.review.video ?? '',
           type: VideoType.network));*/
 
-      if (isDispose == false) {
-        player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
-        player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
-        await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
-        await player.setOption(
-            FijkOption.hostCategory, "request-audio-focus", 1);
-        await player.setDataSource(_detailPage?.review.video ?? '',
-            autoPlay: true);
-      }
+      await setPlayerValue();
       await Api.getIncreaseCount(_detailPage!.review.videoSlug);
       _detailPage?.review.views++;
       /*_controller =
@@ -143,6 +135,16 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       );*/
     }
     setState(() {});
+  }
+
+  Future<void> setPlayerValue() async {
+    player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
+    player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
+    await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
+    await player.setOption(
+        FijkOption.hostCategory, "request-audio-focus", 1);
+    await player.setDataSource(_detailPage?.review.video ?? '',
+        autoPlay: true);
   }
 
   Future<void> getComments() async {
@@ -244,8 +246,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   Future<void> _onProductDetail(ReviewModel item) async {
     await player.reset();
     Navigator.pushNamed(context, Routes.productDetail, arguments: item)
-        .whenComplete(() {
-      player.reset();
+        .whenComplete(() async {
+      await player.reset();
+      await setPlayerValue();
+      setState(() {});
     });
   }
 

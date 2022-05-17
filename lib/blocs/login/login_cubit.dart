@@ -34,12 +34,13 @@ class LoginCubit extends Cubit<LoginState> {
 
     if (result != null) {
       ///Begin start Auth flow
-      await AppBloc.authenticateCubit.onSave(result);
       await UtilPreferences.setString(
         Preferences.clientId,
         result.id.toString(),
 
       );
+      await AppBloc.authenticateCubit.onSave(result);
+
 
       ///Notify
 

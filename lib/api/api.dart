@@ -309,7 +309,7 @@ class Api {
   static Future<List<ReviewModel>> getMyVideos() async {
     final result = await httpManager.post(
         url: myvideos,
-        data: {"limit": "100", "start": "0", "lgd": "1", "client_id": "132"});
+        data: {"limit": "100", "start": "0", "lgd": "1", "client_id": UtilPreferences.getString(Preferences.clientId)});
     Map<String, dynamic> map = result as Map<String, dynamic>;
 
     return result['data']

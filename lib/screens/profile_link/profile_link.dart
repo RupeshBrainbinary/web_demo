@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/utils/translate.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ProfileLink extends StatefulWidget {
   const ProfileLink({Key? key}) : super(key: key);
@@ -12,19 +12,24 @@ class ProfileLink extends StatefulWidget {
 
 class _ProfileLinkState extends State<ProfileLink> {
   var result;
-  Map<String,dynamic> map = {};
-
+  Map<String, dynamic> map = {};
+  bool _loader = false;
 
   @override
   void initState() {
     getData();
     super.initState();
   }
-  getData()async{
+
+  getData() async {
+    _loader = true;
+    setState(() {});
     result = await Api.getLoadProfileLink();
-    map= result as Map<String,dynamic>;
+    map = result as Map<String, dynamic>;
+    _loader = false;
     setState(() {});
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,42 +41,45 @@ class _ProfileLinkState extends State<ProfileLink> {
           style: TextStyle(fontFamily: "ProximaNova"),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              SizedBox(height: 30,),
-              Row(
-
-                children: [
-                  Text(map.isEmpty?"": map['data']['url'].toString(),style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontFamily: "ProximaNova"),),
-                  SizedBox(width: 20,),
-                  Container(
-                    width: 30,
-                    height: 30,
+      body: _loader ? Center(child: CircularProgressIndicator()) : Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          children: [
+            SizedBox(height: 30),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10,vertical: 7),
                     decoration: BoxDecoration(
-
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(color: Theme.of(context).primaryColor)
                     ),
-                    child: InkWell(
-                      onTap: ()async{
-                        await Share.share(map.isEmpty?"":map['data']['url'].toString());
-                      },
-                      child: Icon(Icons.share),
+                    child: Text(
+                      map.isEmpty ? "" : map['data']['url'].toString(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
-                  )
-
-
-
-
-                ],
-              ),
-            ],
-          ),
+                  ),
+                ),
+                SizedBox(width: 5),
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(),
+                  child: InkWell(
+                    onTap: () async {
+                      await Share.share(
+                          map.isEmpty ? "" : map['data']['url'].toString());
+                    },
+                    child: Icon(Icons.share,color: Theme.of(context).primaryColor,),
+                  ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

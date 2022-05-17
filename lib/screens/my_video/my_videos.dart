@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:web_demo/api/api.dart';
-import 'package:web_demo/app.dart';
+import 'package:web_demo/app_container.dart';
 import 'package:web_demo/configs/routes.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
-
 import 'package:web_demo/utils/translate.dart';
 import 'package:web_demo/widgets/app_review_item.dart';
 
@@ -16,17 +15,21 @@ class MyVideos extends StatefulWidget {
 }
 
 class _MyVideosState extends State<MyVideos> {
-  List<ReviewModel> _myVideos =[];
+  List<ReviewModel> _myVideos = [];
+  bool _loader = false;
 
   @override
   void initState() {
     getVideos();
     super.initState();
   }
-  getVideos()async{
-  _myVideos =  await Api.getMyVideos();
-  setState(() {
-  });
+
+  getVideos() async {
+    _loader = true;
+    setState(() {});
+    _myVideos = await Api.getMyVideos();
+    _loader = false;
+    setState(() {});
   }
 
   @override
@@ -40,17 +43,15 @@ class _MyVideosState extends State<MyVideos> {
               .button!
               .copyWith(fontFamily: "ProximaNova"),
         ),
-
       ),
-      body: SingleChildScrollView(
+      body: _loader ? Center(child: CircularProgressIndicator()) : SingleChildScrollView(
         child: Column(
-          children: [
-            _buildRelatedVideos()
-          ],
+          children: [_buildRelatedVideos()],
         ),
       ),
     );
   }
+
   Widget _buildRelatedVideos() {
     final deviceWidth = MediaQuery.of(context).size.width;
     const itemHeight = 230;
@@ -77,9 +78,11 @@ class _MyVideosState extends State<MyVideos> {
       }).toList(),
     );
   }
+
   Future<void> _onProductDetail(ReviewModel item) async {
     await player.reset();
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
       player.reset();
     });
   }

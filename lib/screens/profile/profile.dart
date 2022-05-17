@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/screens/my_video/my_videos.dart';
-import 'package:web_demo/screens/privacy_policy/privacy_policy.dart';
 import 'package:web_demo/screens/profile_link/profile_link.dart';
-import 'package:web_demo/screens/termes_condition/terms_conditions.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -25,6 +24,16 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
   }
+
+  /*Future<void> _loadData() async {
+    if(){
+      reviewerProfileModel = await Api.reviewersProfile(
+          _reviewersProfile!.slug.toString() == null
+              ? ""
+              : _reviewersProfile!.slug.toString());
+      setState(() {});
+    }
+  }*/
 
   @override
   void dispose() {
@@ -73,6 +82,9 @@ class _ProfileState extends State<Profile> {
       ),
       body: BlocBuilder<UserCubit, UserModel?>(
         builder: (context, user) {
+          if(user == null){
+            return SizedBox();
+          }
           return SafeArea(
             child: SingleChildScrollView(
               child: Padding(
@@ -88,8 +100,8 @@ class _ProfileState extends State<Profile> {
                         boxShadow: [
                           BoxShadow(
                             color: Theme.of(context).dividerColor.withOpacity(
-                              .05,
-                            ),
+                                  .05,
+                                ),
                             spreadRadius: 4,
                             blurRadius: 4,
                             offset: const Offset(
@@ -102,14 +114,31 @@ class _ProfileState extends State<Profile> {
                       child: AppUserInfo(
                         user: user,
                         type: AppUserType.information,
-                        onPressed: () {
-                          },
+                        onPressed: () {},
                       ),
                     ),
                     const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
-                      child: AppProfilePerformance("","","",user: user),
+                      child: FutureBuilder<ReviewerProfileModel>(
+                        future: Api.reviewersProfile(user.slug),
+                        builder: (context, snap) {
+                          if (!snap.hasData)
+                            return AppProfilePerformance(
+                              "0",
+                              "0",
+                              "0",
+                              user: user,
+                            );
+                          else
+                            return AppProfilePerformance(
+                              snap.data!.subscribers!.length.toString(),
+                              snap.data!.profileStats!.totalVideos.toString(),
+                              snap.data!.profileStats!.replays,
+                              user: user,
+                            );
+                        },
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Column(
@@ -211,8 +240,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),*/
                         AppListTitle(
-                          title:
-                          Translate.of(context).translate('about_us'),
+                          title: Translate.of(context).translate('about_us'),
                           onPressed: () {
                             _onNavigate(Routes.aboutUs);
                           },
@@ -227,7 +255,10 @@ class _ProfileState extends State<Profile> {
                         AppListTitle(
                           title: Translate.of(context).translate('my_videos'),
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=>const MyVideos()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const MyVideos()));
                           },
                           trailing: RotatedBox(
                             quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
@@ -238,7 +269,6 @@ class _ProfileState extends State<Profile> {
                             ),
                           ),
                         ),
-
                         AppListTitle(
                           title: Translate.of(context).translate('setting'),
                           onPressed: () {
@@ -251,7 +281,6 @@ class _ProfileState extends State<Profile> {
                               textDirection: TextDirection.ltr,
                             ),
                           ),
-
                         ),
                         /*AppListTitle(
                           title: Translate.of(context).translate(
@@ -292,7 +321,6 @@ class _ProfileState extends State<Profile> {
                           },
                           border: false,
                         ),*/
-
                       ],
                     )
                   ],
@@ -304,5 +332,4 @@ class _ProfileState extends State<Profile> {
       ),
     );
   }
-
 }

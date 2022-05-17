@@ -62,12 +62,12 @@ class AppProfilePerformance extends StatelessWidget {
         Column(
           children: <Widget>[
             Text(
-          totalvideos.toString(),
+              replys.toString(),
               style: Theme.of(context).textTheme.subtitle2!.copyWith(
                   fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
             ),
             Text(
-              Translate.of(context).translate('Review Clips'),
+              Translate.of(context).translate('Replays'),
               style: Theme.of(context)
                   .textTheme
                   .caption!
@@ -78,12 +78,12 @@ class AppProfilePerformance extends StatelessWidget {
         Column(
           children: <Widget>[
             Text(
-              replys.toString(),
+          totalvideos.toString(),
               style: Theme.of(context).textTheme.subtitle2!.copyWith(
                   fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
             ),
             Text(
-              Translate.of(context).translate('Replays'),
+              Translate.of(context).translate('Review Clips'),
               style: Theme.of(context)
                   .textTheme
                   .caption!

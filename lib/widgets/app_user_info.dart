@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/api.dart';
@@ -125,9 +126,18 @@ class AppUserInfo extends StatelessWidget {
                     height: 60,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(
+                      /*image: DecorationImage(
                         image: AssetImage(user!.avatar),
                         fit: BoxFit.cover,
+                      ),*/
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(35),
+                      child: CachedNetworkImage(
+                        imageUrl: user!.avatar.toString(),
+                        errorWidget: (con,str,dy){
+                          return Icon(Icons.account_circle_rounded,size: 30);
+                        },
                       ),
                     ),
                   ),
@@ -165,7 +175,7 @@ class AppUserInfo extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      user!.slug,
+                      user!.location,
                       maxLines: 1,
                       style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
                     ),
