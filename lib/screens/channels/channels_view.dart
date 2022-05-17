@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/api.dart';
@@ -19,6 +21,7 @@ class ChannelsView extends StatefulWidget {
 
 class _ChannelsViewState extends State<ChannelsView> {
   ChannelPageModel? _listPage;
+  bool isShow = false;
 
   @override
   void initState() {
@@ -81,14 +84,32 @@ class _ChannelsViewState extends State<ChannelsView> {
             onPressed: () {
               _onChannelDetail(item);
             },
-            onSubscribe: () {
+
+           /* onSubscribe: () async {
+              final result = await Api.subscribe({
+                "id":UtilPreferences.getString(Preferences.clientId),
+                "reviewer":item.id.toString(),
+                "xhr":"1"
+              });
+              print(result);
+              print(jsonDecode(result));
+              var jsonResp = jsonDecode(result);
+              if (jsonResp['status'] == 1) {
+                isShow = true;
+
+              }else{
+                isShow = false;
+              }
+              setState(() {
+
+              });
               Fluttertoast.showToast(
                   msg: "Subscribed successfully", // message
                   toastLength: Toast.LENGTH_SHORT, // length
                   gravity: ToastGravity.BOTTOM_LEFT, // location
                   timeInSecForIosWeb: 1 // duration
                   );
-            },
+            },*/
             subTitleIn2Line: true,
           );
         },

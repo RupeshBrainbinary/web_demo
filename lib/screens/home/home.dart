@@ -269,14 +269,14 @@ class _HomeState extends State<Home> {
             onPressed: () {
               _onChannelDetail(item);
             },
-            onSubscribe: () {
+            /*onSubscribe: () {
               Fluttertoast.showToast(
                   msg: "Subscribed successfully", // message
                   toastLength: Toast.LENGTH_SHORT, // length
                   gravity: ToastGravity.BOTTOM_LEFT, // location
                   timeInSecForIosWeb: 1 // duration
                   );
-            },
+            },*/
           );
         },
         separatorBuilder: (context, index) {

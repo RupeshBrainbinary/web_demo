@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:web_demo/api/api.dart';
+import 'package:web_demo/configs/preferences.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
+import 'package:web_demo/utils/preferences.dart';
 
-class AppChannelItem extends StatelessWidget {
+class AppChannelItem extends StatefulWidget {
   AppChannelItem({
     Key? key,
     this.item,
@@ -18,20 +24,30 @@ class AppChannelItem extends StatelessWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onSubscribe;
   final bool? subTitleIn2Line;
+  //final bool? subscribe;
+
+  @override
+  State<AppChannelItem> createState() => _AppChannelItemState();
+}
+
+class _AppChannelItemState extends State<AppChannelItem> {
   final currency = String.fromCharCode(0x24);
+
+  bool isShow = false;
+
 
   @override
   Widget build(BuildContext context) {
     Widget dummyContainer = Container(width: 160.0);
-    if (null != item) {
-      switch (type) {
+    if (null != widget.item) {
+      switch (widget.type) {
 
         ///Mode View Small
         case ProductViewType.gird:
           return Padding(
             padding: const EdgeInsets.only(left: 8, right: 8),
             child: InkWell(
-              onTap: onPressed,
+              onTap: widget.onPressed,
               child: Column(
                 children: [
                   Container(
@@ -40,14 +56,14 @@ class AppChannelItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: CachedNetworkImageProvider(item!.avatar),
+                        image: CachedNetworkImageProvider(widget.item!.avatar),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    item!.channelName,
+                    widget.item!.channelName,
                     style: Theme.of(context).textTheme.subtitle2!.copyWith(
                         fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                   ),
@@ -56,7 +72,7 @@ class AppChannelItem extends StatelessWidget {
                     width: 12,
                   ),
                   Text(
-                    '${item!.subscribers} Subscribers',
+                    '${widget.item!.subscribers} Subscribers',
                     style: Theme.of(context)
                         .textTheme
                         .button!
@@ -67,7 +83,7 @@ class AppChannelItem extends StatelessWidget {
                     width: 12,
                   ),
                   Text(
-                    '${item!.videoCount} Videos',
+                    '${widget.item!.videoCount} Videos',
                     style: Theme.of(context)
                         .textTheme
                         .button!
@@ -79,9 +95,33 @@ class AppChannelItem extends StatelessWidget {
                   ),
                   ElevatedButton(
 
-                      onPressed: onSubscribe,
+                      onPressed: widget.onSubscribe != null ? widget.onSubscribe : () async {
+                        final result = await Api.subscribe({
+                          "id":UtilPreferences.getString(Preferences.clientId),
+                          "reviewer":widget.item!.id.toString(),
+                          "xhr":"1"
+                        });
+                        print(result);
+                        print(jsonDecode(result));
+                        var jsonResp = jsonDecode(result);
+                        if (jsonResp['status'] == 1) {
+                          isShow = true;
+
+                        }else{
+                          isShow = false;
+                        }
+                        setState(() {
+
+                        });
+                        Fluttertoast.showToast(
+                            msg: "Subscribed successfully", // message
+                            toastLength: Toast.LENGTH_SHORT, // length
+                            gravity: ToastGravity.BOTTOM_LEFT, // location
+                            timeInSecForIosWeb: 1 // duration
+                        );
+                      },
                       child: Text(
-                        'Subscribe',
+                        isShow == true ?'Subscribed':'Subscribe',
                         style: Theme.of(context)
                             .textTheme
                             .button!
@@ -93,38 +133,38 @@ class AppChannelItem extends StatelessWidget {
           );
         case ProductViewType.small:
           return ListTile(
-            onTap: onPressed,
+            onTap: widget.onPressed,
             leading: Container(
               width: 64,
               height: 64,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 image: DecorationImage(
-                  image: CachedNetworkImageProvider(item!.avatar),
+                  image: CachedNetworkImageProvider(widget.item!.avatar),
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             title: Text(
-              item!.channelName,
+              widget.item!.channelName,
               style: Theme.of(context)
                   .textTheme
                   .button!
                   .copyWith(fontFamily: "ProximaNova",fontWeight: FontWeight.w900),
             ),
-            subtitle: subTitleIn2Line == true
+            subtitle: widget.subTitleIn2Line == true
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${item!.videoCount} Videos",
+                        "${widget.item!.videoCount} Videos",
                         style: Theme.of(context)
                             .textTheme
                             .button!
                             .copyWith(fontFamily: "ProximaNova"),
                       ),
                       Text(
-                        "${item!.subscribers} Subscribers",
+                        "${widget.item!.subscribers} Subscribers",
                         style: Theme.of(context)
                             .textTheme
                             .button!
@@ -133,16 +173,40 @@ class AppChannelItem extends StatelessWidget {
                     ],
                   )
                 : Text(
-                    "${item!.videoCount} Videos   |   ${item!.subscribers} Subscribers",
+                    "${widget.item!.videoCount} Videos   |   ${widget.item!.subscribers} Subscribers",
                     style: Theme.of(context)
                         .textTheme
                         .button!
                         .copyWith(fontFamily: "ProximaNova"),
                   ),
             trailing: ElevatedButton(
-                onPressed: onSubscribe,
+                onPressed: widget.onSubscribe != null ? widget.onSubscribe : () async {
+                  final result = await Api.subscribe({
+                    "id":UtilPreferences.getString(Preferences.clientId),
+                    "reviewer":widget.item!.id.toString(),
+                    "xhr":"1"
+                  });
+                  print(result);
+                  print(jsonDecode(result));
+                  var jsonResp = jsonDecode(result);
+                  if (jsonResp['status'] == 1) {
+                    isShow = true;
+
+                  }else{
+                    isShow = false;
+                  }
+                  setState(() {
+
+                  });
+                  Fluttertoast.showToast(
+                      msg: "Subscribed successfully", // message
+                      toastLength: Toast.LENGTH_SHORT, // length
+                      gravity: ToastGravity.BOTTOM_LEFT, // location
+                      timeInSecForIosWeb: 1 // duration
+                  );
+                },
                 child: Text(
-                  'Subscribe',
+                  isShow == true ?'Subscribed':'Subscribe',
                   style: Theme.of(context)
                       .textTheme
                       .button!

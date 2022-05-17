@@ -513,7 +513,7 @@ class _ChannelDetailState extends State<ChannelDetail> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text(isShow ?'Subscribe':'Subscribe',
+                      child: Text(isShow ?'Subscribed':'Subscribe',
                           style: Theme.of(context)
                               .textTheme
                               .button!
@@ -702,14 +702,14 @@ class _ChannelDetailState extends State<ChannelDetail> {
             type: ProductViewType.small,
             item: widget.channel,
             onPressed: () {},
-            onSubscribe: () {
+            /*onSubscribe: () {
               Fluttertoast.showToast(
                   msg: "Subscribed successfully", // message
                   toastLength: Toast.LENGTH_SHORT, // length
                   gravity: ToastGravity.BOTTOM_LEFT, // location
                   timeInSecForIosWeb: 1 // duration
                   );
-            },
+            },*/
           ),
           Expanded(
               child: SingleChildScrollView(

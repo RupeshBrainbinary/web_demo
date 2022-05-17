@@ -181,31 +181,35 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            centerTitle: true,
-            title: Text(
-                Translate.of(context).translate('about_us'),
-                style: Theme.of(context)
-                    .textTheme
-                    .headline6!.copyWith(fontFamily: "ProximaNova")
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              centerTitle: true,
+              title: Text(
+                  Translate.of(context).translate('about_us'),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headline6!.copyWith(fontFamily: "ProximaNova")
+              ),
+           /*     expandedHeight: 200.0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.parallax,
+                background: _buildBanner(),
+              ),*/
             ),
-         /*     expandedHeight: 200.0,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              collapseMode: CollapseMode.parallax,
-              background: _buildBanner(),
-            ),*/
-          ),
-          SliverToBoxAdapter(
-            child: SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16, bottom: 16),
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Image.asset(
+                      "assets/images/about_us_banner.jpeg",
+                      fit: BoxFit.cover,
+                    ),
+                    SizedBox(height: 10),
                     Padding(
                       padding: const EdgeInsets.only(left: 16, right: 16),
                       child: Column(
@@ -258,9 +262,9 @@ class _AboutUsState extends State<AboutUs> {
                   ],
                 ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
