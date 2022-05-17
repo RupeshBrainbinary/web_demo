@@ -15,7 +15,7 @@ enum LoginState {
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginState.init);
 
-  void onLogin({
+   onLogin({
     required String username,
     required String password,
   }) async {
@@ -34,12 +34,15 @@ class LoginCubit extends Cubit<LoginState> {
       await UtilPreferences.setString(
         Preferences.clientId,
         result.id.toString(),
+
       );
       ///Notify
       emit(LoginState.success);
+      return result;
     } else {
       ///Notify
       emit(LoginState.fail);
+      return result;
     }
   }
 

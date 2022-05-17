@@ -70,6 +70,7 @@ dependencies:
   #native_video_view: ^1.0.5
   flutter_inappwebview: ^5.4.3+7
   permission_handler: ^9.2.0
+  http:
 
 dev_dependencies:
   flutter_test:

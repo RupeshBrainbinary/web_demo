@@ -10,10 +10,11 @@ import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_business.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/utils/utils.dart';
+import 'package:http/http.dart' as http;
 
 class Api {
   ///URL API
-    static const String domain = "https://www.thereviewclip.com";
+  static const String domain = "https://www.thereviewclip.com";
   static const String categoryURL = "$domain/services/videosByCategory";
   static const String reviewersHomeURL = "$domain/services/reviewersHome";
   static const String topReviewsURL = "$domain/services/getTopReviews";
@@ -44,6 +45,7 @@ class Api {
   static const String countIncrease = "$domain/review/viewCountIncrease";
   static const String relatedClips =
       "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
+  static const String subscribeVideo = "$domain/services/subscribe";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -355,20 +357,24 @@ class Api {
     return result;
   }
 
-  static Future<List<ReviewModel>>  getRelatedClips(params) async {
+  static Future<List<ReviewModel>> getRelatedClips(params) async {
     String uid = UtilPreferences.getString(Preferences.clientId).toString();
-    Map<String,dynamic>map = {
-      "client_id": uid
-    };
+    Map<String, dynamic> map = {"client_id": uid};
     print(map);
 
-    final result =await httpManager.post(url: relatedClips, data: map);
+    final result = await httpManager.post(url: relatedClips, data: map);
     print("data1");
     print(result['data']);
     print(result);
-     return result['data']
+    return result['data']
         .map<ReviewModel>((e) => ReviewModel.fromJson(e))
         .toList();
+  }
+
+  static Future<dynamic> subscribe(params) async {
+    final result = await httpManager.post(url: subscribeVideo, data: params);
+    print(result);
+    return result;
   }
 
   ///Singleton factory

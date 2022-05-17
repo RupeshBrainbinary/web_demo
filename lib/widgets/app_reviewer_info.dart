@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:web_demo/api/api.dart';
+import 'package:web_demo/configs/preferences.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -186,7 +188,13 @@ class AppReviewerInfo extends StatelessWidget {
                     width: 12,
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: ()async {
+                        final result = await Api.subscribe({
+                          "id":UtilPreferences.getString(Preferences.clientId),
+                          "reviewer":user!.id,
+                          "xhr":"1"
+                        });
+                        print(result);
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length

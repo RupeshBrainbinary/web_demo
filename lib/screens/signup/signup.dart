@@ -9,6 +9,7 @@ import 'package:web_demo/screens/home/home.dart';
 import 'package:web_demo/screens/privacy_policy/privacy_policy.dart';
 import 'package:web_demo/screens/termes_condition/terms_conditions.dart';
 import 'package:web_demo/utils/utils.dart';
+import 'package:web_demo/widgets/common_toast.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class SignUp extends StatefulWidget {
@@ -113,7 +114,15 @@ class _SignUpState extends State<SignUp> {
         conPassword: _confirmPasswordController.text,
       )
           .then((value) {
-        if (value) {
+        if (value==false) {
+          _focusConfirmPassword.unfocus();
+          _focusPassword.unfocus();
+          _focusPhoneNumber.unfocus();
+          _focusEmail.unfocus();
+          _focusAccountName.unfocus();
+          CommonToast().toats(context, "signInError");
+
+        }else{
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const AppContainer()) , (route) => false);
         }
       });

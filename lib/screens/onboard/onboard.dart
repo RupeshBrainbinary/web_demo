@@ -204,12 +204,10 @@ class _IntroState extends State<Intro> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: height * 0.1),
-                        Center(
-                          child: Image.asset(
-                            _pages[index]['image'],
-                            height: height * 0.4,
-                          ),
+                        SizedBox(height: height * 0.18),
+                        Image.asset(
+                          _pages[index]['image'],
+                          height: height * 0.4,
                         ),
                         SizedBox(height: height * 0.05),
                         Text(

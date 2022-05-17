@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,10 +8,12 @@ import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/screens/home/home.dart';
 import 'package:web_demo/utils/utils.dart';
+import 'package:web_demo/widgets/common_toast.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class SignIn extends StatefulWidget {
   final String from;
+
   const SignIn({Key? key, required this.from}) : super(key: key);
 
   @override
@@ -60,11 +64,24 @@ class _SignInState extends State<SignIn> {
       _errorPass = UtilValidator.validate(_textPassController.text);
     });
     if (_errorID == null && _errorPass == null) {
-      AppBloc.loginCubit.onLogin(
+      AppBloc.loginCubit
+          .onLogin(
         username: _textIDController.text,
         password: _textPassController.text,
-      );
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const AppContainer()) , (route) => false);
+      )
+          .then((value) {
+        print(value);
+        if (value == null) {
+          CommonToast().toats(context, "signInError");
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (_)=>AppContainer()));
+          /*Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const AppContainer()),
+              (route) => false);*/
+        }
+      });
+
+
     }
   }
 
@@ -89,11 +106,17 @@ class _SignInState extends State<SignIn> {
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SizedBox(height: 70,),
-                  Container(
-                    child: Image.asset("assets/images/logo.png",),
+                  SizedBox(
+                    height: 70,
                   ),
-                  SizedBox(height: 50,),
+                  Container(
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                    ),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
                   AppTextInput(
                     hintText: Translate.of(context).translate('account'),
                     errorText: _errorID,

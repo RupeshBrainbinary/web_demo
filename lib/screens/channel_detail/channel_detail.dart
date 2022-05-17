@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
@@ -485,7 +486,14 @@ class _ChannelDetailState extends State<ChannelDetail> {
                     width: 12,
                   ),
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: ()async {
+
+                        final result = await Api.subscribe({
+                          "id":UtilPreferences.getString(Preferences.clientId),
+                          "reviewer":_detailPage!.review.id.toString(),
+                          "xhr":"1"
+                        });
+                        print(result);
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length

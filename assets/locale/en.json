@@ -283,5 +283,6 @@
   "about": "About",
   "who_we": "Setting our footprint in the Digital Market as DIGICLIP TECH\nSOLUTIONS, we have now taken a new shape, designed to engage\nusers with analytics-driven, personalized video algorithms based on a\nconfigurable user interface. Our Corporate office is headquartered in\nChennai, India and we have our international presence in United\nStates, Nepal and Kenya."
 ,"what_we": "The first of its kind “Video Review Platform” that revolutionizes the\nconventional system of reviews. With the world moving towards\ndigitalization, Video Reviews are most definitely the wave of the future.\nWe provide a platform to record your reviews and share your\nexperience on different products, brands, businesses and even social\nissues through a video clip.",
-  "recorded_review_clips": "Recorded Review Clips"
+  "recorded_review_clips": "Recorded Review Clips",
+  "signInError": "Oops! You've provided the wrong sign-in information. Please try again"
 }
