@@ -15,6 +15,7 @@ class App extends StatefulWidget {
   @override
   _AppState createState() => _AppState();
 }
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _AppState extends State<App> {
   @override
@@ -38,6 +39,7 @@ class _AppState extends State<App> {
           return BlocBuilder<ThemeCubit, ThemeState>(
             builder: (context, theme) {
               return MaterialApp(
+                navigatorKey: navigatorKey,
                 debugShowCheckedModeBanner: false,
                 // theme: ThemeData(
                 //   colorScheme: ColorScheme.light(

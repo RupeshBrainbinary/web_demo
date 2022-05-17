@@ -162,21 +162,30 @@ class AppReviewerInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                     name,
+                      name,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       ch,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       slug,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                   ],
                 ),
@@ -188,11 +197,11 @@ class AppReviewerInfo extends StatelessWidget {
                     width: 12,
                   ),
                   ElevatedButton(
-                      onPressed: ()async {
+                      onPressed: () async {
                         final result = await Api.subscribe({
-                          "id":UtilPreferences.getString(Preferences.clientId),
-                          "reviewer":user!.id,
-                          "xhr":"1"
+                          "id": UtilPreferences.getString(Preferences.clientId),
+                          "reviewer": user!.id,
+                          "xhr": "1"
                         });
                         print(result);
                         Fluttertoast.showToast(
@@ -202,7 +211,11 @@ class AppReviewerInfo extends StatelessWidget {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child:  Text('Subscribe',style: Theme.of(context).textTheme.button!.copyWith(fontFamily: "ProximaNova"))),
+                      child: Text('Subscribe',
+                          style: Theme.of(context)
+                              .textTheme
+                              .button!
+                              .copyWith(fontFamily: "ProximaNova"))),
                 ],
               ),
               // RotatedBox(
@@ -236,14 +249,15 @@ class AppReviewerInfo extends StatelessWidget {
               children: <Widget>[
                 Text(
                   user!.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 Text(
                   user!.chanel,
-                  style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption!
+                      .copyWith(fontFamily: "ProximaNova"),
                 )
               ],
             )

@@ -31,6 +31,8 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 

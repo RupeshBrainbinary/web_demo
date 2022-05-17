@@ -1,9 +1,12 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/app_bloc.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/preferences.dart';
 import 'package:web_demo/repository/repository.dart';
 import 'package:web_demo/utils/preferences.dart';
+import 'package:web_demo/widgets/common_toast.dart';
 
 enum LoginState {
   init,
@@ -18,6 +21,7 @@ class LoginCubit extends Cubit<LoginState> {
    onLogin({
     required String username,
     required String password,
+     required BuildContext context,
   }) async {
     ///Notify
     emit(LoginState.loading);
@@ -36,12 +40,19 @@ class LoginCubit extends Cubit<LoginState> {
         result.id.toString(),
 
       );
+
       ///Notify
+
+
+
+
       emit(LoginState.success);
+
       return result;
     } else {
       ///Notify
       emit(LoginState.fail);
+     // CommonToast().toats(context, "signInError");
       return result;
     }
   }

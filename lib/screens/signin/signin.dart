@@ -31,6 +31,7 @@ class _SignInState extends State<SignIn> {
   bool _showPassword = false;
   String? _errorID;
   String? _errorPass;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -58,6 +59,7 @@ class _SignInState extends State<SignIn> {
 
   ///On login
   void _login() {
+    isLoading = true;
     UtilOther.hiddenKeyboard(context);
     setState(() {
       _errorID = UtilValidator.validate(_textIDController.text);
@@ -66,22 +68,37 @@ class _SignInState extends State<SignIn> {
     if (_errorID == null && _errorPass == null) {
       AppBloc.loginCubit
           .onLogin(
-        username: _textIDController.text,
-        password: _textPassController.text,
-      )
+              username: _textIDController.text,
+              password: _textPassController.text,
+              context: context)
           .then((value) {
         print(value);
         if (value == null) {
+          isLoading = false;
+          setState(() {});
           CommonToast().toats(context, "signInError");
         } else {
-          Navigator.push(context, MaterialPageRoute(builder: (_)=>AppContainer()));
+          isLoading = false;
+          setState(() {});
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => AppContainer()));
+          // Navigator.of(context).pushAndRemoveUntil(
+          //     MaterialPageRoute(builder: (context) => const AppContainer()),
+          //     (route) => true);
+          // isLoading = false;
+          // setState(() {});
           /*Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const AppContainer()),
               (route) => false);*/
         }
       });
+    } else {
+      isLoading = false;
+      setState(() {});
 
-
+      CommonToast().toats(context, "signInError");
     }
   }
 
@@ -103,7 +120,15 @@ class _SignInState extends State<SignIn> {
         child: SafeArea(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SingleChildScrollView(
+            child: isLoading
+                ? Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  )
+                :
+                SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   SizedBox(
