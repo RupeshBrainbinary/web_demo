@@ -209,6 +209,7 @@ bool loder = false;
     loder= true;
     _reviewersProfile = await Api.getReviewerDetail(widget.id);
     print(_reviewersProfile);
+    print(_reviewersProfile);
     _reviewsList =
         await Api.getVideosByReviewer(int.parse(_reviewersProfile!.id));
     reviewerProfileModel = await Api.reviewersProfile(

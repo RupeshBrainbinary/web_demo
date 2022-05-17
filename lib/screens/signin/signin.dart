@@ -66,37 +66,10 @@ class _SignInState extends State<SignIn> {
       _errorPass = UtilValidator.validate(_textPassController.text);
     });
     if (_errorID == null && _errorPass == null) {
-      var value = AppBloc.loginCubit.onLogin(
+      final value = AppBloc.loginCubit.onLogin(
           username: _textIDController.text,
           password: _textPassController.text,
           context: context);
-      /*.then((value) {
-
-
-
-        print(value);
-*/ /*        if (value == null) {
-          isLoading = false;
-          setState(() {});
-          CommonToast().toats(context, "signInError");
-        } else {
-          isLoading = false;
-          setState(() {});
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => AppContainer()),
-          );
-          // Navigator.of(context).pushAndRemoveUntil(
-          //     MaterialPageRoute(builder: (context) => const AppContainer()),
-          //     (route) => true);
-          // isLoading = false;
-          // setState(() {});
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const AppContainer()),
-              (route) => false);
-        }*/ /*
-      });*/
       if (value == null) {
         isLoading = false;
         setState(() {

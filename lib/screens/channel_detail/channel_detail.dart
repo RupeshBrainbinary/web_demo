@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class ChannelDetail extends StatefulWidget {
 class _ChannelDetailState extends State<ChannelDetail> {
   bool _favorite = false;
   ProductDetailRealEstatePageModel? _detailPage;
-
+  bool isShow = false;
   @override
   void initState() {
     super.initState();
@@ -494,6 +495,17 @@ class _ChannelDetailState extends State<ChannelDetail> {
                           "xhr":"1"
                         });
                         print(result);
+                        print(jsonDecode(result));
+                        var jsonResp = jsonDecode(result);
+                        if (jsonResp['status'] == 1) {
+                          isShow = true;
+
+                        }else{
+                          isShow = false;
+                        }
+                        setState(() {
+
+                        });
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
@@ -501,7 +513,7 @@ class _ChannelDetailState extends State<ChannelDetail> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text('Subscribe',
+                      child: Text(isShow ?'Subscribe':'Subscribe',
                           style: Theme.of(context)
                               .textTheme
                               .button!

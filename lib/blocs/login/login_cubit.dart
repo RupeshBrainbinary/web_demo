@@ -44,20 +44,18 @@ class LoginCubit extends Cubit<LoginState> {
 
       ///Notify
 
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const AppContainer()),
-              (route) => false);
 
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => AppContainer()));
+
+
 
       emit(LoginState.success);
 
-      return result;
+      //return result;
     } else {
       ///Notify
       emit(LoginState.fail);
       CommonToast().toats(context, "signInError");
-      return result;
+      //return result;
     }
   }
 

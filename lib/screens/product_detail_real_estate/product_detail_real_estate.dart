@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fijkplayer/fijkplayer.dart';
@@ -56,6 +57,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   final FocusNode reportFocusNode = FocusNode();
   CommentRes? _commentRes;
   bool isDispose = false;
+  bool isShow = false;
 
   @override
   void initState() {
@@ -756,6 +758,17 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           "xhr":"1"
                         });
                         print(result);
+                        print(jsonDecode(result));
+                        var jsonResp = jsonDecode(result);
+                        if (jsonResp['status'] == 1) {
+                          isShow = true;
+
+                        }else{
+                          isShow = false;
+                        }
+                        setState(() {
+
+                        });
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
@@ -763,7 +776,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text('Subscribe',
+                      child: Text(isShow? 'Subscribed':'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontFamily: "ProximaNova", color: Colors.white))),
                 ],

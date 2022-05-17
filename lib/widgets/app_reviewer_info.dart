@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/api.dart';
@@ -8,7 +10,7 @@ import 'package:web_demo/widgets/widget.dart';
 
 enum AppReviewerType { basic, information }
 
-class AppReviewerInfo extends StatelessWidget {
+class AppReviewerInfo extends StatefulWidget {
   final UserModel? user;
   final VoidCallback? onPressed;
   final AppReviewerType type;
@@ -29,9 +31,16 @@ class AppReviewerInfo extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AppReviewerInfo> createState() => _AppReviewerInfoState();
+}
+
+class _AppReviewerInfoState extends State<AppReviewerInfo> {
+  bool isShow = false;
+
+  @override
   Widget build(BuildContext context) {
-    if (user == null) {
-      switch (type) {
+    if (widget.user == null) {
+      switch (widget.type) {
         case AppReviewerType.information:
           return AppPlaceholder(
             child: Row(
@@ -120,10 +129,10 @@ class AppReviewerInfo extends StatelessWidget {
       }
     }
 
-    switch (type) {
+    switch (widget.type) {
       case AppReviewerType.information:
         return InkWell(
-          onTap: onPressed,
+          onTap: widget.onPressed,
           child: Row(
             children: <Widget>[
               Stack(
@@ -135,7 +144,7 @@ class AppReviewerInfo extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(image),
+                        image: NetworkImage(widget.image),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -162,7 +171,7 @@ class AppReviewerInfo extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text(
-                      name,
+                      widget.name,
                       maxLines: 1,
                       style: Theme.of(context)
                           .textTheme
@@ -171,7 +180,7 @@ class AppReviewerInfo extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      ch,
+                      widget.ch,
                       maxLines: 1,
                       style: Theme.of(context)
                           .textTheme
@@ -180,7 +189,7 @@ class AppReviewerInfo extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      slug,
+                      widget.slug,
                       maxLines: 1,
                       style: Theme.of(context)
                           .textTheme
@@ -200,10 +209,18 @@ class AppReviewerInfo extends StatelessWidget {
                       onPressed: () async {
                         final result = await Api.subscribe({
                           "id": UtilPreferences.getString(Preferences.clientId),
-                          "reviewer": user!.id,
+                          "reviewer": widget.user!.id,
                           "xhr": "1"
                         });
                         print(result);
+                        print(jsonDecode(result));
+                        var jsonResp = jsonDecode(result);
+                        if (jsonResp['status'] == 1) {
+                          isShow = true;
+                        } else {
+                          isShow = false;
+                        }
+                        setState(() {});
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
@@ -211,7 +228,7 @@ class AppReviewerInfo extends StatelessWidget {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text('Subscribe',
+                      child: Text(isShow ? 'Subscribed' : 'Subscribe',
                           style: Theme.of(context)
                               .textTheme
                               .button!
@@ -237,7 +254,7 @@ class AppReviewerInfo extends StatelessWidget {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   image: AssetImage(
-                    user!.avatar,
+                    widget.user!.avatar,
                   ),
                   fit: BoxFit.cover,
                 ),
@@ -248,12 +265,12 @@ class AppReviewerInfo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  user!.name,
+                  widget.user!.name,
                   style: Theme.of(context).textTheme.subtitle1!.copyWith(
                       fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 Text(
-                  user!.chanel,
+                  widget.user!.chanel,
                   style: Theme.of(context)
                       .textTheme
                       .caption!
