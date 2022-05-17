@@ -10,6 +10,7 @@ import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_reviewers_profile.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/models/screen_models/product_detail_real_estate_page_model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_reviewer_info.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -69,8 +70,11 @@ bool dataGet= false;
   }
 
   ///On navigate product detail
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   ///On navigate review

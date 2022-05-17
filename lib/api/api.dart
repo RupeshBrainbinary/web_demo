@@ -351,7 +351,7 @@ class Api {
 
   static Future<dynamic> getIncreaseCount(String slug) async {
     final result =
-        await httpManager.post(url: countIncrease, data: {"video_slug": slug});
+        await httpManager.post(url: countIncrease, data: {"viedo_slug": slug});
     return result;
   }
 

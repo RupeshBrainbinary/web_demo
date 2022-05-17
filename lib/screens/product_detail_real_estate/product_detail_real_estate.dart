@@ -7,17 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:share/share.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/comment_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/product_detail_real_estate_page_model.dart';
-import 'package:web_demo/models/screen_models/screen_models.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
-import 'package:share/share.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class ProductDetailRealEstate extends StatefulWidget {
   final ReviewModel? review;
@@ -30,9 +29,10 @@ class ProductDetailRealEstate extends StatefulWidget {
   }
 }
 
+FijkPlayer player = FijkPlayer();
+
 class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   final Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
-  final FijkPlayer player = FijkPlayer();
 
   /* late List<VideoData> listVideos;*/
 
@@ -55,10 +55,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   List<ReviewModel> relatedVideos = [];
   final FocusNode reportFocusNode = FocusNode();
   CommentRes? _commentRes;
+  bool isDispose = false;
 
   @override
   void initState() {
     super.initState();
+    player = FijkPlayer();
+    isDispose = false;
     _loadData();
   }
 
@@ -66,7 +69,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   void dispose() {
     //_controller.dispose();
     //_chewieController?.dispose();
-    player.dispose();
+    isDispose = true;
+    player.reset();
+    player = FijkPlayer();
     _timer?.cancel();
     super.dispose();
   }
@@ -113,13 +118,17 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           path: _detailPage?.review.video ?? '',
           type: VideoType.network));*/
 
-      player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
-      player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
-      await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
-      await player.setOption(FijkOption.hostCategory, "request-audio-focus", 1);
-      await player.setDataSource(_detailPage?.review.video ?? '',
-          autoPlay: true);
+      if (isDispose == false) {
+        player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
+        player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
+        await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
+        await player.setOption(
+            FijkOption.hostCategory, "request-audio-focus", 1);
+        await player.setDataSource(_detailPage?.review.video ?? '',
+            autoPlay: true);
+      }
       await Api.getIncreaseCount(_detailPage!.review.videoSlug);
+      _detailPage?.review.views++;
       /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '');
       await Future.wait([
@@ -187,13 +196,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             padding: const EdgeInsets.only(bottom: 16),
             child: AppReviewItem(
               onPressed: () {
-                player.dispose();
                 player.stop();
                 setState(() {});
 
-              Future.delayed(Duration(seconds: 1),(){
-                _onProductDetail(item);
-              });
+                Future.delayed(Duration(seconds: 1), () {
+                  _onProductDetail(item);
+                });
               },
               item: item,
               type: ProductViewType.small,
@@ -233,8 +241,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }
 
   ///On navigate product detail
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
+      player.reset();
+    });
   }
 
   ///On navigate review
@@ -261,11 +273,18 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }
 
   ///On Company profile
-  void _onReviewerProfile(id, String name) {
+  void _onReviewerProfile(
+      id, String name, String image, String ch, String slug) {
     Navigator.pushNamed(
       context,
       Routes.profileReviewer,
-      arguments: {'id': id, 'name': name}, // 'Company Profile',
+      arguments: {
+        'id': id,
+        'name': name,
+        'image': image,
+        'ch': ch,
+        'slug': slug,
+      }, // 'Company Profile',
     );
   }
 
@@ -451,7 +470,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
               ),
               InkWell(
-                onTap: () => {_onCompanyProfile(_detailPage!.review.profileSlug)},
+                onTap: () =>
+                    {_onCompanyProfile(_detailPage!.review.profileSlug)},
                 // onTap: () {
                 //   _phoneAction(_detailPage!.product.phone);
                 // }
@@ -666,7 +686,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 child: InkWell(
                   onTap: () => {
                     _onReviewerProfile(
-                        _detailPage!.review.id, _detailPage!.review.clientName)
+                      _detailPage!.review.id,
+                      _detailPage!.review.clientName,
+                      _detailPage!.review.image,
+                      _detailPage!.review.channelName,
+                      _detailPage!.review.profileSlug,
+                    )
                   },
                   child: Row(
                     children: [
@@ -676,11 +701,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(
-                              _detailPage!.review.image,
-                            ),
-                            fit: BoxFit.cover
-                          ),
+                              image: CachedNetworkImageProvider(
+                                _detailPage!.review.image,
+                              ),
+                              fit: BoxFit.cover),
                           border: Border.all(
                             color: Theme.of(context).dividerColor,
                           ),
@@ -918,13 +942,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                       player.pause();
                     }
                   },
-                  key: const Key("Uniq Key"),
+                  key: Key(_detailPage?.review.video ?? ''),
                   child: FijkView(
                     player: player,
                     panelBuilder: fijkPanel2Builder(snapShot: true),
                     fsFit: FijkFit.cover,
                     color: Colors.black,
-                    fit: FijkFit.fill,
+                    fit: FijkFit.fitHeight,
                     height: 200,
                   ),
                 ),

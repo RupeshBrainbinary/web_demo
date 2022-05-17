@@ -113,7 +113,7 @@ class _ReviewState extends State<Review> {
         ),
         actions: <Widget>[
           AppButton(
-            Translate.of(context).translate('write'),
+            Translate.of(context).translate('post'),
             onPressed: _onWriteReview,
             type: ButtonType.text,
           ),

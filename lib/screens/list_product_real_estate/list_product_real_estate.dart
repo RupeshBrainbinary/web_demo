@@ -8,7 +8,7 @@ import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/product_list_real_estate_page_model.dart';
-import 'package:web_demo/models/screen_models/screen_models.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -57,7 +57,7 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
 
   ///On Fetch API
   void _loadData(int categoryId) async {
-    final result = await Api. getProduct(categoryId);
+    final result = await Api.getProduct(categoryId);
     if (result.success) {
       final productPage = ProductListRealEstatePageModel.fromJson(result.data);
 
@@ -75,17 +75,16 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
         _markers[markerId] = marker;
       }
 
-      setState(() {
-        _productPage = productPage;
-        _productPageBeckUp = productPage;
-        _initPosition = CameraPosition(
-          target: LatLng(
-            productPage.list.first.location!.lat,
-            productPage.list.first.location!.long,
-          ),
-          zoom: 14.4746,
-        );
-      });
+      _productPage = productPage;
+      _productPageBeckUp = productPage;
+      _initPosition = CameraPosition(
+        target: LatLng(
+          productPage.list.first.location!.lat,
+          productPage.list.first.location!.long,
+        ),
+        zoom: 14.4746,
+      );
+      _applyFilter();
     }
   }
 
@@ -101,10 +100,9 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
       builder: (BuildContext context) {
         return AppBottomPicker(
           picker: PickerModel(
-            selected: [_currentSort],
-            data: ListSetting.listSortDefault,
-            controller: sort
-          ),
+              selected: [_currentSort],
+              data: ListSetting.listSortDefault,
+              controller: sort),
         );
       },
     );
@@ -202,8 +200,11 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
   }
 
   ///On navigate product detail
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   void _applyFilter() {
@@ -224,9 +225,10 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
   DateTime getDateString(String str) {
     str = str.replaceAll('th', '');
     str = str.replaceAll('st', '');
+    str = str.replaceAll('Augu', 'August');
     str = str.replaceAll('rd', '');
     str = str.replaceAll('nd', '');
-    return DateFormat('dd MMMM - yyyy').parse(str);
+    return DateFormat("dd MMMM - yyyy").parse(str);
   }
 
   ///On search
@@ -238,12 +240,12 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
   }
 
   void _onSearchChange(String? str) {
-    if(str == null){
+    if (str == null) {
       return;
     }
     List<ReviewModel> list = [];
     for (var element in _productPageBeckUp!.list) {
-      if(element.clientName.toUpperCase().contains(str.toUpperCase())){
+      if (element.clientName.toUpperCase().contains(str.toUpperCase())) {
         list.add(element);
       }
     }
@@ -412,7 +414,7 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
                           )
                         ],
                       ),
-                      child:  Icon(
+                      child: Icon(
                         Icons.directions,
                         color: Theme.of(context).iconTheme.color,
                       ),
@@ -438,7 +440,7 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
                             )
                           ],
                         ),
-                        child:  Icon(
+                        child: Icon(
                           Icons.location_on,
                           color: Theme.of(context).iconTheme.color,
                         ),
@@ -521,12 +523,16 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
             : Text(
                 widget.category?.title ??
                     Translate.of(context).translate('listing'),
-            style: Theme.of(context).textTheme.headline6!.copyWith(fontFamily: "ProximaNova")
-              ),
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontFamily: "ProximaNova")),
         actions: <Widget>[
           IconButton(
-            icon:  Icon(Icons.search,color: Theme.of(context).iconTheme.color,),
-
+            icon: Icon(
+              Icons.search,
+              color: Theme.of(context).iconTheme.color,
+            ),
             onPressed: _onSearch,
           ),
           Visibility(

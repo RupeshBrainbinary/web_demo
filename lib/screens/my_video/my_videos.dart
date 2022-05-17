@@ -3,6 +3,7 @@ import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/routes.dart';
 import 'package:web_demo/models/model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 
 import 'package:web_demo/utils/translate.dart';
 import 'package:web_demo/widgets/app_review_item.dart';
@@ -76,7 +77,10 @@ class _MyVideosState extends State<MyVideos> {
       }).toList(),
     );
   }
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 }

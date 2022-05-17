@@ -5,6 +5,7 @@ import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/screen_models.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/widgets/widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -155,8 +156,11 @@ class _ProductDetailTabState extends State<ProductDetailTab> {
   }
 
   ///On navigate product detail
-  void _onProductDetail(ProductModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ProductModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   ///On like product

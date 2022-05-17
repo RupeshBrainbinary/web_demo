@@ -788,7 +788,7 @@ class _SubmitState extends State<Submit> {
                     await Permission.microphone.isGranted &&
                     await Permission.storage.isGranted) {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ReviewWebView()));
+                      builder: (context) =>  ReviewWebView(comment:videoController.text,)));
                 }*/
 
                 /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(

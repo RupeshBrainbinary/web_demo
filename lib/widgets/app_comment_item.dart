@@ -118,7 +118,7 @@ class AppCommentItem extends StatelessWidget {
         ),
       ),
       child: FutureBuilder<UserModel>(
-        future: Api.getReviewerDetail(int.parse(item!.id ?? '0')),
+        future: Api.getReviewerDetail(int.parse(item!.clientId ?? '0')),
         builder: (context, snap) {
           if (!snap.hasData) {
             return const SizedBox();
@@ -135,7 +135,7 @@ class AppCommentItem extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image:  CachedNetworkImageProvider(reviewPage!.chanel!.avatar!),
+                        image:  CachedNetworkImageProvider(snap.data!.avatar),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -169,7 +169,7 @@ class AppCommentItem extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        RatingBar.builder(
+                        /*RatingBar.builder(
                           initialRating: 0,
                           minRating: 1,
                           allowHalfRating: true,
@@ -182,7 +182,7 @@ class AppCommentItem extends StatelessWidget {
                           ),
                           ignoreGestures: true,
                           onRatingUpdate: (double value) {},
-                        )
+                        )*/
                       ],
                     ),
                   )

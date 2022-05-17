@@ -7,6 +7,7 @@ import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/screen_models.dart';
 import 'package:web_demo/models/screen_models/search_history_real_estate_page_model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_result_real_estate_list.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_suggest_real_estate_list.dart';
 import 'package:web_demo/utils/utils.dart';
@@ -67,8 +68,11 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
   }
 
   ///On navigate product detail
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   ///Build list tag

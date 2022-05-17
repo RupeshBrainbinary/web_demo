@@ -2,7 +2,7 @@ import 'package:web_demo/models/model.dart';
 
 class ReviewModel {
   final int id;
-  final int views;
+  int views;
   int likes;
   final String clientName;
   final String clientImage;

@@ -9,6 +9,7 @@ import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/comapny_model.dart';
 import 'package:web_demo/models/model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_comp_performance.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -62,8 +63,11 @@ class _ProfileCompanyState extends State<ProfileCompany> {
   }
 
   ///On navigate product detail
-  void _onProductDetail(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _onProductDetail(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   ///On navigate review

@@ -2,16 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
 import 'package:web_demo/models/screen_models/home_real_estate_page_model.dart';
-import 'package:web_demo/models/screen_models/screen_models.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+
 import 'appbar_home.dart';
 
 class Home extends StatefulWidget {
@@ -67,13 +68,22 @@ class _HomeState extends State<Home> {
   }
 
   ///On navigate product detail
-  void _openReviewInfo(ReviewModel item) {
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item);
+  Future<void> _openReviewInfo(ReviewModel item) async {
+    await player.reset();
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+      player.reset();
+    });
   }
 
   ///On navigate channel detail
   void _onChannelDetail(ChannelModel item) {
-    Navigator.pushNamed(context, Routes.profileReviewer, arguments: {'id': item.id,'name': item.name});
+    Navigator.pushNamed(context, Routes.profileReviewer, arguments: {
+      'id': item.id,
+      'name': item.name,
+      'image': item.avatar,
+      'ch': item.channelName,
+      'slug': item.slug,
+    });
   }
 
   ///On search
@@ -98,8 +108,7 @@ class _HomeState extends State<Home> {
       UtilPreferences.setInt(Preferences.countryId, item.id);
       await AppBloc.categoryCubit.loadCategories();
       _countrySelected = item;
-      setState(() {
-      });
+      setState(() {});
     }
   }
 
@@ -304,7 +313,9 @@ class _HomeState extends State<Home> {
                 thickness: 1.0,
                 height: 1.0,
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Text(
                 Translate.of(context).translate('review_channels'),
                 style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -397,7 +408,9 @@ class _HomeState extends State<Home> {
                 thickness: 1.0,
                 height: 1.0,
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               Text(
                 Translate.of(context).translate('trending_reviews'),
                 style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -410,7 +423,6 @@ class _HomeState extends State<Home> {
                     .bodyText2!
                     .copyWith(fontFamily: "ProximaNova"),
               ),
-
             ],
           ),
         ),
@@ -455,36 +467,37 @@ class _HomeState extends State<Home> {
         );
       } else {
         content = FutureBuilder<ResultApiModel>(
-          future: Api.getProduct(category.id),
-          builder: (context,snapshot) {
-            if(!snapshot.hasData){
-              return const SizedBox();
-            }
-            final List<ReviewModel> productPage = snapshot.data!.data!.map<ReviewModel>((e) => ReviewModel.fromJson(e)).toList();
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: productPage
-                      .map((item) => Container(
-                            width: 200,
-                            padding: const EdgeInsets.only(left: 8, right: 8),
-                            child: AppReviewItem(
-                              item: item,
-                              onPressed: () {
-                                _openReviewInfo(item);
-                              },
-                              type: ProductViewType.gird,
-                            ),
-                          ))
-                      .toList(),
+            future: Api.getProduct(category.id),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox();
+              }
+              final List<ReviewModel> productPage = snapshot.data!.data!
+                  .map<ReviewModel>((e) => ReviewModel.fromJson(e))
+                  .toList();
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: productPage
+                        .map((item) => Container(
+                              width: 200,
+                              padding: const EdgeInsets.only(left: 8, right: 8),
+                              child: AppReviewItem(
+                                item: item,
+                                onPressed: () {
+                                  _openReviewInfo(item);
+                                },
+                                type: ProductViewType.gird,
+                              ),
+                            ))
+                        .toList(),
+                  ),
                 ),
-              ),
-            );
-          }
-        );
+              );
+            });
       }
     }
 
@@ -525,7 +538,7 @@ class _HomeState extends State<Home> {
               ),
               TextButton(
                 onPressed: () {
-
+                  _openCategory(category);
                 },
                 child: Text(
                   "View All",
