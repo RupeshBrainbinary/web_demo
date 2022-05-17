@@ -66,14 +66,16 @@ class _SignInState extends State<SignIn> {
       _errorPass = UtilValidator.validate(_textPassController.text);
     });
     if (_errorID == null && _errorPass == null) {
-      AppBloc.loginCubit
-          .onLogin(
-              username: _textIDController.text,
-              password: _textPassController.text,
-              context: context)
-          .then((value) {
+      var value = AppBloc.loginCubit.onLogin(
+          username: _textIDController.text,
+          password: _textPassController.text,
+          context: context);
+      /*.then((value) {
+
+
+
         print(value);
-        if (value == null) {
+*/ /*        if (value == null) {
           isLoading = false;
           setState(() {});
           CommonToast().toats(context, "signInError");
@@ -81,19 +83,35 @@ class _SignInState extends State<SignIn> {
           isLoading = false;
           setState(() {});
           Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => AppContainer()));
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => AppContainer()),
+          );
           // Navigator.of(context).pushAndRemoveUntil(
           //     MaterialPageRoute(builder: (context) => const AppContainer()),
           //     (route) => true);
           // isLoading = false;
           // setState(() {});
-          /*Navigator.of(context).pushAndRemoveUntil(
+          Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => const AppContainer()),
-              (route) => false);*/
-        }
-      });
+              (route) => false);
+        }*/ /*
+      });*/
+      if (value == null) {
+        isLoading = false;
+        setState(() {
+
+        });
+        CommonToast().toats(context, "signInError");
+      } else {
+        isLoading = false;
+        setState(() {
+
+        });
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const AppContainer()),
+            (route) => false);
+      }
     } else {
       isLoading = false;
       setState(() {});
@@ -127,105 +145,106 @@ class _SignInState extends State<SignIn> {
                       child: CircularProgressIndicator(),
                     ),
                   )
-                :
-                SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 70,
-                  ),
-                  Container(
-                    child: Image.asset(
-                      "assets/images/logo.png",
+                : SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: 70,
+                        ),
+                        Container(
+                          child: Image.asset(
+                            "assets/images/logo.png",
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        AppTextInput(
+                          hintText: Translate.of(context).translate('account'),
+                          errorText: _errorID,
+                          controller: _textIDController,
+                          focusNode: _focusID,
+                          textInputAction: TextInputAction.next,
+                          onChanged: (text) {
+                            setState(() {
+                              _errorID = UtilValidator.validate(
+                                _textIDController.text,
+                              );
+                            });
+                          },
+                          onSubmitted: (text) {
+                            UtilOther.fieldFocusChange(
+                                context, _focusID, _focusPass);
+                          },
+                          trailing: GestureDetector(
+                            dragStartBehavior: DragStartBehavior.down,
+                            onTap: () {
+                              _textIDController.clear();
+                            },
+                            child: const Icon(Icons.clear),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        AppTextInput(
+                          hintText: Translate.of(context).translate('password'),
+                          errorText: _errorPass,
+                          textInputAction: TextInputAction.done,
+                          onChanged: (text) {
+                            setState(() {
+                              _errorPass = UtilValidator.validate(
+                                _textPassController.text,
+                              );
+                            });
+                          },
+                          onSubmitted: (text) {
+                            _login();
+                          },
+                          trailing: GestureDetector(
+                            dragStartBehavior: DragStartBehavior.down,
+                            onTap: () {
+                              setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            },
+                            child: Icon(_showPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                          obscureText: !_showPassword,
+                          controller: _textPassController,
+                          focusNode: _focusPass,
+                        ),
+                        const SizedBox(height: 16),
+                        BlocBuilder<LoginCubit, LoginState>(
+                          builder: (context, login) {
+                            return AppButton(
+                              Translate.of(context).translate('sign_in'),
+                              mainAxisSize: MainAxisSize.max,
+                              onPressed: _login,
+                              loading: login == LoginState.loading,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            AppButton(
+                              Translate.of(context)
+                                  .translate('forgot_password'),
+                              onPressed: _forgotPassword,
+                              type: ButtonType.text,
+                            ),
+                            AppButton(
+                              '${Translate.of(context).translate('new_user')}',
+                              onPressed: _signUp,
+                              type: ButtonType.text,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  AppTextInput(
-                    hintText: Translate.of(context).translate('account'),
-                    errorText: _errorID,
-                    controller: _textIDController,
-                    focusNode: _focusID,
-                    textInputAction: TextInputAction.next,
-                    onChanged: (text) {
-                      setState(() {
-                        _errorID = UtilValidator.validate(
-                          _textIDController.text,
-                        );
-                      });
-                    },
-                    onSubmitted: (text) {
-                      UtilOther.fieldFocusChange(context, _focusID, _focusPass);
-                    },
-                    trailing: GestureDetector(
-                      dragStartBehavior: DragStartBehavior.down,
-                      onTap: () {
-                        _textIDController.clear();
-                      },
-                      child: const Icon(Icons.clear),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  AppTextInput(
-                    hintText: Translate.of(context).translate('password'),
-                    errorText: _errorPass,
-                    textInputAction: TextInputAction.done,
-                    onChanged: (text) {
-                      setState(() {
-                        _errorPass = UtilValidator.validate(
-                          _textPassController.text,
-                        );
-                      });
-                    },
-                    onSubmitted: (text) {
-                      _login();
-                    },
-                    trailing: GestureDetector(
-                      dragStartBehavior: DragStartBehavior.down,
-                      onTap: () {
-                        setState(() {
-                          _showPassword = !_showPassword;
-                        });
-                      },
-                      child: Icon(_showPassword
-                          ? Icons.visibility
-                          : Icons.visibility_off),
-                    ),
-                    obscureText: !_showPassword,
-                    controller: _textPassController,
-                    focusNode: _focusPass,
-                  ),
-                  const SizedBox(height: 16),
-                  BlocBuilder<LoginCubit, LoginState>(
-                    builder: (context, login) {
-                      return AppButton(
-                        Translate.of(context).translate('sign_in'),
-                        mainAxisSize: MainAxisSize.max,
-                        onPressed: _login,
-                        loading: login == LoginState.loading,
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      AppButton(
-                        Translate.of(context).translate('forgot_password'),
-                        onPressed: _forgotPassword,
-                        type: ButtonType.text,
-                      ),
-                      AppButton(
-                        '${Translate.of(context).translate('new_user')}',
-                        onPressed: _signUp,
-                        type: ButtonType.text,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
           ),
         ),
       ),
