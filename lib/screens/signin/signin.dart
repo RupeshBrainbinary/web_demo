@@ -162,7 +162,7 @@ class _SignInState extends State<SignIn> {
                           height: 50,
                         ),
                         AppTextInput(
-                          hintText: Translate.of(context).translate('Email ID'),
+                          hintText: Translate.of(context).translate('Username'),
                           errorText: _errorID,
                           controller: _textIDController,
                           focusNode: _focusID,

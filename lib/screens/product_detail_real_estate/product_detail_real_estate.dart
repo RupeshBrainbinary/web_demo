@@ -59,7 +59,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   CommentRes? _commentRes;
   bool isDispose = false;
   bool isShow = false;
-  MiniVideoPlayer? videoPlayer;
+
   MiniVideoPlayerController? viewPlayerController;
 
   @override
@@ -954,7 +954,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   @override
   Widget build(BuildContext context) {
-    viewPlayerController!.pause();
+    MiniVideoPlayer videoPlayer = MiniVideoPlayer(
+        onCreated: onViewPlayerCreated,
+        hiddenControlView: true,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height/2.5);
     return Scaffold(
       /*appBar: AppBar(
         title: Text(widget.review?.comment ?? ""),
