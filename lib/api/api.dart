@@ -34,7 +34,7 @@ class Api {
   static const String reviewLike = "$domain/services/reviewLikeUn";
   static const String reviewerProfile =
       "$domain/reviewer_profile/ReviewerProfile";
-  static const String changePassword = "$domain/reviewer/updatePassword";
+  static const String changePassword = "$domain/reviewer/updatePass";
   static const String getTopReviewsByReviewer =
       "$domain/services/getTopReviewsByReviewer";
   static const String loadProfileLink =
@@ -47,6 +47,7 @@ class Api {
   static const String relatedClips =
       "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
   static const String subscribeVideo = "$domain/services/subscribe";
+  static const String resetReviewerPassword = "$domain/services/resetReviewerPassword";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -209,9 +210,10 @@ class Api {
     return list.map<BusinessModel>((e) => BusinessModel.fromJson(e)).toList();
   }
 
-  static Future<dynamic> validBusienss(params) async {
+  static Future<String?> validBusienss(params) async {
     var result = await httpManager.post(url: validateBusiness, data: params);
     print(result);
+    return result['data']['slug'];
 /*    Map<String, dynamic> map = jsonDecode(result);
 
     // final result = await UtilData.login();
@@ -375,6 +377,14 @@ class Api {
 
   static Future<dynamic> subscribe(params) async {
     final result = await httpManager.post(url: subscribeVideo, data: params);
+    print(result);
+    return result;
+  }
+
+  static Future<dynamic> resetPassword(String email) async {
+    final result = await httpManager.post(url: resetReviewerPassword, data: {
+      'regemail': email,
+    });
     print(result);
     return result;
   }

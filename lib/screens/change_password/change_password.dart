@@ -55,23 +55,31 @@ class _ChangePasswordState extends State<ChangePassword> {
       setState(() async {
         _loading = true;
         result = await Api.updatePassword({
-          "old": _textOldPassController.text,
-          "new": _textPassController.text,
-          "cnfnew": _textRePassController.text,
-          "clientId": clientId
+          "newpass": _textPassController.text,
+          "confnewpass": _textRePassController.text,
+          "reviewerId": clientId
         });
         _loading = false;
         print(result);
         Map<String,dynamic> map = result as Map<String,dynamic>;
-        if(map['status']=="error"){
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:  Text(map['msg']),
+          duration: const Duration(seconds: 3),
+          action: map['status'] == 200 ? null : SnackBarAction(
+            label: 'Error',
+            onPressed: () { },
+          ),
+        ));
+        if(map['status']==200){
+          Navigator.pop(context);
+          /*ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content:  Text(map['msg']),
             duration: const Duration(seconds: 3),
             action: SnackBarAction(
               label: 'Error',
               onPressed: () { },
             ),
-          ));
+          ));*/
         }
 
       });

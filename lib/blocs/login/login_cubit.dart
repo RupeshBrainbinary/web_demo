@@ -4,6 +4,7 @@ import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/app_bloc.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/preferences.dart';
+import 'package:web_demo/models/model_user.dart';
 import 'package:web_demo/repository/repository.dart';
 import 'package:web_demo/utils/preferences.dart';
 import 'package:web_demo/widgets/common_toast.dart';
@@ -18,7 +19,7 @@ enum LoginState {
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginState.init);
 
-   onLogin({
+  Future<UserModel?> onLogin({
     required String username,
     required String password,
      required BuildContext context,
@@ -50,7 +51,7 @@ class LoginCubit extends Cubit<LoginState> {
 
       emit(LoginState.success);
 
-      //return result;
+      return result;
     } else {
       ///Notify
       emit(LoginState.fail);

@@ -1,7 +1,6 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
@@ -92,6 +91,7 @@ class _SubmitState extends State<Submit> {
   bool isShow = false;
   int rating = 0;
   bool _loader = false;
+  String? slug = '';
 
   @override
   void initState() {
@@ -102,7 +102,7 @@ class _SubmitState extends State<Submit> {
   Future<void> validateBusiness() async {
     _loader = true;
     setState(() {});
-    await Api.validBusienss({
+    slug = await Api.validBusienss({
       "country": _country!.id,
       "category": _category!.id,
       "clientVal": busines.text,
@@ -768,13 +768,19 @@ class _SubmitState extends State<Submit> {
             AppButton(
               Translate.of(context).translate('continue_record'),
               onPressed: () async {
-                if (isShow) {
+                if (isShow == false) {
                   await validateBusiness();
                 }
                 await validateRweview();
 
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>  ReviewWebView(comment:videoController.text,)));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ReviewWebView(
+                        comment: videoController.text,
+                        rate: rating,
+                        slug: slug),
+                  ),
+                );
                 /*if ((await Permission.camera.isGranted) == false) {
                   await Permission.camera.request();
                 }

@@ -8,9 +8,10 @@ import 'package:web_demo/screens/home/home.dart';
 
 class ReviewWebView extends StatefulWidget {
   final String? comment;
+  final String? slug;
   final int? rate;
 
-  ReviewWebView({this.comment, this.rate});
+  ReviewWebView({this.comment, this.rate, this.slug});
 
   @override
   State<ReviewWebView> createState() => _ReviewWebViewState();
@@ -63,7 +64,7 @@ class _ReviewWebViewState extends State<ReviewWebView> {
                 },
                 initialUrlRequest: URLRequest(
                   url: Uri.parse(
-                    'https://www.thereviewclip.com/app/submitVideoReviewApp/${user.slug}?client_id=${user.id}&api=1&comment=${widget.comment}&rate=${widget.rate}',
+                    'https://www.thereviewclip.com/app/submitVideoReviewApp/${widget.slug}?client_id=${user.id}&api=1&comment=${widget.comment}&rate=${widget.rate}',
                     //'https://www.thereviewclip.com/app/submitVideoReviewApp/test_73830?client_id=${user.id}&api=1&comment=${widget.comment}&rate=${widget.rate}',
                   ),
                 ),
