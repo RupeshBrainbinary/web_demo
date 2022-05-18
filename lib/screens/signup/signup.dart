@@ -275,10 +275,22 @@ class _SignUpState extends State<SignUp> {
                   keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
-                Text(
-                  Translate.of(context).translate('Set Password'),
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
+                Row(
+                  children: [
+                    Text(
+                      Translate.of(context).translate('Set Password'),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: "ProximaNova"),
+                    ),
+                    Text(
+                      " (Should be minimum 6 characters)",
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(fontSize: 12, fontFamily: "ProximaNova"),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -460,10 +472,11 @@ class _SignUpState extends State<SignUp> {
                     children: <TextSpan>[
                   TextSpan(
                       text: 'Terms of Service',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            fontFamily: "ProximaNova",
+                          ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           Navigator.push(context, MaterialPageRoute(
@@ -474,13 +487,18 @@ class _SignUpState extends State<SignUp> {
                         }),
                   TextSpan(
                       text: ' & ',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontFamily: "ProximaNova",
+                      ),
                       children: <TextSpan>[
                         TextSpan(
                             text: 'Privacy Policy',
-                            style: TextStyle(
+                            style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                              fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: Colors.black,
+                              fontFamily: "ProximaNova",
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
