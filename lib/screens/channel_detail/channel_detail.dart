@@ -499,7 +499,7 @@ class _ChannelDetailState extends State<ChannelDetail> {
                         var jsonResp = jsonDecode(result);
                         if (jsonResp['status'] == 1) {
                           isShow = true;
-
+                          await Api.getSubscribedList();
                         }else{
                           isShow = false;
                         }
@@ -513,7 +513,10 @@ class _ChannelDetailState extends State<ChannelDetail> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text(isShow ?'Subscribed':'Subscribe',
+                      child: Text( subscribedList
+                          .where((element) =>
+                      element.slug == widget.channel!.slug)
+                          .isNotEmpty ?'Subscribed':'Subscribe',
                           style: Theme.of(context)
                               .textTheme
                               .button!

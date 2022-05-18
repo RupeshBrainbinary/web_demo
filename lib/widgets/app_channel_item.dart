@@ -24,6 +24,7 @@ class AppChannelItem extends StatefulWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onSubscribe;
   final bool? subTitleIn2Line;
+
   //final bool? subscribe;
 
   @override
@@ -34,7 +35,6 @@ class _AppChannelItemState extends State<AppChannelItem> {
   final currency = String.fromCharCode(0x24);
 
   bool isShow = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,38 +94,41 @@ class _AppChannelItemState extends State<AppChannelItem> {
                     width: 12,
                   ),
                   ElevatedButton(
-
-                      onPressed: widget.onSubscribe != null ? widget.onSubscribe : () async {
-                        final result = await Api.subscribe({
-                          "id":UtilPreferences.getString(Preferences.clientId),
-                          "reviewer":widget.item!.id.toString(),
-                          "xhr":"1"
-                        });
-                        print(result);
-                        print(jsonDecode(result));
-                        var jsonResp = jsonDecode(result);
-                        if (jsonResp['status'] == 1) {
-                          isShow = true;
-
-                        }else{
-                          isShow = false;
-                        }
-                        setState(() {
-
-                        });
-                        Fluttertoast.showToast(
-                            msg: "Subscribed successfully", // message
-                            toastLength: Toast.LENGTH_SHORT, // length
-                            gravity: ToastGravity.BOTTOM_LEFT, // location
-                            timeInSecForIosWeb: 1 // duration
-                        );
-                      },
+                      onPressed: widget.onSubscribe != null
+                          ? widget.onSubscribe
+                          : () async {
+                              final result = await Api.subscribe({
+                                "id": UtilPreferences.getString(
+                                    Preferences.clientId),
+                                "reviewer": widget.item!.id.toString(),
+                                "xhr": "1"
+                              });
+                              print(result);
+                              print(jsonDecode(result));
+                              var jsonResp = jsonDecode(result);
+                              if (jsonResp['status'] == 1) {
+                                await Api.getSubscribedList();
+                                isShow = true;
+                              } else {
+                                isShow = false;
+                              }
+                              setState(() {});
+                              Fluttertoast.showToast(
+                                  msg: "Subscribed successfully", // message
+                                  toastLength: Toast.LENGTH_SHORT, // length
+                                  gravity: ToastGravity.BOTTOM_LEFT, // location
+                                  timeInSecForIosWeb: 1 // duration
+                                  );
+                            },
                       child: Text(
-                        isShow == true ?'Subscribed':'Subscribe',
-                        style: Theme.of(context)
-                            .textTheme
-                            .button!
-                            .copyWith(fontFamily: "ProximaNova",color:Colors.white),
+                        subscribedList
+                                .where((element) =>
+                                    element.slug == widget.item!.slug)
+                                .isNotEmpty
+                            ? 'Subscribed'
+                            : 'Subscribe',
+                        style: Theme.of(context).textTheme.button!.copyWith(
+                            fontFamily: "ProximaNova", color: Colors.white),
                       )),
                 ],
               ),
@@ -147,10 +150,8 @@ class _AppChannelItemState extends State<AppChannelItem> {
             ),
             title: Text(
               widget.item!.channelName,
-              style: Theme.of(context)
-                  .textTheme
-                  .button!
-                  .copyWith(fontFamily: "ProximaNova",fontWeight: FontWeight.w900),
+              style: Theme.of(context).textTheme.button!.copyWith(
+                  fontFamily: "ProximaNova", fontWeight: FontWeight.w900),
             ),
             subtitle: widget.subTitleIn2Line == true
                 ? Column(
@@ -180,33 +181,36 @@ class _AppChannelItemState extends State<AppChannelItem> {
                         .copyWith(fontFamily: "ProximaNova"),
                   ),
             trailing: ElevatedButton(
-                onPressed: widget.onSubscribe != null ? widget.onSubscribe : () async {
-                  final result = await Api.subscribe({
-                    "id":UtilPreferences.getString(Preferences.clientId),
-                    "reviewer":widget.item!.id.toString(),
-                    "xhr":"1"
-                  });
-                  print(result);
-                  print(jsonDecode(result));
-                  var jsonResp = jsonDecode(result);
-                  if (jsonResp['status'] == 1) {
-                    isShow = true;
-
-                  }else{
-                    isShow = false;
-                  }
-                  setState(() {
-
-                  });
-                  Fluttertoast.showToast(
-                      msg: "Subscribed successfully", // message
-                      toastLength: Toast.LENGTH_SHORT, // length
-                      gravity: ToastGravity.BOTTOM_LEFT, // location
-                      timeInSecForIosWeb: 1 // duration
-                  );
-                },
+                onPressed: widget.onSubscribe != null
+                    ? widget.onSubscribe
+                    : () async {
+                        final result = await Api.subscribe({
+                          "id": UtilPreferences.getString(Preferences.clientId),
+                          "reviewer": widget.item!.id.toString(),
+                          "xhr": "1"
+                        });
+                        print(result);
+                        print(jsonDecode(result));
+                        var jsonResp = jsonDecode(result);
+                        if (jsonResp['status'] == 1) {
+                          isShow = true;
+                          await Api.getSubscribedList();
+                        } else {
+                          isShow = false;
+                        }
+                        setState(() {});
+                        Fluttertoast.showToast(
+                            msg: "Subscribed successfully", // message
+                            toastLength: Toast.LENGTH_SHORT, // length
+                            gravity: ToastGravity.BOTTOM_LEFT, // location
+                            timeInSecForIosWeb: 1 // duration
+                            );
+                      },
                 child: Text(
-                  isShow == true ?'Subscribed':'Subscribe',
+                  subscribedList
+                      .where((element) =>
+                  element.slug == widget.item!.slug)
+                      .isNotEmpty ? 'Subscribed' : 'Subscribe',
                   style: Theme.of(context)
                       .textTheme
                       .button!

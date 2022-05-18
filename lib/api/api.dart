@@ -10,8 +10,10 @@ import 'package:web_demo/models/comment_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_business.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
+import 'package:web_demo/models/subscriber_model.dart';
 import 'package:web_demo/utils/utils.dart';
-import 'package:http/http.dart' as http;
+
+List<Subscribed> subscribedList = [];
 
 class Api {
   ///URL API
@@ -47,7 +49,10 @@ class Api {
   static const String relatedClips =
       "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
   static const String subscribeVideo = "$domain/services/subscribe";
-  static const String resetReviewerPassword = "$domain/services/resetReviewerPassword";
+  static const String resetReviewerPassword =
+      "$domain/services/resetReviewerPassword";
+  static const String subscribedListUrl =
+      "$domain/reviewer_profile/subscribed_list";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -309,9 +314,12 @@ class Api {
   }
 
   static Future<List<ReviewModel>> getMyVideos() async {
-    final result = await httpManager.post(
-        url: myvideos,
-        data: {"limit": "100", "start": "0", "lgd": "1", "client_id": UtilPreferences.getString(Preferences.clientId)});
+    final result = await httpManager.post(url: myvideos, data: {
+      "limit": "100",
+      "start": "0",
+      "lgd": "1",
+      "client_id": UtilPreferences.getString(Preferences.clientId)
+    });
     Map<String, dynamic> map = result as Map<String, dynamic>;
 
     return result['data']
@@ -361,15 +369,12 @@ class Api {
   }
 
   static Future<List<ReviewModel>> getRelatedClips(params) async {
-
-
-
-
     String uid = UtilPreferences.getString(Preferences.clientId).toString();
     Map<String, dynamic> map = {"client_id": uid};
     print(map);
 
-    final result = await httpManager.post(url: relatedClips, options: Options(headers: map));
+    final result = await httpManager.post(
+        url: relatedClips, options: Options(headers: map));
     return result['data']
         .map<ReviewModel>((e) => ReviewModel.fromJson(e))
         .toList();
@@ -387,6 +392,15 @@ class Api {
     });
     print(result);
     return result;
+  }
+
+  static Future<void> getSubscribedList() async {
+    final result = await httpManager.post(url: subscribedListUrl, data: {
+      'client_id': UtilPreferences.getString(Preferences.clientId),
+    });
+    print(result);
+    SubscriberModel model = SubscriberModel.fromJson(result);
+    subscribedList = model.data!.subscribed ?? [];
   }
 
   ///Singleton factory

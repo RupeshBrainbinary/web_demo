@@ -217,6 +217,7 @@ class _AppReviewerInfoState extends State<AppReviewerInfo> {
                         var jsonResp = jsonDecode(result);
                         if (jsonResp['status'] == 1) {
                           isShow = true;
+                          await Api.getSubscribedList();
                         } else {
                           isShow = false;
                         }
@@ -228,7 +229,10 @@ class _AppReviewerInfoState extends State<AppReviewerInfo> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text(isShow ? 'Subscribed' : 'Subscribe',
+                      child: Text( subscribedList
+                          .where((element) =>
+                      element.slug == widget.user!.slug)
+                          .isNotEmpty ? 'Subscribed' : 'Subscribe',
                           style: Theme.of(context)
                               .textTheme
                               .button!

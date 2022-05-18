@@ -149,10 +149,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
     player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
     await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
-    await player.setOption(
-        FijkOption.hostCategory, "request-audio-focus", 1);
-    await player.setDataSource(_detailPage?.review.video ?? '',
-        autoPlay: true);
+    await player.setOption(FijkOption.hostCategory, "request-audio-focus", 1);
+    await player.setDataSource(_detailPage?.review.video ?? '', autoPlay: true);
   }
 
   Future<void> getComments() async {
@@ -691,10 +689,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             children: <Widget>[
               Expanded(
                 child: InkWell(
-                  onTap: () => {
-                    _onReviewerProfile(
-                      widget.review!.profileSlug,
-                    )
+                  onTap: () {
+                    if (_commentRes!.chanel!.slug != null) {
+                      _onReviewerProfile(_commentRes!.chanel!.slug!);
+                    }
                   },
                   child: Row(
                     children: [
@@ -748,24 +746,22 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     width: 12,
                   ),
                   ElevatedButton(
-                      onPressed: ()async{
+                      onPressed: () async {
                         final result = await Api.subscribe({
-                          "id":UtilPreferences.getString(Preferences.clientId),
-                          "reviewer":_detailPage!.review.id.toString(),
-                          "xhr":"1"
+                          "id": UtilPreferences.getString(Preferences.clientId),
+                          "reviewer": _detailPage!.review.id.toString(),
+                          "xhr": "1"
                         });
                         print(result);
                         print(jsonDecode(result));
                         var jsonResp = jsonDecode(result);
                         if (jsonResp['status'] == 1) {
                           isShow = true;
-
-                        }else{
+                          await Api.getSubscribedList();
+                        } else {
                           isShow = false;
                         }
-                        setState(() {
-
-                        });
+                        setState(() {});
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
@@ -773,7 +769,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text(isShow? 'Subscribed':'Subscribe',
+                      child: Text( subscribedList
+                          .where((element) =>
+                      element.name == _commentRes!.chanel!.name)
+                          .isNotEmpty ? 'Subscribed' : 'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontFamily: "ProximaNova", color: Colors.white))),
                 ],
@@ -944,12 +943,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       ),
     );
   }
+
   void onViewPlayerCreated(viewPlayerController) {
     this.viewPlayerController = viewPlayerController;
 
-    this.viewPlayerController!.loadUrl(
-        _detailPage?.review.video ?? '');
-
+    this.viewPlayerController!.loadUrl(_detailPage?.review.video ?? '');
   }
 
   @override
@@ -969,7 +967,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             Stack(
               children: [
                 Container(
-                  height: MediaQuery.of(context).size.height/2.5,
+                  height: MediaQuery.of(context).size.height / 2.5,
                   width: MediaQuery.of(context).size.width,
                   child: VisibilityDetector(
                     onVisibilityChanged: (VisibilityInfo info) {
@@ -978,7 +976,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                       }
                     },
                     key: Key(_detailPage?.review.video ?? ''),
-                    child: videoPlayer!,
+                    child: videoPlayer,
                   ),
                 ),
                 Positioned(

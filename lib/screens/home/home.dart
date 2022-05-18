@@ -51,6 +51,7 @@ class _HomeState extends State<Home> {
 
   ///Fetch API
   void _loadData() async {
+    Api.getSubscribedList();
     final result = await Api.getHome();
     // print(result.data);
     if (result.success) {
