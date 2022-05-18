@@ -245,7 +245,7 @@ class _AboutUsState extends State<AboutUs> {
                         ],
                       ),
                     ),
-                    /*   Padding(
+                       Padding(
                       padding: const EdgeInsets.only(left: 16, top: 16),
                       child: Text(
                         Translate.of(context).translate('meet_our_team'),
@@ -254,11 +254,11 @@ class _AboutUsState extends State<AboutUs> {
                             .subtitle1!
                             .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
                       ),
-                    ),*/
-                    /* Padding(
+                    ),
+                     Padding(
                       padding: const EdgeInsets.only(right: 16, top: 8),
                       child: _buildTeam(),
-                    )*/
+                    )
                   ],
                 ),
               ),

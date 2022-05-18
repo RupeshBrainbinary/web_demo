@@ -5,7 +5,6 @@ import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/app_bloc.dart';
 import 'package:web_demo/models/model_country.dart';
 import 'package:web_demo/models/model_picker.dart';
-import 'package:web_demo/screens/home/home.dart';
 import 'package:web_demo/screens/privacy_policy/privacy_policy.dart';
 import 'package:web_demo/screens/termes_condition/terms_conditions.dart';
 import 'package:web_demo/utils/utils.dart';
@@ -43,6 +42,8 @@ class _SignUpState extends State<SignUp> {
   CountryModel? _country;
   List<CountryModel> _countryList = [];
   bool rememberMe = false;
+  bool privacyPolicy = false;
+  String? privacyPolicyError;
 
   @override
   void initState() {
@@ -95,12 +96,15 @@ class _SignUpState extends State<SignUp> {
         _passwordController.text,
         match: _confirmPasswordController.text,
       );
+      privacyPolicyError =
+          (privacyPolicy == false ? "Terms of condition required" : null);
     });
     if (_validAccountName == null &&
         _validPhoneNumber == null &&
         _validPassword == null &&
         _validEmail == null &&
-        _validConfirmPassword == null) {
+        _validConfirmPassword == null &&
+        privacyPolicyError == null) {
       setState(() {
         _loading = true;
       });
@@ -114,16 +118,17 @@ class _SignUpState extends State<SignUp> {
         conPassword: _confirmPasswordController.text,
       )
           .then((value) {
-        if (value==false) {
+        if (value == false) {
           _focusConfirmPassword.unfocus();
           _focusPassword.unfocus();
           _focusPhoneNumber.unfocus();
           _focusEmail.unfocus();
           _focusAccountName.unfocus();
           CommonToast().toats(context, "signInError");
-
-        }else{
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const AppContainer()) , (route) => false);
+        } else {
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const AppContainer()),
+              (route) => false);
         }
       });
     }
@@ -134,12 +139,11 @@ class _SignUpState extends State<SignUp> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-            Translate.of(context).translate('sign_up')
-            , style: Theme.of(context)
-            .textTheme
-            .headline6!.copyWith(fontFamily: "ProximaNova")
-        ),
+        title: Text(Translate.of(context).translate('sign_up'),
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(fontFamily: "ProximaNova")),
       ),
       body: SafeArea(
         child: Container(
@@ -149,13 +153,19 @@ class _SignUpState extends State<SignUp> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
                 Center(
                   child: Container(
-                    child: Image.asset("assets/images/logo.png",),
+                    child: Image.asset(
+                      "assets/images/logo.png",
+                    ),
                   ),
                 ),
-                SizedBox(height: 40,),
+                SizedBox(
+                  height: 40,
+                ),
                 AppPickerItem(
                   title: Translate.of(context).translate('choose_country'),
                   value: _country == null ? null : _country!.title,
@@ -164,10 +174,8 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('full_name_title'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -198,10 +206,8 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('email'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -234,11 +240,10 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  Translate.of(context).translate('mobile_number') + " (Optional)",
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  Translate.of(context).translate('mobile_number') +
+                      " (Optional)",
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -272,10 +277,8 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('Set Password'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -313,10 +316,8 @@ class _SignUpState extends State<SignUp> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('Confirm Password'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -348,6 +349,30 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 8),
                 privacyPolicyLinkAndTermsOfService(),
+                privacyPolicyError == null
+                    ? SizedBox()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            const SizedBox(width: 24),
+                            Expanded(
+                              child: Text(
+                                Translate.of(context)
+                                    .translate(privacyPolicyError.toString()),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption!
+                                    .copyWith(
+                                        color: Theme.of(context).errorColor),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                          ],
+                          mainAxisSize: MainAxisSize.min,
+                        ),
+                      ),
                 const SizedBox(height: 24),
                 AppButton(
                   Translate.of(context).translate('sign_up'),
@@ -355,8 +380,6 @@ class _SignUpState extends State<SignUp> {
                   mainAxisSize: MainAxisSize.max,
                   loading: _loading,
                 ),
-
-
               ],
             ),
           ),
@@ -364,93 +387,114 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
-  Widget cheakBoxTerms()
-  {
+
+  Widget cheakBoxTerms() {
     return Column(
       children: [
         Row(
           children: [
             Checkbox(
                 value: rememberMe,
-                onChanged:(value)
-                {
+                onChanged: (value) {
                   setState(() {
                     this.rememberMe = value!;
                   });
-                }
-            ),
+                }),
             // Text( Translate.of(context).translate('cheakBoxPreivacy')),
             Flexible(
-              child: Text( Translate.of(context).translate('cheakBoxPreivacy'),
+              child: Text(
+                Translate.of(context).translate('cheakBoxPreivacy'),
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.justify,
               ),
             ),
-            InkWell(onTap: () {
-              Navigator.push(context,MaterialPageRoute(builder: (context) {
-                return TermsConditionsScreen();
-              },));
-            },
-                child: Text(Translate.of(context).translate('Terms_condition'))),
-            InkWell(onTap: () {
-              Navigator.push(context,MaterialPageRoute(builder: (context) {
-                return PrivacyPolicyScreen();
-              },));
-            },
+            InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return TermsConditionsScreen();
+                    },
+                  ));
+                },
+                child:
+                    Text(Translate.of(context).translate('Terms_condition'))),
+            InkWell(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return PrivacyPolicyScreen();
+                    },
+                  ));
+                },
                 child: Text(Translate.of(context).translate('privacy_policy'))),
           ],
         ),
-
       ],
     );
   }
+
   Widget privacyPolicyLinkAndTermsOfService() {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(10),
-      child: Center(
-          child: Text.rich(
-              TextSpan(
-                  text: 'By continuing, you agree to our ', style: TextStyle(
-                  fontSize: 16, color: Colors.grey
-              ),
-                  children: <TextSpan>[
-                    TextSpan(
-                        text: 'Terms of Service', style: TextStyle(
-                      fontSize: 16, color: Colors.black,
-
-                    ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return Row(
+      children: [
+        SizedBox(
+          width: 40,
+          height: 40,
+          child: Checkbox(
+            value: privacyPolicy,
+            onChanged: (bool? value) {
+              if (value != null) {
+                privacyPolicy = value;
+                setState(() {});
+              }
+            },
+          ),
+        ),
+        Expanded(
+          child: Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.fromLTRB(5, 10, 10, 0),
+            child: Center(
+                child: Text.rich(TextSpan(
+                    text: 'By continuing, you agree to our ',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    children: <TextSpan>[
+                  TextSpan(
+                      text: 'Terms of Service',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
                               return TermsConditionsScreen();
-                            },));
-                          }
-                    ),
-                    TextSpan(
-                        text: ' & ', style: TextStyle(
-                        fontSize: 16, color: Colors.black
-                    ),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: 'Privacy Policy', style: TextStyle(
-                            fontSize: 16, color: Colors.black,
-
-                          ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            },
+                          ));
+                        }),
+                  TextSpan(
+                      text: ' & ',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      children: <TextSpan>[
+                        TextSpan(
+                            text: 'Privacy Policy',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) {
                                     return PrivacyPolicyScreen();
-                                  },));
-                                }
-                          )
-                        ]
-                    )
-                  ]
-              )
-          )
-      ),
+                                  },
+                                ));
+                              })
+                      ])
+                ]))),
+          ),
+        ),
+      ],
     );
   }
-
 }

@@ -279,16 +279,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }
 
   ///On Company profile
-  void _onReviewerProfile(
-      id, String name, String image, String ch, String slug) {
+  void _onReviewerProfile(String slug) {
     Navigator.pushNamed(
       context,
       Routes.profileReviewer,
       arguments: {
-        'id': id,
-        'name': name,
-        'image': image,
-        'ch': ch,
         'slug': slug,
       }, // 'Company Profile',
     );
@@ -692,11 +687,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 child: InkWell(
                   onTap: () => {
                     _onReviewerProfile(
-                      _detailPage!.review.id,
-                      _detailPage!.review.clientName,
-                      _detailPage!.review.image,
-                      _detailPage!.review.channelName,
-                      _detailPage!.review.profileSlug,
+                      widget.review!.profileSlug,
                     )
                   },
                   child: Row(

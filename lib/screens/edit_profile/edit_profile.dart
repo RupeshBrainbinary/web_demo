@@ -21,11 +21,13 @@ class _EditProfileState extends State<EditProfile> {
   final _picker = ImagePicker();
   final _textNameController = TextEditingController();
   final _textEmailController = TextEditingController();
+  final _textMobileController = TextEditingController();
   final _textAddressController = TextEditingController();
   final _textWebsiteController = TextEditingController();
   final _textInfoController = TextEditingController();
   final _focusName = FocusNode();
   final _focusEmail = FocusNode();
+  final _focusMobile = FocusNode();
   final _focusAddress = FocusNode();
   final _focusWebsite = FocusNode();
   final _focusInfo = FocusNode();
@@ -33,6 +35,7 @@ class _EditProfileState extends State<EditProfile> {
   XFile? _image;
   String? _validName;
   String? _validEmail;
+  String? _validMobile;
   String? _validAddress;
   String? _validWebsite;
   String? _validInfo;
@@ -50,6 +53,7 @@ class _EditProfileState extends State<EditProfile> {
 
     _textNameController.text = map['name'] ?? '';
     _textEmailController.text = map['email'] ?? '';
+    _textMobileController.text = map['mobile'] ?? '';
     _textAddressController.text = map['location'] ?? '';
     _textWebsiteController.text = map['chanel'] ?? '';
   }
@@ -73,28 +77,33 @@ class _EditProfileState extends State<EditProfile> {
   void _onUpdate() async {
     UtilOther.hiddenKeyboard(context);
     setState(() {
-      _validName = UtilValidator.validate(
+      /*_validName = UtilValidator.validate(
         _textNameController.text,
       );
       _validEmail = UtilValidator.validate(
         _textEmailController.text,
         type: ValidateType.email,
       );
+      _validMobile = UtilValidator.validate(
+        _textMobileController.text,
+        type: ValidateType.phone,
+      );
       _validAddress = UtilValidator.validate(
         _textAddressController.text,
       );
       _validWebsite = UtilValidator.validate(
         _textWebsiteController.text,
-      );
+      );*/
       _validInfo = UtilValidator.validate(
         _textInfoController.text,
       );
     });
 
-    if (_validName == null &&
+    if (/*_validName == null &&
         _validEmail == null &&
+        _validMobile == null &&
         _validAddress == null &&
-        _validWebsite == null &&
+        _validWebsite == null &&*/
         _validInfo == null) {
       Navigator.pop(context);
     }
@@ -125,7 +134,7 @@ class _EditProfileState extends State<EditProfile> {
         shape: BoxShape.circle,
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage(Images.avatar),
+          image: AssetImage("assets/images/default_image.jpeg"),
         ),
       ),
     );
@@ -185,17 +194,18 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
+                  enable: false,
                   hintText: Translate.of(context).translate('input_name'),
                   errorText: _validName,
                   focusNode: _focusName,
                   textInputAction: TextInputAction.next,
-                  trailing: GestureDetector(
+                  /*trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
                       _textNameController.clear();
                     },
                     child:  Icon(Icons.clear,color: Theme.of(context).iconTheme.color,),
-                  ),
+                  ),*/
                   onSubmitted: (text) {
                     UtilOther.fieldFocusChange(
                       context,
@@ -222,17 +232,18 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
+                  enable: false,
                   hintText: Translate.of(context).translate('input_email'),
                   errorText: _validEmail,
                   focusNode: _focusEmail,
                   textInputAction: TextInputAction.next,
-                  trailing: GestureDetector(
+                  /*trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
                       _textEmailController.clear();
                     },
                     child:  Icon(Icons.clear,color: Theme.of(context).iconTheme.color,),
-                  ),
+                  ),*/
                   onSubmitted: (text) {
                     UtilOther.fieldFocusChange(
                       context,
@@ -261,17 +272,18 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
-                  hintText: Translate.of(context).translate('input_email'),
-                  errorText: _validEmail,
-                  focusNode: _focusEmail,
+                  enable: false,
+                  hintText: Translate.of(context).translate('input_number'),
+                  errorText: _validMobile,
+                  focusNode: _focusMobile,
                   textInputAction: TextInputAction.next,
-                  trailing: GestureDetector(
+                 /* trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
-                      _textEmailController.clear();
+                      _textMobileController.clear();
                     },
                     child:  Icon(Icons.clear,color: Theme.of(context).iconTheme.color,),
-                  ),
+                  ),*/
                   onSubmitted: (text) {
                     UtilOther.fieldFocusChange(
                       context,
@@ -281,14 +293,14 @@ class _EditProfileState extends State<EditProfile> {
                   },
                   onChanged: (text) {
                     setState(() {
-                      _validEmail = UtilValidator.validate(
-                        _textEmailController.text,
-                        type: ValidateType.email,
+                      _validMobile = UtilValidator.validate(
+                        _textMobileController.text,
+                        type: ValidateType.phone,
                       );
                     });
                   },
-                  controller: _textEmailController,
-                  keyboardType: TextInputType.emailAddress,
+                  controller: _textMobileController,
+                  keyboardType: TextInputType.phone,
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -300,17 +312,18 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
+                  enable: false,
                   hintText: Translate.of(context).translate('input_address'),
                   errorText: _validAddress,
                   focusNode: _focusAddress,
                   textInputAction: TextInputAction.next,
-                  trailing: GestureDetector(
+                  /*trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
                       _textAddressController.clear();
                     },
                     child: const Icon(Icons.clear),
-                  ),
+                  ),*/
                   onSubmitted: (text) {
                     UtilOther.fieldFocusChange(
                       context,
@@ -337,18 +350,19 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
+                  enable: false,
                   hintText:
                       Translate.of(context).translate('input_channel_name'),
                   errorText: _validWebsite,
                   focusNode: _focusWebsite,
                   textInputAction: TextInputAction.next,
-                  trailing: GestureDetector(
+                  /*trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
                       _textWebsiteController.clear();
                     },
                     child: const Icon(Icons.clear),
-                  ),
+                  ),*/
                   onSubmitted: (text) {
                     UtilOther.fieldFocusChange(
                       context,

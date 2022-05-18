@@ -16,6 +16,7 @@ class AppTextInput extends StatelessWidget {
   final String? errorText;
   final int? maxLines;
   final bool? autofocus;
+  final bool? enable;
 
   const AppTextInput({
     Key? key,
@@ -32,7 +33,7 @@ class AppTextInput extends StatelessWidget {
     this.textInputAction,
     this.errorText,
     this.maxLines = 1,
-    this.autofocus = false,
+    this.autofocus = false, this.enable,
   }) : super(key: key);
 
   Widget _buildErrorLabel(BuildContext context) {
@@ -119,6 +120,7 @@ class AppTextInput extends StatelessWidget {
                   keyboardType: keyboardType,
                   textInputAction: textInputAction,
                   maxLines: maxLines,
+                  enabled: enable,
                   decoration: InputDecoration(
                     hintText: hintText,
                     suffixIcon: trailing,

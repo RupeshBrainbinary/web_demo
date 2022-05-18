@@ -9,16 +9,23 @@ class SearchCubit extends Cubit<dynamic> {
 
   Timer? _timer;
 
-  void onSearch(String keyword) async {
+  void onSearch(String keyword,List<ReviewModel> searchList) async {
     emit(null);
     _timer?.cancel();
     _timer = Timer(const Duration(milliseconds: 500), () {
-      _fetchData(keyword);
+      _fetchData(keyword,searchList);
     });
   }
 
-  void _fetchData(String keyword) async {
-    if (keyword.isNotEmpty) {
+  void _fetchData(String keyword,List<ReviewModel> searchList) async {
+    emit(searchList.where((item) {
+      return (item.clientName
+          .toUpperCase()
+          .contains(keyword.toUpperCase()) ||
+          item.clientName.toUpperCase().contains(keyword.toUpperCase()) ||
+          item.channelName.toUpperCase().contains(keyword.toUpperCase()));
+    }).toList());
+    /*if (keyword.isNotEmpty) {
       final result = await Api.onSearchData();
       if (result.success) {
         List<ReviewModel> list = result.data.map<ReviewModel>((item) {
@@ -32,6 +39,6 @@ class SearchCubit extends Cubit<dynamic> {
               item.channelName.toUpperCase().contains(keyword.toUpperCase()));
         }).toList());
       }
-    }
+    }*/
   }
 }

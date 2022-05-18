@@ -6,7 +6,9 @@ import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/screens/my_video/my_videos.dart';
+import 'package:web_demo/screens/privacy_policy/privacy_policy.dart';
 import 'package:web_demo/screens/profile_link/profile_link.dart';
+import 'package:web_demo/screens/termes_condition/terms_conditions.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -273,6 +275,32 @@ class _ProfileState extends State<Profile> {
                           title: Translate.of(context).translate('setting'),
                           onPressed: () {
                             _onNavigate(Routes.setting);
+                          },
+                          trailing: RotatedBox(
+                            quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                            child: const Icon(
+                              Icons.keyboard_arrow_right,
+                              textDirection: TextDirection.ltr,
+                            ),
+                          ),
+                        ),
+                        AppListTitle(
+                          title: Translate.of(context).translate('Terms of Use'),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsConditionsScreen()));
+                          },
+                          trailing: RotatedBox(
+                            quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                            child: const Icon(
+                              Icons.keyboard_arrow_right,
+                              textDirection: TextDirection.ltr,
+                            ),
+                          ),
+                        ),
+                        AppListTitle(
+                          title: Translate.of(context).translate('Privacy Policy'),
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()));
                           },
                           trailing: RotatedBox(
                             quarterTurns: UtilLanguage.isRTL() ? 2 : 0,

@@ -10,12 +10,13 @@ class AppReviewItem extends StatelessWidget {
     Key? key,
     this.item,
     this.onPressed,
-    required this.type,
+    required this.type, this.hideChannelName,
   }) : super(key: key);
 
   final ReviewModel? item;
   final ProductViewType type;
   final VoidCallback? onPressed;
+  final bool? hideChannelName;
   final currency = String.fromCharCode(0x24);
 
   @override
@@ -130,13 +131,13 @@ class AppReviewItem extends StatelessWidget {
                             ignoreGestures: true,
                             onRatingUpdate: (double value) {},
                           ),
-                          Container(
+                          hideChannelName == true ? SizedBox() : Container(
                             margin: const EdgeInsets.symmetric(horizontal: 10),
                             height: 15,
                             width: 1.5,
                             color: Theme.of(context).textTheme.caption!.color,
                           ),
-                          SizedBox(width: MediaQuery.of(context).size.width /4,
+                          hideChannelName == true ? SizedBox() : SizedBox(width: MediaQuery.of(context).size.width /4,
                             child: Text(
                               item!.clientName,overflow: TextOverflow.ellipsis,maxLines: 1,
                               style: Theme.of(context)

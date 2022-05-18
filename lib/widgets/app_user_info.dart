@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:web_demo/api/api.dart';
 import 'package:web_demo/models/model.dart';
-import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 enum AppUserType { basic, information }
@@ -42,7 +39,7 @@ class AppUserInfo extends StatelessWidget {
                     Container(
                       width: 14,
                       height: 14,
-                      decoration:  BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: Theme.of(context).iconTheme.color,
                       ),
@@ -135,8 +132,11 @@ class AppUserInfo extends StatelessWidget {
                       borderRadius: BorderRadius.circular(35),
                       child: CachedNetworkImage(
                         imageUrl: user!.avatar.toString(),
-                        errorWidget: (con,str,dy){
-                          return Icon(Icons.account_circle_rounded,size: 30);
+                        errorWidget: (con, str, dy) {
+                          return Image.asset(
+                            "assets/images/default_image.jpeg",
+                            fit: BoxFit.cover,
+                          );
                         },
                       ),
                     ),
@@ -165,19 +165,28 @@ class AppUserInfo extends StatelessWidget {
                     Text(
                       user!.name,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle2!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       user!.chanel,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       user!.location,
                       maxLines: 1,
-                      style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                      style: Theme.of(context)
+                          .textTheme
+                          .caption!
+                          .copyWith(fontFamily: "ProximaNova"),
                     ),
                   ],
                 ),
@@ -189,7 +198,7 @@ class AppUserInfo extends StatelessWidget {
                   //   width: 12,
                   // ),
 
-            /*      ElevatedButton(
+                  /*      ElevatedButton(
                       onPressed: ()  {
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
@@ -234,14 +243,15 @@ class AppUserInfo extends StatelessWidget {
               children: <Widget>[
                 Text(
                   user!.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle1!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 Text(
                   user!.chanel,
-                  style: Theme.of(context).textTheme.caption!.copyWith(fontFamily: "ProximaNova"),
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption!
+                      .copyWith(fontFamily: "ProximaNova"),
                 )
               ],
             )

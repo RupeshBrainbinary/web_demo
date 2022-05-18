@@ -89,9 +89,7 @@ class _AppState extends State<App> {
                               if (UtilPreferences.getString(
                                       Preferences.clientId) ==
                                   null) {
-                                return SignIn(from: 'intro',onLogin: (){
-                                  setState(() {});
-                                },);
+                                return SignIn(from: 'intro');
                               }
                               return const AppContainer();
                             }

@@ -111,13 +111,9 @@ class Routes {
 
       case profileReviewer:
         final map = settings.arguments as Map;
-        final id = map['id'] as int;
-        final name = map['name'] as String;
-        final image = map['image'] as String;
-        final ch = map['ch'] as String;
         final slug = map['slug'] as String;
         return MaterialPageRoute(builder: (context) {
-          return ProfileReviewer(id: id, name: name, image: image,ch: ch,slug: slug);
+          return ProfileReviewer(slug: slug);
         });
 
       case profileCompany:

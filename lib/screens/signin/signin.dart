@@ -133,7 +133,7 @@ class _SignInState extends State<SignIn> {
                           height: 50,
                         ),
                         AppTextInput(
-                          hintText: Translate.of(context).translate('account'),
+                          hintText: Translate.of(context).translate('Username'),
                           errorText: _errorID,
                           controller: _textIDController,
                           focusNode: _focusID,

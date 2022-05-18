@@ -7,6 +7,7 @@ import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/screen_models.dart';
 import 'package:web_demo/models/screen_models/search_history_real_estate_page_model.dart';
+import 'package:web_demo/repository/category_repository.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_result_real_estate_list.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_suggest_real_estate_list.dart';
@@ -25,12 +26,15 @@ class SearchHistoryRealEstate extends StatefulWidget {
 class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
   RealEstateSearchDelegate? _delegate;
   SearchHistoryRealEstatePageModel? _historyPage;
+  bool _loader = false;
+  List<ReviewModel> searchList = [];
 
   @override
   void initState() {
     super.initState();
-    _delegate = RealEstateSearchDelegate(onProductDetail: _onProductDetail);
+    //_delegate = RealEstateSearchDelegate(onProductDetail: _onProductDetail);
     _loadData();
+    _getAllSearchData();
   }
 
   @override
@@ -70,7 +74,8 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
   ///On navigate product detail
   Future<void> _onProductDetail(ReviewModel item) async {
     await player.reset();
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
       player.reset();
     });
   }
@@ -160,15 +165,44 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
     ).toList();
   }
 
+  Future<void> _getAllSearchData() async {
+    _loader = true;
+    setState(() {});
+    searchList = [];
+    final result = await Api.onSearchData();
+    if (result.success) {
+      List<ReviewModel> list = result.data.map<ReviewModel>((item) {
+        return ReviewModel.fromJson(item);
+      }).toList();
+      searchList.addAll(list);
+    }
+    CategoryPageModel? categoryPageModel =
+        await CategoryRepository.loadCategories();
+    if (categoryPageModel != null) {
+      for (var cat in categoryPageModel.categories) {
+        ResultApiModel result2 = await Api.getProduct(cat.id);
+        if (result2.data != null) {
+          final List<ReviewModel> list = result2.data
+              .map<ReviewModel>((e) => ReviewModel.fromJson(e))
+              .toList();
+          searchList.addAll(list);
+        }
+      }
+    }
+    _delegate = RealEstateSearchDelegate(onProductDetail: _onProductDetail,searchList: searchList);
+    _loader = false;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:  _loader ? null : AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         leading: IconButton(
           icon: AnimatedIcon(
             icon: AnimatedIcons.close_menu,
-            color:Theme.of(context).iconTheme.color,
+            color: Theme.of(context).iconTheme.color,
             progress: _delegate!.transitionAnimation,
           ),
           onPressed: () {
@@ -180,20 +214,27 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
           Translate.of(context).translate('search_title'),
           style: Theme.of(context)
               .textTheme
-              .headline6!.copyWith(fontFamily: "ProximaNova"),
+              .headline6!
+              .copyWith(fontFamily: "ProximaNova"),
         ),
         actions: <Widget>[
           IconButton(
-            icon:  Icon(Icons.search,color: Theme.of(context).iconTheme.color,),
+            icon: Icon(
+              Icons.search,
+              color: Theme.of(context).iconTheme.color,
+            ),
             onPressed: _onSearch,
           ),
           IconButton(
-            icon:  Icon(Icons.refresh,color: Theme.of(context).iconTheme.color,),
+            icon: Icon(
+              Icons.refresh,
+              color: Theme.of(context).iconTheme.color,
+            ),
             onPressed: _loadData,
           ),
         ],
       ),
-      body: SafeArea(
+      body: _loader ? Center(child: CircularProgressIndicator()) : SafeArea(
         top: false,
         bottom: false,
         child: ListView(
@@ -281,11 +322,13 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
 
 class RealEstateSearchDelegate extends SearchDelegate {
   final Function(ReviewModel) onProductDetail;
+  final List<ReviewModel> searchList;
 
   Timer? timer;
 
   RealEstateSearchDelegate({
     required this.onProductDetail,
+    required this.searchList,
   });
 
   @override
@@ -304,7 +347,7 @@ class RealEstateSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    AppBloc.searchCubit.onSearch(query);
+    AppBloc.searchCubit.onSearch(query,searchList);
     return SuggestionList(
       query: query,
       onProductDetail: onProductDetail,

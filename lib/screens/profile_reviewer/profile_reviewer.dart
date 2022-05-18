@@ -16,12 +16,12 @@ import 'package:web_demo/widgets/app_reviewer_info.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class ProfileReviewer extends StatefulWidget {
-  const ProfileReviewer({Key? key, required this.id, required this.name,required this.image,required this.ch,required this.slug})
-      : super(key: key);
-  final int id;
+  const ProfileReviewer({Key? key, required this.slug}) : super(key: key);
+
+  /*final int id;
   final String name;
   final String image;
-  final String ch;
+  final String ch;*/
   final String slug;
 
   @override
@@ -35,7 +35,7 @@ class _ProfileReviewerState extends State<ProfileReviewer> {
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
-bool dataGet= false;
+  bool dataGet = false;
   bool _favorite = false;
   ProductDetailRealEstatePageModel? _detailPage;
 
@@ -72,7 +72,8 @@ bool dataGet= false;
   ///On navigate product detail
   Future<void> _onProductDetail(ReviewModel item) async {
     await player.reset();
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
       player.reset();
     });
   }
@@ -204,18 +205,20 @@ bool dataGet= false;
   void _onNavigate(String route) {
     Navigator.pushNamed(context, route);
   }
-bool loder = false;
+
+  bool loder = false;
+
   void _loadData() async {
-    loder= true;
-    _reviewersProfile = await Api.getReviewerDetail(widget.id);
-    print(_reviewersProfile);
-    print(_reviewersProfile);
+    loder = true;
+    setState(() {});
+    print(widget.slug);
+    reviewerProfileModel = await Api.reviewersProfile(widget.slug);
+    _reviewersProfile =
+        await Api.getReviewerDetail(int.parse(reviewerProfileModel!.id ?? '0'));
     _reviewsList =
         await Api.getVideosByReviewer(int.parse(_reviewersProfile!.id));
-    reviewerProfileModel = await Api.reviewersProfile(
-        _reviewersProfile!.slug.toString() == null
-            ? ""
-            : _reviewersProfile!.slug.toString());
+    print(_reviewersProfile);
+    print(_reviewersProfile);
     loder = false;
     setState(() {});
 
@@ -266,6 +269,7 @@ bool loder = false;
             },
             item: item,
             type: ProductViewType.small,
+            hideChannelName: true,
           ),
         );
       },
@@ -301,317 +305,349 @@ bool loder = false;
                 .titleMedium!
                 .copyWith(fontFamily: "ProximaNova")),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: loder == true?Center(child: CircularProgressIndicator(),): Column(
-            children: <Widget>[
-              Container(
+      body: loder == true
+          ? Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 180,
+                      child: CachedNetworkImage(
+                        imageUrl: reviewerProfileModel!.bannerImg.toString(),
+                        height: 180,
+                        fit: BoxFit.cover,
+                        progressIndicatorBuilder: (con,str,progress){
+                          return Center(
+                            child: CircularProgressIndicator(value: progress.progress),
+                          );
+                        },
+                        errorWidget: (con, str, dy) {
+                          return Image.asset(
+                            'assets/images/default_image.jpeg',
+                            height: 180,
+                          );
+                        },
+                      ),
+                    ),
+                    /*Container(
                 height: 180,
                 decoration:  BoxDecoration(
                   // shape: BoxShape.circle,
                   color: Colors.white,
                   image: DecorationImage(
-                    image:  CachedNetworkImageProvider(_reviewersProfile!.bannerImg),
+                    image:  CachedNetworkImageProvider(),
                     fit: BoxFit.cover,
                   ),
                 ),
                 // padding: const EdgeInsets.all(8),
                 // margin: const EdgeInsets.symmetric(horizontal: 8),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(8),
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).cardColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).dividerColor.withOpacity(
-                            .05,
+              ),*/
+                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Theme.of(context).cardColor,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context).dividerColor.withOpacity(
+                                  .05,
+                                ),
+                            spreadRadius: 4,
+                            blurRadius: 4,
+                            offset: const Offset(
+                              0,
+                              2,
+                            ), // changes position of shadow
                           ),
-                      spreadRadius: 4,
-                      blurRadius: 4,
-                      offset: const Offset(
-                        0,
-                        2,
-                      ), // changes position of shadow
+                        ],
+                      ),
+                      child: AppReviewerInfo(
+                        image: reviewerProfileModel!.avatar ?? '',
+                        name: reviewerProfileModel!.profileStats!.displayName ??
+                            '',
+                        user: _reviewersProfile,
+                        type: AppReviewerType.information,
+                        ch: reviewerProfileModel!.profileStats!.chanel ?? '',
+                        slug: widget.slug,
+                        onPressed: () {},
+                      ),
                     ),
-                  ],
-                ),
-                child: AppReviewerInfo(image: widget.image,
-                  name: widget.name,
-                  user: _reviewersProfile,
-                  type: AppReviewerType.information,ch: widget.ch,slug: widget.slug,
-                  onPressed: () {},
-                ),
-              ),
-              const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-              Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
-                child: AppProfilePerformance(
-                    reviewerProfileModel!.subscribers!.length.toString(),
-                    reviewerProfileModel!.profileStats!.totalVideos.toString(),
-                    reviewerProfileModel!.profileStats!.replays,
-                    user: _reviewersProfile),
-              ),
-              const SizedBox(height: 16),
-              // Padding(
-              //   padding: const EdgeInsets.all(8.0),
-              //   child: Row(
-              //     children: <Widget>[
-              //       Expanded(
-              //         child: Row(
-              //           children: [
-              //             AppTag(
-              //               "${_detailPage!.product.rate}",
-              //               type: TagType.rate,
-              //               onPressed: _onReview,
-              //             ),
-              //             const SizedBox(width: 4),
-              //             InkWell(
-              //               onTap: _onReview,
-              //               child: RatingBar.builder(
-              //                 initialRating: _detailPage!.product.rate,
-              //                 minRating: 1,
-              //                 allowHalfRating: true,
-              //                 unratedColor: Colors.amber.withAlpha(100),
-              //                 itemCount: 5,
-              //                 itemSize: 14.0,
-              //                 itemBuilder: (context, _) => const Icon(
-              //                   Icons.star,
-              //                   color: Colors.amber,
-              //                 ),
-              //                 ignoreGestures: true,
-              //                 onRatingUpdate: (double value) {},
-              //               ),
-              //             ),
-              //             const SizedBox(width: 8),
-              //             //add rating
-              //             Expanded(
-              //               child: Column(
-              //                 crossAxisAlignment:
-              //                     CrossAxisAlignment.start,
-              //                 children: [
-              //                   const SizedBox(width: 4),
-              //                   Text(
-              //                     '(${_detailPage!.product.numRate} Views)',
-              //                     style:
-              //                         Theme.of(context).textTheme.caption,
-              //                   ),
-              //                 ],
-              //               ),
-              //             )
-              //           ],
-              //         ),
-              //       ),
-              //       Row(
-              //         children: [
-              //           InkWell(
-              //             onTap: _onFavorite,
-              //             child: Container(
-              //               width: 40,
-              //               height: 40,
-              //               decoration: BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Theme.of(context)
-              //                     .primaryColor
-              //                     .withOpacity(.8),
-              //               ),
-              //               child: const Icon(
-              //                 Icons.thumb_up_alt,
-              //                 color: Colors.white,
-              //                 size: 20,
-              //               ),
-              //             ),
-              //           ),
-              //           const SizedBox(width: 8),
-              //           InkWell(
-              //             onTap:
-              //                 _onShare, // _phoneAction(_detailPage!.product.phone);
-              //             child: Container(
-              //               width: 40,
-              //               height: 40,
-              //               decoration: BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Theme.of(context)
-              //                     .primaryColor
-              //                     .withOpacity(.8),
-              //               ),
-              //               child: const Icon(
-              //                 Icons.share,
-              //                 color: Colors.white,
-              //                 size: 20,
-              //               ),
-              //             ),
-              //           ),
-              //           const SizedBox(width: 8),
-              //           InkWell(
-              //             onTap: _onReview,
-              //             // onTap: () {
-              //             //   _phoneAction(_detailPage!.product.phone);
-              //             // },
-              //             child: Container(
-              //               width: 40,
-              //               height: 40,
-              //               decoration: BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Theme.of(context)
-              //                     .primaryColor
-              //                     .withOpacity(.8),
-              //               ),
-              //               child: const Icon(
-              //                 Icons.message,
-              //                 color: Colors.white,
-              //                 size: 20,
-              //               ),
-              //             ),
-              //           ),
-              //           const SizedBox(width: 8),
-              //           InkWell(
-              //             onTap: () {
-              //               _phoneAction(_detailPage!.product.phone);
-              //             },
-              //             child: Container(
-              //               width: 40,
-              //               height: 40,
-              //               decoration: BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Theme.of(context)
-              //                     .primaryColor
-              //                     .withOpacity(.8),
-              //               ),
-              //               child: const Icon(
-              //                 Icons.report,
-              //                 color: Colors.white,
-              //                 size: 20,
-              //               ),
-              //             ),
-              //           ),
-              //         ],
-              //       )
-              //     ],
-              //   ),
-              // ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16, right: 16),
+                      child: AppProfilePerformance(
+                          reviewerProfileModel!.subscribers!.length.toString(),
+                          reviewerProfileModel!.profileStats!.totalVideos
+                              .toString(),
+                          reviewerProfileModel!.profileStats!.replays,
+                          user: _reviewersProfile),
+                    ),
+                    const SizedBox(height: 16),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Row(
+                    //     children: <Widget>[
+                    //       Expanded(
+                    //         child: Row(
+                    //           children: [
+                    //             AppTag(
+                    //               "${_detailPage!.product.rate}",
+                    //               type: TagType.rate,
+                    //               onPressed: _onReview,
+                    //             ),
+                    //             const SizedBox(width: 4),
+                    //             InkWell(
+                    //               onTap: _onReview,
+                    //               child: RatingBar.builder(
+                    //                 initialRating: _detailPage!.product.rate,
+                    //                 minRating: 1,
+                    //                 allowHalfRating: true,
+                    //                 unratedColor: Colors.amber.withAlpha(100),
+                    //                 itemCount: 5,
+                    //                 itemSize: 14.0,
+                    //                 itemBuilder: (context, _) => const Icon(
+                    //                   Icons.star,
+                    //                   color: Colors.amber,
+                    //                 ),
+                    //                 ignoreGestures: true,
+                    //                 onRatingUpdate: (double value) {},
+                    //               ),
+                    //             ),
+                    //             const SizedBox(width: 8),
+                    //             //add rating
+                    //             Expanded(
+                    //               child: Column(
+                    //                 crossAxisAlignment:
+                    //                     CrossAxisAlignment.start,
+                    //                 children: [
+                    //                   const SizedBox(width: 4),
+                    //                   Text(
+                    //                     '(${_detailPage!.product.numRate} Views)',
+                    //                     style:
+                    //                         Theme.of(context).textTheme.caption,
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             )
+                    //           ],
+                    //         ),
+                    //       ),
+                    //       Row(
+                    //         children: [
+                    //           InkWell(
+                    //             onTap: _onFavorite,
+                    //             child: Container(
+                    //               width: 40,
+                    //               height: 40,
+                    //               decoration: BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Theme.of(context)
+                    //                     .primaryColor
+                    //                     .withOpacity(.8),
+                    //               ),
+                    //               child: const Icon(
+                    //                 Icons.thumb_up_alt,
+                    //                 color: Colors.white,
+                    //                 size: 20,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           const SizedBox(width: 8),
+                    //           InkWell(
+                    //             onTap:
+                    //                 _onShare, // _phoneAction(_detailPage!.product.phone);
+                    //             child: Container(
+                    //               width: 40,
+                    //               height: 40,
+                    //               decoration: BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Theme.of(context)
+                    //                     .primaryColor
+                    //                     .withOpacity(.8),
+                    //               ),
+                    //               child: const Icon(
+                    //                 Icons.share,
+                    //                 color: Colors.white,
+                    //                 size: 20,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           const SizedBox(width: 8),
+                    //           InkWell(
+                    //             onTap: _onReview,
+                    //             // onTap: () {
+                    //             //   _phoneAction(_detailPage!.product.phone);
+                    //             // },
+                    //             child: Container(
+                    //               width: 40,
+                    //               height: 40,
+                    //               decoration: BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Theme.of(context)
+                    //                     .primaryColor
+                    //                     .withOpacity(.8),
+                    //               ),
+                    //               child: const Icon(
+                    //                 Icons.message,
+                    //                 color: Colors.white,
+                    //                 size: 20,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //           const SizedBox(width: 8),
+                    //           InkWell(
+                    //             onTap: () {
+                    //               _phoneAction(_detailPage!.product.phone);
+                    //             },
+                    //             child: Container(
+                    //               width: 40,
+                    //               height: 40,
+                    //               decoration: BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Theme.of(context)
+                    //                     .primaryColor
+                    //                     .withOpacity(.8),
+                    //               ),
+                    //               child: const Icon(
+                    //                 Icons.report,
+                    //                 color: Colors.white,
+                    //                 size: 20,
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       )
+                    //     ],
+                    //   ),
+                    // ),
 
-              // const SizedBox(height: 8),
-              // const Divider(),
-              // Column(
-              //   children: [
-              //     const SizedBox(height: 8),
-              //     Text(
-              //       Translate.of(context).translate('facilities'),
-              //       style: Theme.of(context)
-              //           .textTheme
-              //           .headline6!
-              //           .copyWith(fontWeight: FontWeight.bold),
-              //     ),
-              //   ],
-              // ),
+                    // const SizedBox(height: 8),
+                    // const Divider(),
+                    // Column(
+                    //   children: [
+                    //     const SizedBox(height: 8),
+                    //     Text(
+                    //       Translate.of(context).translate('facilities'),
+                    //       style: Theme.of(context)
+                    //           .textTheme
+                    //           .headline6!
+                    //           .copyWith(fontWeight: FontWeight.bold),
+                    //     ),
+                    //   ],
+                    // ),
 
-              // Builder(builder: (context) {
-              //   return Wrap(
-              //     spacing: 8,
-              //     runSpacing: 8,
-              //     children: _detailPage!.product.service.map((item) {
-              //       return IntrinsicWidth(
-              //         child: Row(
-              //           children: [
-              //             Container(
-              //               width: 32,
-              //               height: 16,
-              //               decoration: BoxDecoration(
-              //                 shape: BoxShape.circle,
-              //                 color: Theme.of(context).cardColor,
-              //               ),
-              //               child: Icon(
-              //                 UtilIcon.getIconData(item.icon),
-              //                 size: 14,
-              //                 color:
-              //                     Theme.of(context).colorScheme.secondary,
-              //               ),
-              //             ),
-              //             const SizedBox(width: 8),
-              //             Text(
-              //               item.title,
-              //               style: Theme.of(context)
-              //                   .textTheme
-              //                   .caption!
-              //                   .copyWith(
-              //                       color: Theme.of(context)
-              //                           .colorScheme
-              //                           .secondary),
-              //             )
-              //           ],
-              //         ),
-              //       );
-              //     }).toList(),
-              //   );
-              // }),
-              // const Divider(),
-              // const SizedBox(height: 8),
-              // Text(
-              //   Translate.of(context).translate('description'),
-              //   style: Theme.of(context)
-              //       .textTheme
-              //       .headline6!
-              //       .copyWith(fontWeight: FontWeight.bold),
-              // ),
-              // // const SizedBox(height: 8),
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: Text(
-              //     _detailPage!.product.description,
-              //     style: Theme.of(context)
-              //         .textTheme
-              //         .bodyText1!
-              //         .copyWith(height: 1.3),
-              //   ),
-              // ),
-              // const SizedBox(height: 16),
-              // SizedBox(
-              //   height: 180,
-              //   child: GoogleMap(
-              //     initialCameraPosition: _initPosition,
-              //     myLocationButtonEnabled: false,
-              //     markers: Set<Marker>.of(_markers.values),
-              //   ),
-              // ),
-              const Divider(),
-              const SizedBox(height: 16),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    Translate.of(context).translate('recorded_review_clips'),
-                    style: Theme.of(context).textTheme.headline6!.copyWith(
-                        fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    Translate.of(context).translate('let_find_more_location'),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2!
-                        .copyWith(fontFamily: "ProximaNova"),
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ),
+                    // Builder(builder: (context) {
+                    //   return Wrap(
+                    //     spacing: 8,
+                    //     runSpacing: 8,
+                    //     children: _detailPage!.product.service.map((item) {
+                    //       return IntrinsicWidth(
+                    //         child: Row(
+                    //           children: [
+                    //             Container(
+                    //               width: 32,
+                    //               height: 16,
+                    //               decoration: BoxDecoration(
+                    //                 shape: BoxShape.circle,
+                    //                 color: Theme.of(context).cardColor,
+                    //               ),
+                    //               child: Icon(
+                    //                 UtilIcon.getIconData(item.icon),
+                    //                 size: 14,
+                    //                 color:
+                    //                     Theme.of(context).colorScheme.secondary,
+                    //               ),
+                    //             ),
+                    //             const SizedBox(width: 8),
+                    //             Text(
+                    //               item.title,
+                    //               style: Theme.of(context)
+                    //                   .textTheme
+                    //                   .caption!
+                    //                   .copyWith(
+                    //                       color: Theme.of(context)
+                    //                           .colorScheme
+                    //                           .secondary),
+                    //             )
+                    //           ],
+                    //         ),
+                    //       );
+                    //     }).toList(),
+                    //   );
+                    // }),
+                    // const Divider(),
+                    // const SizedBox(height: 8),
+                    // Text(
+                    //   Translate.of(context).translate('description'),
+                    //   style: Theme.of(context)
+                    //       .textTheme
+                    //       .headline6!
+                    //       .copyWith(fontWeight: FontWeight.bold),
+                    // ),
+                    // // const SizedBox(height: 8),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(16.0),
+                    //   child: Text(
+                    //     _detailPage!.product.description,
+                    //     style: Theme.of(context)
+                    //         .textTheme
+                    //         .bodyText1!
+                    //         .copyWith(height: 1.3),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 16),
+                    // SizedBox(
+                    //   height: 180,
+                    //   child: GoogleMap(
+                    //     initialCameraPosition: _initPosition,
+                    //     myLocationButtonEnabled: false,
+                    //     markers: Set<Marker>.of(_markers.values),
+                    //   ),
+                    // ),
+                    const Divider(),
+                    const SizedBox(height: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text(
+                          Translate.of(context)
+                              .translate('recorded_review_clips'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "ProximaNova"),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16.0),
+                        child: Text(
+                          Translate.of(context)
+                              .translate('let_find_more_location'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(fontFamily: "ProximaNova"),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ),
 
-              const SizedBox(height: 8),
-              if (_reviewsList.isEmpty)
-                const SizedBox()
-              else
-                _buildRelatedVideos(),
-              /*const SizedBox(height: 8),
+                    const SizedBox(height: 8),
+                    if (_reviewsList.isEmpty)
+                      const SizedBox()
+                    else
+                      _buildRelatedVideos(),
+                    /*const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ListView.separated(
@@ -640,129 +676,129 @@ bool loder = false;
                     ),
                   ),*/
 
-              // Column(
-              //   children: <Widget>[
-              //     AppListTitle(
-              //       title: Translate.of(context).translate(
-              //         'edit_profile',
-              //       ),
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         _onNavigate(Routes.editProfile);
-              //       },
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context).translate(
-              //         'change_password',
-              //       ),
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         _onNavigate(Routes.changePassword);
-              //       },
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context).translate(
-              //         'Review History',
-              //       ),
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         _onNavigate(Routes.changePassword);
-              //       },
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context).translate(
-              //         'Profile link',
-              //       ),
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //       onPressed: () {
-              //         _onNavigate(Routes.changePassword);
-              //       },
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context)
-              //           .translate('Monetization plan'),
-              //       onPressed: () {
-              //         _onNavigate(Routes.contactUs);
-              //       },
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context).translate('Subscribers'),
-              //       onPressed: () {
-              //         _onNavigate(Routes.contactUs);
-              //       },
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //     ),
-              //     AppListTitle(
-              //       title:
-              //           Translate.of(context).translate('Submit ticket'),
-              //       onPressed: () {
-              //         _onNavigate(Routes.aboutUs);
-              //       },
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //     ),
-              //     AppListTitle(
-              //       title: Translate.of(context).translate('setting'),
-              //       onPressed: () {
-              //         _onNavigate(Routes.setting);
-              //       },
-              //       trailing: RotatedBox(
-              //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
-              //         child: const Icon(
-              //           Icons.keyboard_arrow_right,
-              //           textDirection: TextDirection.ltr,
-              //         ),
-              //       ),
-              //       border: false,
-              //     ),
-              //   ],
-              // )
-            ],
-          ),
-        ),
-      ),
+                    // Column(
+                    //   children: <Widget>[
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate(
+                    //         'edit_profile',
+                    //       ),
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.editProfile);
+                    //       },
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate(
+                    //         'change_password',
+                    //       ),
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.changePassword);
+                    //       },
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate(
+                    //         'Review History',
+                    //       ),
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.changePassword);
+                    //       },
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate(
+                    //         'Profile link',
+                    //       ),
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.changePassword);
+                    //       },
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context)
+                    //           .translate('Monetization plan'),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.contactUs);
+                    //       },
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate('Subscribers'),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.contactUs);
+                    //       },
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     AppListTitle(
+                    //       title:
+                    //           Translate.of(context).translate('Submit ticket'),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.aboutUs);
+                    //       },
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     AppListTitle(
+                    //       title: Translate.of(context).translate('setting'),
+                    //       onPressed: () {
+                    //         _onNavigate(Routes.setting);
+                    //       },
+                    //       trailing: RotatedBox(
+                    //         quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
+                    //         child: const Icon(
+                    //           Icons.keyboard_arrow_right,
+                    //           textDirection: TextDirection.ltr,
+                    //         ),
+                    //       ),
+                    //       border: false,
+                    //     ),
+                    //   ],
+                    // )
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

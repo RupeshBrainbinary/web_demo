@@ -51,7 +51,7 @@ class _ChannelsViewState extends State<ChannelsView> {
 
   ///On navigate channel detail
   void _onChannelDetail(ChannelModel item) {
-    Navigator.pushNamed(context, Routes.profileReviewer, arguments: {'id': item.id,'name': item.name,'image':item.avatar,'ch':item.channelName,'slug':item.slug});
+    Navigator.pushNamed(context, Routes.profileReviewer, arguments: {'slug':item.slug});
     //Navigator.pushNamed(context, Routes.channelDetail, arguments: item);
   }
 

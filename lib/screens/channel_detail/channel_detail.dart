@@ -95,11 +95,11 @@ class _ChannelDetailState extends State<ChannelDetail> {
   }
 
   ///On Company profile
-  void _onReviewerProfile(id, String name) {
+  void _onReviewerProfile(id, String name,String slug) {
     Navigator.pushNamed(
       context,
       Routes.profileReviewer,
-      arguments: {'id': id, 'name': name}, // 'Company Profile',
+      arguments: {'slug': slug}, // 'Company Profile',
     );
   }
 
@@ -458,7 +458,7 @@ class _ChannelDetailState extends State<ChannelDetail> {
                     InkWell(
                       onTap: () => {
                         _onReviewerProfile(_detailPage!.review.id,
-                            _detailPage!.review.clientName)
+                            _detailPage!.review.clientName,_detailPage!.review.profileSlug)
                       },
                       // onTap: () {
                       //   _phoneAction(_detailPage!.product.phone);
