@@ -71,6 +71,7 @@ dependencies:
   flutter_inappwebview: ^5.4.3+7
   permission_handler: ^9.2.0
   http:
+  mini_video_player:
 
 dev_dependencies:
   flutter_test:

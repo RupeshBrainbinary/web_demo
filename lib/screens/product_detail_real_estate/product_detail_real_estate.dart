@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mini_video_player/mini_video_player.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -58,6 +59,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   CommentRes? _commentRes;
   bool isDispose = false;
   bool isShow = false;
+  MiniVideoPlayer? videoPlayer;
+  MiniVideoPlayerController? viewPlayerController;
 
   @override
   void initState() {
@@ -75,6 +78,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     player.reset();
     player = FijkPlayer();
     _timer?.cancel();
+    viewPlayerController!.dealloc();
     super.dispose();
   }
 
@@ -123,6 +127,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       await setPlayerValue();
       await Api.getIncreaseCount(_detailPage!.review.videoSlug);
       _detailPage?.review.views++;
+
       /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '');
       await Future.wait([
@@ -136,6 +141,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         hideControlsTimer: const Duration(seconds: 1),
       );*/
     }
+
     setState(() {});
   }
 
@@ -938,9 +944,17 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       ),
     );
   }
+  void onViewPlayerCreated(viewPlayerController) {
+    this.viewPlayerController = viewPlayerController;
+
+    this.viewPlayerController!.loadUrl(
+        _detailPage?.review.video ?? '');
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    viewPlayerController!.pause();
     return Scaffold(
       /*appBar: AppBar(
         title: Text(widget.review?.comment ?? ""),
@@ -950,20 +964,17 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           children: [
             Stack(
               children: [
-                VisibilityDetector(
-                  onVisibilityChanged: (VisibilityInfo info) {
-                    if (info.visibleFraction == 0) {
-                      player.pause();
-                    }
-                  },
-                  key: Key(_detailPage?.review.video ?? ''),
-                  child: FijkView(
-                    player: player,
-                    panelBuilder: fijkPanel2Builder(snapShot: true),
-                    fsFit: FijkFit.cover,
-                    color: Colors.black,
-                    fit: FijkFit.fitHeight,
-                    height: 200,
+                Container(
+                  height: MediaQuery.of(context).size.height/2.5,
+                  width: MediaQuery.of(context).size.width,
+                  child: VisibilityDetector(
+                    onVisibilityChanged: (VisibilityInfo info) {
+                      if (info.visibleFraction == 0) {
+                        player.pause();
+                      }
+                    },
+                    key: Key(_detailPage?.review.video ?? ''),
+                    child: videoPlayer!,
                   ),
                 ),
                 Positioned(

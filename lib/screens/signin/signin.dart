@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/repository/user.dart';
 import 'package:web_demo/screens/home/home.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/common_toast.dart';
@@ -58,7 +59,7 @@ class _SignInState extends State<SignIn> {
   }
 
   ///On login
-  void _login() {
+  void _login()async {
     isLoading = true;
     UtilOther.hiddenKeyboard(context);
     setState(() {
@@ -66,25 +67,53 @@ class _SignInState extends State<SignIn> {
       _errorPass = UtilValidator.validate(_textPassController.text);
     });
     if (_errorID == null && _errorPass == null) {
-      final value = AppBloc.loginCubit.onLogin(
-          username: _textIDController.text,
-          password: _textPassController.text,
-          context: context);
-      if (value == null) {
-        isLoading = false;
-        setState(() {
 
-        });
-        CommonToast().toats(context, "signInError");
-      } else {
+      final result = await UserRepository.login(
+        username:  _textIDController.text,
+        password:_textPassController.text,
+      );
+      if(result !=null){
+        await UtilPreferences.setString(
+          Preferences.clientId,
+          result.id.toString(),
+
+        );
+        await AppBloc.authenticateCubit.onSave(result);
         isLoading = false;
         setState(() {
 
         });
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => const AppContainer()),
-            (route) => false);
+                (route) => false);
+      }else{
+        isLoading = false;
+        setState(() {
+
+        });
+        CommonToast().toats(context, "signInError");
       }
+
+
+      // final value = AppBloc.loginCubit.onLogin(
+      //     username: _textIDController.text,
+      //     password: _textPassController.text,
+      //     context: context);
+      // if (value == null) {
+      //   isLoading = false;
+      //   setState(() {
+      //
+      //   });
+      //   CommonToast().toats(context, "signInError");
+      // } else {
+      //   isLoading = false;
+      //   setState(() {
+      //
+      //   });
+      //   Navigator.of(context).pushAndRemoveUntil(
+      //       MaterialPageRoute(builder: (context) => const AppContainer()),
+      //       (route) => false);
+      // }
     } else {
       isLoading = false;
       setState(() {});
