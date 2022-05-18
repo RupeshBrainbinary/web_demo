@@ -4,11 +4,9 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mini_video_player/mini_video_player.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -60,7 +58,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   bool isDispose = false;
   bool isShow = false;
 
-  MiniVideoPlayerController? viewPlayerController;
+  //MiniVideoPlayerController? viewPlayerController;
 
   @override
   void initState() {
@@ -78,7 +76,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     player.reset();
     player = FijkPlayer();
     _timer?.cancel();
-    viewPlayerController!.dealloc();
+    //viewPlayerController!.dealloc();
     super.dispose();
   }
 
@@ -769,10 +767,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                             timeInSecForIosWeb: 1 // duration
                             );
                       },
-                      child: Text( subscribedList
+                      child: Text( (_commentRes != null && subscribedList
                           .where((element) =>
                       element.name == _commentRes!.chanel!.name)
-                          .isNotEmpty ? 'Subscribed' : 'Subscribe',
+                          .isNotEmpty) ? 'Subscribed' : 'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontFamily: "ProximaNova", color: Colors.white))),
                 ],
@@ -945,18 +943,18 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }
 
   void onViewPlayerCreated(viewPlayerController) {
-    this.viewPlayerController = viewPlayerController;
+    /*this.viewPlayerController = viewPlayerController;
 
-    this.viewPlayerController!.loadUrl(_detailPage?.review.video ?? '');
+    this.viewPlayerController!.loadUrl(_detailPage?.review.video ?? '');*/
   }
 
   @override
   Widget build(BuildContext context) {
-    MiniVideoPlayer videoPlayer = MiniVideoPlayer(
+    /*MiniVideoPlayer videoPlayer = MiniVideoPlayer(
         onCreated: onViewPlayerCreated,
         hiddenControlView: true,
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height/2.5);
+        height: MediaQuery.of(context).size.height/2.5);*/
     return Scaffold(
       /*appBar: AppBar(
         title: Text(widget.review?.comment ?? ""),
@@ -966,17 +964,20 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           children: [
             Stack(
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height / 2.5,
-                  width: MediaQuery.of(context).size.width,
-                  child: VisibilityDetector(
-                    onVisibilityChanged: (VisibilityInfo info) {
-                      if (info.visibleFraction == 0) {
-                        player.pause();
-                      }
-                    },
-                    key: Key(_detailPage?.review.video ?? ''),
-                    child: videoPlayer,
+                VisibilityDetector(
+                  onVisibilityChanged: (VisibilityInfo info) {
+                    if (info.visibleFraction == 0) {
+                      player.pause();
+                    }
+                  },
+                  key: Key(_detailPage?.review.video ?? ''),
+                  child: FijkView(
+                    player: player,
+                    panelBuilder: fijkPanel2Builder(snapShot: true),
+                    fsFit: FijkFit.cover,
+                    color: Colors.black,
+                    fit: FijkFit.fitHeight,
+                    height: 200,
                   ),
                 ),
                 Positioned(

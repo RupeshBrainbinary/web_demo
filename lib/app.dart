@@ -83,7 +83,11 @@ class _AppState extends State<App> {
                         },
                         child: BlocBuilder<ApplicationCubit, ApplicationState>(
                           builder: (context, application) {
-                            //return ReviewWebView();
+                            /*return ReviewWebView(
+                             rate: 3,
+                             comment: 'test',
+                             slug: 'test_73830',
+                            );*/
 
                             if (application == ApplicationState.completed) {
                               if (UtilPreferences.getString(
