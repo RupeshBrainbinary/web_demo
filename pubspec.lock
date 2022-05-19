@@ -984,7 +984,7 @@ packages:
       name: visibility_detector
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "0.2.2"
   wakelock:
     dependency: transitive
     description:
@@ -1043,4 +1043,4 @@ packages:
     version: "5.3.1"
 sdks:
   dart: ">=2.16.2 <3.0.0"
-  flutter: ">=2.10.5"
+  flutter: ">=2.10.0"

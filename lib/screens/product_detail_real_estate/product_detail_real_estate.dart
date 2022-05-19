@@ -744,11 +744,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     width: 12,
                   ),
                   ElevatedButton(
-                      onPressed: () async {
+                      onPressed: ()async{
                         final result = await Api.subscribe({
-                          "id": UtilPreferences.getString(Preferences.clientId),
-                          "reviewer": _detailPage!.review.id.toString(),
-                          "xhr": "1"
+                          "id":UtilPreferences.getString(Preferences.clientId),
+                          "reviewer":_detailPage!.review.id.toString(),
+                          "xhr":"1"
                         });
                         print(result);
                         print(jsonDecode(result));
@@ -759,7 +759,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         } else {
                           isShow = false;
                         }
-                        setState(() {});
+                        setState(() {
+
+                        });
                         Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
