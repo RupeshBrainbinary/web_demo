@@ -699,13 +699,36 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: DecorationImage(
+                          /*image: DecorationImage(
                               image: CachedNetworkImageProvider(
                                 _detailPage!.review.image,
                               ),
-                              fit: BoxFit.cover),
+                              fit: BoxFit.cover),*/
                           border: Border.all(
                             color: Theme.of(context).dividerColor,
+                          ),
+                        ),
+                        child: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: CachedNetworkImage(
+                              imageUrl: _commentRes == null ? 'null' : _commentRes!.chanel!.avatar.toString(),
+                              fit: BoxFit.cover,
+                              errorWidget: (con, str, dy) {
+                                return Image.asset(
+                                  "assets/images/default_image.jpeg",
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                              progressIndicatorBuilder: (con, str, progress) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                      value: progress.progress),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
