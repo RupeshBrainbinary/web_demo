@@ -216,7 +216,16 @@ class _SignInState extends State<SignIn> {
                           controller: _textPassController,
                           focusNode: _focusPass,
                         ),
-                        const SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: AppButton(
+                            Translate.of(context)
+                                .translate('forgot_password'),
+                            onPressed: _forgotPassword,
+                            type: ButtonType.text,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
                         BlocBuilder<LoginCubit, LoginState>(
                           builder: (context, login) {
                             return AppButton(
@@ -231,12 +240,6 @@ class _SignInState extends State<SignIn> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            AppButton(
-                              Translate.of(context)
-                                  .translate('forgot_password'),
-                              onPressed: _forgotPassword,
-                              type: ButtonType.text,
-                            ),
                             AppButton(
                               '${Translate.of(context).translate('new_user')}',
                               onPressed: _signUp,

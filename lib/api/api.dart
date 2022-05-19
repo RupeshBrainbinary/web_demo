@@ -200,6 +200,7 @@ class Api {
     final result = await httpManager.post(url: topReviewsURL, data: {
       "country_id": UtilPreferences.getInt(Preferences.countryId) ?? 1,
       "category_id": categoryId,
+      //"limit": 1,
     });
     return ResultApiModel.fromJson(result);
   }

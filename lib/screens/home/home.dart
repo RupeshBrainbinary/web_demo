@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
+import 'package:web_demo/models/screen_models/category_page_model.dart';
 import 'package:web_demo/models/screen_models/home_real_estate_page_model.dart';
+import 'package:web_demo/repository/category_repository.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -28,6 +28,8 @@ class _HomeState extends State<Home> {
   HomeRealEstatePageModel? _homePage;
   CountryModel? _countrySelected;
   TextEditingController country = TextEditingController();
+  Map<String, List<ReviewModel>> _videoByCategory = {};
+  List<CategoryModel> categoryList = [];
 
   @override
   void initState() {
@@ -53,13 +55,19 @@ class _HomeState extends State<Home> {
   void _loadData() async {
     Api.getSubscribedList();
     final result = await Api.getHome();
-    // print(result.data);
     if (result.success) {
-      setState(() {
-        _homePage = HomeRealEstatePageModel.fromJson(result.data);
+      _homePage = HomeRealEstatePageModel.fromJson(result.data);
+      if(UtilPreferences.getInt(Preferences.countryId) == null){
         _countrySelected = _homePage!.country.first;
-      });
+      }
     }
+    CategoryPageModel? categoryPageModel =
+        await CategoryRepository.loadCategories();
+    if (categoryPageModel != null) {
+      categoryList = categoryPageModel.categories;
+    }
+    _getVideoByCategory(categoryList);
+    setState(() {});
   }
 
   ///On refresh
@@ -71,7 +79,8 @@ class _HomeState extends State<Home> {
   ///On navigate product detail
   Future<void> _openReviewInfo(ReviewModel item) async {
     await player.reset();
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
       player.reset();
     });
   }
@@ -103,7 +112,8 @@ class _HomeState extends State<Home> {
     );
     if (item != null) {
       UtilPreferences.setInt(Preferences.countryId, item.id);
-      await AppBloc.categoryCubit.loadCategories();
+      _getVideoByCategory(categoryList);
+      //await AppBloc.categoryCubit.loadCategories();
       _countrySelected = item;
       setState(() {});
     }
@@ -111,109 +121,106 @@ class _HomeState extends State<Home> {
 
   ///Build list category
   Widget _buildCategory() {
-    return BlocBuilder<CategoryCubit, List<CategoryModel>>(
-        builder: (context, categories) {
-      if (categories.isEmpty) {
-        return ListView.builder(
-          padding: const EdgeInsets.only(left: 8, right: 8),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return AppPlaceholder(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: Column(
-                  children: [
-                    Container(
-                      width: 56,
-                      height: 56,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      height: 10,
-                      color: Colors.white,
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                    )
-                  ],
-                ),
-              ),
-            );
-          },
-          itemCount: 8,
-        );
-      }
-
-      if (categories.isEmpty) {
-        return Container(
-          alignment: Alignment.center,
-          child: Text(
-            Translate.of(context).translate('data_not_found'),
-            style: Theme.of(context)
-                .textTheme
-                .button!
-                .copyWith(fontFamily: "ProximaNova"),
-          ),
-        );
-      }
-
-      return ListView.separated(
+    if (categoryList.isEmpty) {
+      return ListView.builder(
         padding: const EdgeInsets.only(left: 8, right: 8),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final item = categories[index];
-          // print(item);
-          return Padding(
-            padding: const EdgeInsets.only(left: 0, right: 0),
-            child: InkWell(
-              onTap: () {
-                _openCategory(item);
-              },
+          return AppPlaceholder(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8),
               child: Column(
                 children: [
                   Container(
                     width: 56,
                     height: 56,
-                    decoration: BoxDecoration(
-                      color: item.color.withOpacity(0.3),
+                    decoration: const BoxDecoration(
                       shape: BoxShape.rectangle,
-                      borderRadius: const BorderRadius.all(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
                         Radius.circular(8),
                       ),
                     ),
-                    child: SizedBox(
-                      height: 32,
-                      width: 32,
-                      child: SvgPicture.network(
-                        item.icon,
-                        color: item.color,
-                        placeholderBuilder: (BuildContext context) =>
-                            const SizedBox(),
-                      ),
-                    ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(item.title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle2!
-                          .copyWith(fontFamily: "ProximaNova"))
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 10,
+                    color: Colors.white,
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                  )
                 ],
               ),
             ),
           );
         },
-        separatorBuilder: (context, index) {
-          return const SizedBox(width: 8);
-        },
-        itemCount: categories.length,
+        itemCount: 8,
       );
-    });
+    }
+
+    if (categoryList.isEmpty) {
+      return Container(
+        alignment: Alignment.center,
+        child: Text(
+          Translate.of(context).translate('data_not_found'),
+          style: Theme.of(context)
+              .textTheme
+              .button!
+              .copyWith(fontFamily: "ProximaNova"),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index) {
+        final item = categoryList[index];
+        // print(item);
+        return Padding(
+          padding: const EdgeInsets.only(left: 0, right: 0),
+          child: InkWell(
+            onTap: () {
+              _openCategory(item);
+            },
+            child: Column(
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: item.color.withOpacity(0.3),
+                    shape: BoxShape.rectangle,
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                  child: SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: SvgPicture.network(
+                      item.icon,
+                      color: item.color,
+                      placeholderBuilder: (BuildContext context) =>
+                          const SizedBox(),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(item.title,
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle2!
+                        .copyWith(fontFamily: "ProximaNova"))
+              ],
+            ),
+          ),
+        );
+      },
+      separatorBuilder: (context, index) {
+        return const SizedBox(width: 8);
+      },
+      itemCount: categoryList.length,
+    );
   }
 
   ///Build Channels
@@ -451,7 +458,8 @@ class _HomeState extends State<Home> {
 
     if (_homePage != null) {
       ///Empty
-      if (_homePage!.popular.isEmpty) {
+      if (_homePage!.popular.isEmpty ||
+          _videoByCategory[category.id.toString()] == null) {
         content = Container(
           alignment: Alignment.center,
           child: Text(
@@ -463,38 +471,30 @@ class _HomeState extends State<Home> {
           ),
         );
       } else {
-        content = FutureBuilder<ResultApiModel>(
-            future: Api.getProduct(category.id),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const SizedBox();
-              }
-              final List<ReviewModel> productPage = snapshot.data!.data!
-                  .map<ReviewModel>((e) => ReviewModel.fromJson(e))
-                  .toList();
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: productPage
-                        .map((item) => Container(
-                              width: 200,
-                              padding: const EdgeInsets.only(left: 8, right: 8),
-                              child: AppReviewItem(
-                                item: item,
-                                onPressed: () {
-                                  _openReviewInfo(item);
-                                },
-                                type: ProductViewType.gird,
-                              ),
-                            ))
-                        .toList(),
-                  ),
-                ),
-              );
-            });
+        List<ReviewModel> productPage =
+            _videoByCategory[category.id.toString()]!;
+        content = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: productPage
+                  .map((item) => Container(
+                        width: 200,
+                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        child: AppReviewItem(
+                          item: item,
+                          onPressed: () {
+                            _openReviewInfo(item);
+                          },
+                          type: ProductViewType.gird,
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        );
       }
     }
 
@@ -554,6 +554,20 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Future<void> _getVideoByCategory(List<CategoryModel> categoryList) async {
+    Map<String, List<ReviewModel>> tempList = {};
+    for (var cat in categoryList) {
+      ResultApiModel res = await Api.getProduct(cat.id);
+      if (res.data != null) {
+        List<ReviewModel> list =
+            res.data!.map<ReviewModel>((e) => ReviewModel.fromJson(e)).toList();
+        tempList[cat.id.toString()] = list;
+      }
+    }
+    _videoByCategory = tempList;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -591,19 +605,13 @@ class _HomeState extends State<Home> {
                   const SizedBox(height: 8),
                   _buildChannels(),
                   const SizedBox(height: 8),
-                  BlocBuilder<CategoryCubit, List<CategoryModel>>(
-                    builder: (context, categories) {
-                      if (categories.isNotEmpty) {
-                        return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: categories.map((category) {
-                              return _buildCategoryVideos(category);
-                            }).toList());
-                      }
-
-                      return Container();
-                    },
-                  ),
+                  categoryList.isEmpty
+                      ? SizedBox()
+                      : Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: categoryList.map((category) {
+                            return _buildCategoryVideos(category);
+                          }).toList()),
                   //additional height for record button
                   const SizedBox(
                     height: 24,
