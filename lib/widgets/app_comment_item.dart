@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/models/comment_model.dart';
@@ -11,8 +10,8 @@ class AppCommentItem extends StatelessWidget {
   final Comment? item;
   final CommentRes? reviewPage;
 
-
-  const AppCommentItem({Key? key, this.item,this.reviewPage}) : super(key: key);
+  const AppCommentItem({Key? key, this.item, this.reviewPage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +128,26 @@ class AppCommentItem extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
+                  SizedBox(
                     width: 48,
                     height: 48,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image:  CachedNetworkImageProvider(snap.data!.avatar),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: CachedNetworkImage(
+                        imageUrl: snap.data!.avatar,
                         fit: BoxFit.cover,
+                        errorWidget: (con, str, dy) {
+                          return Image.asset(
+                            "assets/images/default_image.jpeg",
+                            fit: BoxFit.cover,
+                          );
+                        },
+                        progressIndicatorBuilder: (con, str, progress) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                                value: progress.progress),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -188,7 +199,7 @@ class AppCommentItem extends StatelessWidget {
                   )
                 ],
               ),
-           /*   const SizedBox(height: 4),
+              /*   const SizedBox(height: 4),
               Text(
                " item!.videoId.toString()",
                 maxLines: 1,

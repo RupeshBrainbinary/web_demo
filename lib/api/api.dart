@@ -53,6 +53,8 @@ class Api {
       "$domain/services/resetReviewerPassword";
   static const String subscribedListUrl =
       "$domain/reviewer_profile/subscribed_list";
+  static const String commonData =
+      "$domain/common/commonData";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -401,6 +403,11 @@ class Api {
     print(result);
     SubscriberModel model = SubscriberModel.fromJson(result);
     subscribedList = model.data!.subscribed ?? [];
+  }
+
+  static Future<void> getCommonData() async {
+    final result = await httpManager.get(url: commonData);
+    print(result);
   }
 
   ///Singleton factory
