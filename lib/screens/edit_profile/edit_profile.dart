@@ -344,7 +344,7 @@ class _EditProfileState extends State<EditProfile> {
                 AppTextInput(
                   enable: channelEnable,
                   hintText:
-                      Translate.of(context).translate('input_channel_name'),
+                      Translate.of(context).translate('Input Channel Name'),
                   errorText: _validWebsite,
                   focusNode: _focusWebsite,
                   textInputAction: TextInputAction.next,

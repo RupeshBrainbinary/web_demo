@@ -254,7 +254,18 @@ class _SignInState extends State<SignIn> {
                           ],
                         ),*/
                         SizedBox(height: 15,),
-                        Text("OR",style: TextStyle(color: Colors.grey),),
+                        Row(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                             Container(height: 1,width: 130,color: Colors.grey,),
+                            SizedBox(width: 5,),
+                            Text("OR",style: TextStyle(color: Colors.grey),),
+                            SizedBox(width: 5,),
+
+                            Container(height: 1,width: 130,color: Colors.grey,),
+
+
+                          ],
+                        ),
                         SizedBox(height: 15,),
                         Text("Not a member yet?",style: TextStyle(color: Colors.grey),),
                         SizedBox(height: 10,),
@@ -284,6 +295,7 @@ class _SignInState extends State<SignIn> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 25,)
 
 
                         
