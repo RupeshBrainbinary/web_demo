@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/app_bloc.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/preferences.dart';
@@ -22,7 +21,7 @@ class LoginCubit extends Cubit<LoginState> {
   Future<UserModel?> onLogin({
     required String username,
     required String password,
-     required BuildContext context,
+    required BuildContext context,
   }) async {
     ///Notify
     emit(LoginState.loading);
@@ -38,16 +37,10 @@ class LoginCubit extends Cubit<LoginState> {
       await UtilPreferences.setString(
         Preferences.clientId,
         result.id.toString(),
-
       );
       await AppBloc.authenticateCubit.onSave(result);
 
-
       ///Notify
-
-
-
-
 
       emit(LoginState.success);
 
@@ -63,6 +56,7 @@ class LoginCubit extends Cubit<LoginState> {
   void onLogout() async {
     ///Begin start auth flow
     emit(LoginState.init);
+    UtilPreferences.setString(Preferences.clientId, '');
     AppBloc.authenticateCubit.onClear();
   }
 }

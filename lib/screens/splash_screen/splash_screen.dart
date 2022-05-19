@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +13,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Api.getCommonData();
     super.initState();
   }
 

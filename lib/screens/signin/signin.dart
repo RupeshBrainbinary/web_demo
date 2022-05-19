@@ -3,6 +3,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_demo/app.dart';
 import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
@@ -36,6 +37,9 @@ class _SignInState extends State<SignIn> {
 
   @override
   void initState() {
+    if(updateLoaded == false){
+      checkForUpdate(context);
+    }
     super.initState();
   }
 

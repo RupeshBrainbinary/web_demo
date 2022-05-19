@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/screens/screen.dart';
-import 'package:web_demo/screens/submit/review_webview.dart';
 import 'package:web_demo/utils/utils.dart';
-import 'package:showcaseview/showcaseview.dart';
+import 'package:web_demo/widgets/app_button.dart';
 
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
@@ -15,6 +18,7 @@ class App extends StatefulWidget {
   @override
   _AppState createState() => _AppState();
 }
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _AppState extends State<App> {
@@ -91,8 +95,11 @@ class _AppState extends State<App> {
 
                             if (application == ApplicationState.completed) {
                               if (UtilPreferences.getString(
-                                      Preferences.clientId) ==
-                                  null) {
+                                          Preferences.clientId) ==
+                                      null ||
+                                  UtilPreferences.getString(
+                                          Preferences.clientId) ==
+                                      '') {
                                 return SignIn(from: 'intro');
                               }
                               return const AppContainer();
@@ -112,6 +119,47 @@ class _AppState extends State<App> {
             },
           );
         },
+      ),
+    );
+  }
+}
+
+bool updateLoaded = false;
+
+Future<void> checkForUpdate(BuildContext context) async {
+  updateLoaded = true;
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+  String appName = packageInfo.buildNumber;
+  Map<String, dynamic> res = await Api.getCommonData();
+  if (res['status'] == 200) {
+    if (res['data']['version'] == packageInfo.version) {
+      return;
+    }
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(res['data']['Title'].toString()),
+        content: Text(
+            "${res['data']['content']} from ${packageInfo.version} to ${res['data']['version']}"),
+        actions: [
+          res['data']['force_update'] == 1
+              ? AppButton(
+                  "Maybe Later",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  type: ButtonType.text,
+                )
+              : SizedBox(),
+          AppButton(
+            "Update",
+            onPressed: () async {
+              await launchUrl(Uri.parse(res['data']['link'].toString()));
+            },
+            type: ButtonType.text,
+          ),
+        ],
       ),
     );
   }

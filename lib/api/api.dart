@@ -406,9 +406,10 @@ class Api {
     subscribedList = model.data!.subscribed ?? [];
   }
 
-  static Future<void> getCommonData() async {
+  static Future<Map<String,dynamic>> getCommonData() async {
     final result = await httpManager.get(url: commonData);
     print(result);
+    return result;
   }
 
   ///Singleton factory

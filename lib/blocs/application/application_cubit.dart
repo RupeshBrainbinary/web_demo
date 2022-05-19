@@ -83,7 +83,9 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     );
     if (hasReview) {
       ///Notify
-      emit(ApplicationState.completed);
+      Future.delayed(Duration(seconds: 3),(){
+        emit(ApplicationState.completed);
+      });
     } else {
       ///Notify
       emit(ApplicationState.intro);
