@@ -472,7 +472,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 style: Theme.of(context).textTheme.headline5!.copyWith(
                     fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
               ),
-              InkWell(
+          /*    InkWell(
                 onTap: () =>
                     {_onCompanyProfile(_detailPage!.review.profileSlug)},
                 // onTap: () {
@@ -491,7 +491,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     size: 20,
                   ),
                 ),
-              ),
+              ),*/
             ],
           ),
 
@@ -711,10 +711,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         child: SizedBox(
                           width: 40,
                           height: 40,
-                          child: ClipRRect(
+                          child: _commentRes == null ? SizedBox() : ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
-                              imageUrl: _commentRes == null ? 'null' : _commentRes!.chanel!.avatar.toString(),
+                              imageUrl:"https://www.thereviewclip.com/uploads/client_logo/${_commentRes!.chanel!.avatar.toString()}",
                               fit: BoxFit.cover,
                               errorWidget: (con, str, dy) {
                                 return Image.asset(

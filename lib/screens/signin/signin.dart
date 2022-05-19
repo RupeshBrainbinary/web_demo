@@ -270,7 +270,7 @@ class _SignInState extends State<SignIn> {
                             width: MediaQuery.of(context).size.width / 1.5,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: Colors.black45)
+                                border: Border.all(color: Colors.grey)
 
                             ),
                             child: Center(
@@ -279,7 +279,7 @@ class _SignInState extends State<SignIn> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize:14,
-                                    color: Colors.black45),
+                                    color: Colors.grey),
                               ),
                             ),
                           ),

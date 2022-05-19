@@ -1,6 +1,6 @@
 // To parse this JSON data, do
 //
-//     final userModel = userModelFromJson(jsonString);
+//     final commentRes = commentResFromJson(jsonString);
 
 import 'dart:convert';
 
@@ -18,14 +18,14 @@ class CommentRes {
   });
 
   Chanel? chanel;
-  List<Comment>? reports;
+  List<dynamic>? reports;
   List<Comment>? comments;
   int? commentsCount;
   String? likesCount;
 
   factory CommentRes.fromJson(Map<String, dynamic> json) => CommentRes(
     chanel: json["chanel"] == null ? null : Chanel.fromJson(json["chanel"]),
-    reports: json["reports"] == null ? null : List<Comment>.from(json["reports"].map((x) => Comment.fromJson(x))),
+    reports: json["reports"] == null ? null : List<dynamic>.from(json["reports"].map((x) => x)),
     comments: json["comments"] == null ? null : List<Comment>.from(json["comments"].map((x) => Comment.fromJson(x))),
     commentsCount: json["comments_count"],
     likesCount: json["likes_count"],
@@ -33,7 +33,7 @@ class CommentRes {
 
   Map<String, dynamic> toJson() => {
     "chanel": chanel == null ? null : chanel!.toJson(),
-    "reports": reports == null ? null : List<dynamic>.from(reports!.map((x) => x.toJson())),
+    "reports": reports == null ? null : List<dynamic>.from(reports!.map((x) => x)),
     "comments": comments == null ? null : List<dynamic>.from(comments!.map((x) => x.toJson())),
     "comments_count": commentsCount,
     "likes_count": likesCount,
@@ -149,6 +149,8 @@ class Comment {
     this.createdDate,
     this.createdIp,
     this.status,
+    this.userName,
+    this.avatar,
   });
 
   String? id;
@@ -158,6 +160,8 @@ class Comment {
   DateTime? createdDate;
   String? createdIp;
   String? status;
+  String? userName;
+  String? avatar;
 
   factory Comment.fromJson(Map<String, dynamic> json) => Comment(
     id: json["id"],
@@ -167,6 +171,8 @@ class Comment {
     createdDate: json["created_date"] == null ? null : DateTime.parse(json["created_date"]),
     createdIp: json["created_ip"],
     status: json["status"],
+    userName: json["userName"],
+    avatar: json["avatar"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -177,5 +183,7 @@ class Comment {
     "created_date": createdDate == null ? null : createdDate!.toIso8601String(),
     "created_ip": createdIp,
     "status": status,
+    "userName": userName,
+    "avatar": avatar,
   };
 }

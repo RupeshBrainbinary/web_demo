@@ -57,8 +57,13 @@ class _HomeState extends State<Home> {
     final result = await Api.getHome();
     if (result.success) {
       _homePage = HomeRealEstatePageModel.fromJson(result.data);
-      if(UtilPreferences.getInt(Preferences.countryId) == null){
+      if (UtilPreferences.getInt(Preferences.countryId) == null) {
         _countrySelected = _homePage!.country.first;
+      } else {
+        _countrySelected = _homePage!.country
+            .where((element) =>
+                element.id == UtilPreferences.getInt(Preferences.countryId))
+            .first;
       }
     }
     CategoryPageModel? categoryPageModel =
@@ -315,7 +320,7 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Divider(
-                thickness:1.5,
+                thickness: 1.5,
                 height: 1.0,
               ),
               const SizedBox(
@@ -410,7 +415,7 @@ class _HomeState extends State<Home> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Divider(
-                thickness:1.5,
+                thickness: 1.5,
                 height: 1.0,
               ),
               SizedBox(
@@ -607,7 +612,7 @@ class _HomeState extends State<Home> {
                   _buildChannels(),
                   const SizedBox(height: 8),
                   categoryList.isEmpty
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Column(
                           mainAxisSize: MainAxisSize.min,
                           children: categoryList.map((category) {

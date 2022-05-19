@@ -116,71 +116,65 @@ class AppCommentItem extends StatelessWidget {
           Radius.circular(8),
         ),
       ),
-      child: FutureBuilder<UserModel>(
-        future: Api.getReviewerDetail(int.parse(item!.clientId ?? '0')),
-        builder: (context, snap) {
-          if (!snap.hasData) {
-            return const SizedBox();
-          }
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: CachedNetworkImage(
-                        imageUrl: snap.data!.avatar,
+              SizedBox(
+                width: 48,
+                height: 48,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(25),
+                  child: CachedNetworkImage(
+                    imageUrl: item!.avatar.toString(),
+                    fit: BoxFit.cover,
+                    errorWidget: (con, str, dy) {
+                      return Image.asset(
+                        "assets/images/default_image.jpeg",
                         fit: BoxFit.cover,
-                        errorWidget: (con, str, dy) {
-                          return Image.asset(
-                            "assets/images/default_image.jpeg",
-                            fit: BoxFit.cover,
-                          );
-                        },
-                        progressIndicatorBuilder: (con, str, progress) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                                value: progress.progress),
-                          );
-                        },
-                      ),
-                    ),
+                      );
+                    },
+                    progressIndicatorBuilder: (con, str, progress) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                            value: progress.progress),
+                      );
+                    },
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              child: Text(
-                                snap.data!.name,
-                                maxLines: 1,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle2!
-                                    .copyWith(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            item!.createdDate == null
-                                ? SizedBox()
-                                : Text(
-                                    DateFormat('MMM dd, yyyy')
-                                        .format(item!.createdDate!),
-                                    style: Theme.of(context).textTheme.caption,
-                                  )
-                          ],
+                        Expanded(
+                          child: Text(
+                            item!.userName ?? '',
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        const SizedBox(height: 4),
-                        /*RatingBar.builder(
+                        item!.createdDate == null
+                            ? SizedBox()
+                            : Text(
+                          DateFormat('MMM dd, yyyy')
+                              .format(item!.createdDate!),
+                          style: Theme.of(context).textTheme.caption,
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    /*RatingBar.builder(
                           initialRating: 0,
                           minRating: 1,
                           allowHalfRating: true,
@@ -194,12 +188,12 @@ class AppCommentItem extends StatelessWidget {
                           ignoreGestures: true,
                           onRatingUpdate: (double value) {},
                         )*/
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              /*   const SizedBox(height: 4),
+                  ],
+                ),
+              )
+            ],
+          ),
+          /*   const SizedBox(height: 4),
               Text(
                " item!.videoId.toString()",
                 maxLines: 1,
@@ -208,15 +202,13 @@ class AppCommentItem extends StatelessWidget {
                     .subtitle2!
                     .copyWith(fontWeight: FontWeight.bold),
               ),*/
-              const SizedBox(height: 8),
-              Text(
-                item!.content ?? '',
-                maxLines: 5,
-                style: Theme.of(context).textTheme.bodyText1,
-              )
-            ],
-          );
-        },
+          const SizedBox(height: 8),
+          Text(
+            item!.content ?? '',
+            maxLines: 5,
+            style: Theme.of(context).textTheme.bodyText1,
+          )
+        ],
       ),
     );
   }
