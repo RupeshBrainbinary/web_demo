@@ -307,7 +307,7 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Divider(
-                thickness: 1.0,
+                thickness: 6.0,
                 height: 1.0,
               ),
               const SizedBox(
@@ -402,7 +402,7 @@ class _HomeState extends State<Home> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Divider(
-                thickness: 1.0,
+                thickness: 6.0,
                 height: 1.0,
               ),
               SizedBox(
@@ -504,7 +504,7 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(
-          thickness: 1.0,
+          thickness: 6.0,
           height: 1.0,
         ),
         const SizedBox(height: 4),

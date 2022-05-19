@@ -196,7 +196,7 @@ class _AppContainerState extends State<AppContainer> {
                       route: Routes.categoryList,
                       authenticated: authenticated,
                     ),
-                    SizedBox(
+                    Container(
                       width: 56,
                       child: Padding(
                         padding: const EdgeInsets.only(top: 24.0),
@@ -229,7 +229,7 @@ class _AppContainerState extends State<AppContainer> {
               shapeBorder: const CircleBorder(),
               child: FloatingActionButton(
                 heroTag: "submit",
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.red,
                 onPressed: () {
                   _onSubmit(authenticated);
                 },

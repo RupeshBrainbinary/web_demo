@@ -123,7 +123,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                 const SizedBox(height: 8),
                 AppTextInput(
                   hintText: Translate.of(context).translate(
-                    'input_your_old_password',
+                    'Input Your Old Password',
                   ),
                   errorText: _validPass,
                   focusNode: _focusRoldPass,
@@ -155,15 +155,16 @@ class _ChangePasswordState extends State<ChangePassword> {
                   },
                   controller: _textOldPassController,
                 ),
+                const SizedBox(height: 8),
                 Text(
-                  Translate.of(context).translate('password'),
+                  Translate.of(context).translate('New Password'),
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
                       fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
                   hintText: Translate.of(context).translate(
-                    'input_your_password',
+                    'Input your New Password',
                   ),
                   errorText: _validPass,
                   focusNode: _focusPass,
@@ -197,14 +198,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  Translate.of(context).translate('confirm_password'),
+                  Translate.of(context).translate('Confirm New Password '),
                   style: Theme.of(context).textTheme.subtitle2!.copyWith(
                       fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
                   hintText: Translate.of(context).translate(
-                    'confirm_your_password',
+                    'Confirm Your New Password',
                   ),
                   errorText: _validRePass,
                   focusNode: _focusRePass,

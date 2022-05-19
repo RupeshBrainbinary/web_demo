@@ -39,6 +39,7 @@ class _EditProfileState extends State<EditProfile> {
   String? _validAddress;
   String? _validWebsite;
   String? _validInfo;
+  bool channelEnable = false;
 
   @override
   void initState() {
@@ -56,6 +57,8 @@ class _EditProfileState extends State<EditProfile> {
     _textMobileController.text = map['mobile'] ?? '';
     _textAddressController.text = map['location'] ?? '';
     _textWebsiteController.text = map['chanel'] ?? '';
+    channelEnable =_textWebsiteController.text.isEmpty;
+    setState(() {});
   }
 
   @override
@@ -145,12 +148,11 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(
-          Translate.of(context).translate('edit_profile'),
+        title: Text(Translate.of(context).translate('edit_profile'),
             style: Theme.of(context)
                 .textTheme
-                .headline6!.copyWith(fontFamily: "ProximaNova")
-        ),
+                .headline6!
+                .copyWith(fontFamily: "ProximaNova")),
         actions: <Widget>[
           AppButton(
             Translate.of(context).translate('confirm'),
@@ -174,7 +176,7 @@ class _EditProfileState extends State<EditProfile> {
                       children: <Widget>[
                         _buildImage(),
                         IconButton(
-                          icon:  Icon(
+                          icon: Icon(
                             Icons.camera_alt,
                             color: Theme.of(context).iconTheme.color,
                           ),
@@ -187,10 +189,8 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('name'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -225,10 +225,8 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('email'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -265,19 +263,17 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('Mobile number'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
-                  enable: false,
+                  enable: true,
                   hintText: Translate.of(context).translate('input_number'),
                   errorText: _validMobile,
                   focusNode: _focusMobile,
                   textInputAction: TextInputAction.next,
-                 /* trailing: GestureDetector(
+                  /* trailing: GestureDetector(
                     dragStartBehavior: DragStartBehavior.down,
                     onTap: () {
                       _textMobileController.clear();
@@ -305,10 +301,8 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('Locaion'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
@@ -343,14 +337,12 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('Channel name'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
-                  enable: false,
+                  enable: channelEnable,
                   hintText:
                       Translate.of(context).translate('input_channel_name'),
                   errorText: _validWebsite,
@@ -382,10 +374,8 @@ class _EditProfileState extends State<EditProfile> {
                 const SizedBox(height: 16),
                 Text(
                   Translate.of(context).translate('About'),
-                  style: Theme.of(context)
-                      .textTheme
-                      .subtitle2!
-                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
