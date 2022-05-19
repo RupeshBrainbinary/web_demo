@@ -1,5 +1,7 @@
 // ignore_for_file: unrelated_type_equality_checks
 
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -155,7 +157,7 @@ class _SignInState extends State<SignIn> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                          height: 70,
+                          height: 40,
                         ),
                         Container(
                           child: Image.asset(
@@ -241,7 +243,7 @@ class _SignInState extends State<SignIn> {
                           },
                         ),
                         const SizedBox(height: 4),
-                        Row(
+                    /*    Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             AppButton(
@@ -250,7 +252,42 @@ class _SignInState extends State<SignIn> {
                               type: ButtonType.text,
                             ),
                           ],
+                        ),*/
+                        SizedBox(height: 15,),
+                        Text("OR",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 15,),
+                        Text("Not a member yet?",style: TextStyle(color: Colors.grey),),
+                        SizedBox(height: 10,),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: ()
+                          {
+                            _signUp();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: 42,
+                            width: MediaQuery.of(context).size.width / 1.5,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                border: Border.all(color: Colors.black45)
+
+                            ),
+                            child: Center(
+                              child: Text(
+                                'Sign Up Now!',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize:14,
+                                    color: Colors.black45),
+                              ),
+                            ),
+                          ),
                         ),
+
+
+                        
+
                       ],
                     ),
                   ),

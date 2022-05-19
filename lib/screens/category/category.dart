@@ -92,7 +92,7 @@ class _CategoryState extends State<Category> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         centerTitle: true,
-        title: Text(Translate.of(context).translate('category'),style: Theme.of(context)
+        title: Text(Translate.of(context).translate('Categories'),style: Theme.of(context)
             .textTheme
             .headline6!.copyWith(fontFamily: "ProximaNova"),),
         actions: <Widget>[

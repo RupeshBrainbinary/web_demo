@@ -115,6 +115,7 @@ class _HomeState extends State<Home> {
       _getVideoByCategory(categoryList);
       //await AppBloc.categoryCubit.loadCategories();
       _countrySelected = item;
+
       setState(() {});
     }
   }
@@ -314,7 +315,7 @@ class _HomeState extends State<Home> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Divider(
-                thickness: 6.0,
+                thickness:1.5,
                 height: 1.0,
               ),
               const SizedBox(
@@ -409,7 +410,7 @@ class _HomeState extends State<Home> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Divider(
-                thickness: 6.0,
+                thickness:1.5,
                 height: 1.0,
               ),
               SizedBox(
@@ -504,7 +505,7 @@ class _HomeState extends State<Home> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Divider(
-          thickness: 6.0,
+          thickness: 1.5,
           height: 1.0,
         ),
         const SizedBox(height: 4),

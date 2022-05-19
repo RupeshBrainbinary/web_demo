@@ -59,7 +59,7 @@ class _AppState extends State<App> {
                 //   backgroundColor: Color.fromRGBO(249, 249, 249, 1),
                 //   primaryColor: Color(0xFFffe5634d)
                 //     ),
-                theme: theme.lightTheme,
+                theme: theme.darkTheme,
                 darkTheme: theme.darkTheme,
                 onGenerateRoute: Routes.generateRoute,
                 locale: lang,
