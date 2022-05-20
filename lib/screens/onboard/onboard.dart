@@ -184,9 +184,9 @@ class _IntroState extends State<Intro> {
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        decoration: const BoxDecoration(
+        /*decoration: const BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(Images.introBackground), fit: BoxFit.cover)),
+                image: AssetImage(Images.introBackground), fit: BoxFit.cover)),*/
         child: SafeArea(
           child: Column(
             children: [
