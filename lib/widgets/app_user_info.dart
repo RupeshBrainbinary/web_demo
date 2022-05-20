@@ -131,12 +131,13 @@ class AppUserInfo extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(35),
                       child: CachedNetworkImage(
-                        imageUrl: user!.avatar.toString(),
+                        imageUrl: "https://www.thereviewclip.com/uploads/client_logo/"+ user!.avatar.toString(),
                         errorWidget: (con, str, dy) {
-                          return Image.asset(
+                          return SizedBox();
+                          /*return Image.asset(
                             "assets/images/default_image.jpeg",
                             fit: BoxFit.cover,
-                          );
+                          );*/
                         },
                       ),
                     ),

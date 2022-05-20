@@ -221,7 +221,100 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           final item = relatedVideos[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child: AppReviewItem(
+            child:InkWell(
+              onTap: (){
+                //player.stop();
+                setState(() {});
+
+                Future.delayed(Duration(seconds: 1), () {
+                  _onProductDetail(item);
+                });
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 80,
+                    height: 80,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(item.image),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            item.clientName,
+                            maxLines: 1,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            item.comment,overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context)
+                                .textTheme
+                                .caption!
+                                .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                          ),
+                          const SizedBox(height: 4),
+                          Row(
+                            children: [
+                              AppTag(
+                                "${item.rate}",
+                                type: TagType.rate,
+                                onPressed: null,
+                              ),
+                              const SizedBox(width: 4),
+                              RatingBar.builder(
+                                initialRating: item.rate,
+                                minRating: 1,
+                                allowHalfRating: true,
+                                unratedColor: Colors.amber.withAlpha(100),
+                                itemCount: 5,
+                                itemSize: 14.0,
+                                itemBuilder: (context, _) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                ignoreGestures: true,
+                                onRatingUpdate: (double value) {},
+                              ),Container(
+                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                                height: 15,
+                                width: 1.5,
+                                color: Theme.of(context).textTheme.caption!.color,
+                              ),SizedBox(width: MediaQuery.of(context).size.width /4,
+                                child: Text(
+                                  item.channelName,overflow: TextOverflow.ellipsis,maxLines: 1,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            /*child: AppReviewItem(
               onPressed: () {
                 //player.stop();
                 setState(() {});
@@ -232,7 +325,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
               },
               item: item,
               type: ProductViewType.small,
-            ),
+            ),*/
           );
         },
       );
@@ -735,7 +828,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
-                              imageUrl: _commentRes == null ? 'null' : _commentRes!.chanel!.avatar.toString(),
+                              imageUrl: _commentRes == null ? 'null' : "https://www.thereviewclip.com/uploads/client_logo/${_commentRes!.chanel!.avatar.toString()}",
                               fit: BoxFit.cover,
                               errorWidget: (con, str, dy) {
                                 return Image.asset(
