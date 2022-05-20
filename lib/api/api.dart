@@ -239,8 +239,8 @@ class Api {
     return result;
   }
 
-  static Future<dynamic> validReview(params) async {
-    var result = await httpManager.post(url: validateReview, data: params);
+  static Future<dynamic> validReview({params,String? link}) async {
+    var result = await httpManager.post(url: link!, data: params);
     if (result == null) {}
     print(result);
     print("Review Success");

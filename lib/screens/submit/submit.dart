@@ -115,13 +115,13 @@ class _SubmitState extends State<Submit> {
     _loader = true;
     setState(() {});
     String clientId = UtilPreferences.getString(Preferences.clientId) ?? '';
-    await Api.validReview({
+    await Api.validReview(params: {
       "client_id": clientId,
       "ratting": rating,
       "comment": videoController.text,
       "rateText": "Good",
       "api": "1"
-    });
+    },link: "https://www.thereviewclip.com/app/submitVideoReview/$slug");
     _loader = false;
     setState(() {});
   }
@@ -772,6 +772,7 @@ class _SubmitState extends State<Submit> {
                 if (isShow == false) {
                   await validateBusiness();
                 }
+                if(_loader == false)
                 await validateRweview();
 
                 Navigator.of(context).push(
