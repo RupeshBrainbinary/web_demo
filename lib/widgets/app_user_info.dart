@@ -119,8 +119,8 @@ class AppUserInfo extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 children: <Widget>[
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       /*image: DecorationImage(

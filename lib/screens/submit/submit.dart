@@ -102,11 +102,18 @@ class _SubmitState extends State<Submit> {
   Future<void> validateBusiness() async {
     _loader = true;
     setState(() {});
-    slug = await Api.validBusienss({
+    Map<String, dynamic> map = {
       "country": _country!.id,
       "category": _category!.id,
-      "client":_business!.id
-    });
+    };
+    if(_business == null){
+      map['loc'] = locationController.text;
+      map["clientVal"] = busines.text;
+      map['city'] = cityController.text;
+    }else{
+      map['client'] = _business!.id;
+    }
+    slug = await Api.validBusienss(map);
     _loader = false;
     setState(() {});
   }
@@ -115,13 +122,20 @@ class _SubmitState extends State<Submit> {
     _loader = true;
     setState(() {});
     String clientId = UtilPreferences.getString(Preferences.clientId) ?? '';
-    await Api.validReview(params: {
-      "client_id": clientId,
+    /*Map<String,dynamic> param = {
+      "client_id": '',
       "ratting": rating,
       "comment": videoController.text,
       "rateText": "Good",
       "api": "1"
-    },link: "https://www.thereviewclip.com/app/submitVideoReview/$slug");
+    };*/
+    await Api.validReview(params: {
+      //"client_id": clientId,
+      "ratting": rating,
+      "comment": videoController.text,
+      "rateText": "Good",
+      "api": "1"
+    }, link: "https://www.thereviewclip.com/app/submitVideoReview/$slug");
     _loader = false;
     setState(() {});
   }
@@ -270,7 +284,6 @@ class _SubmitState extends State<Submit> {
     if (item != null) {
       setState(() {
         _country = item;
-
       });
       print("selected Country id $_country");
       print(_country!.id);
@@ -562,7 +575,7 @@ class _SubmitState extends State<Submit> {
             const SizedBox(height: 8),
             AppPickerItem(
               title: Translate.of(context).translate('choose_country'),
-              value: _country == null ? null :_country!.title ,
+              value: _country == null ? null : _country!.title,
               onPressed: _onSelectCountry,
             ),
 
@@ -769,10 +782,9 @@ class _SubmitState extends State<Submit> {
             AppButton(
               Translate.of(context).translate('continue_record'),
               onPressed: () async {
-                if (isShow == false) {
+                //if (isShow == false) {
                   await validateBusiness();
-                }
-                if(_loader == false)
+                //}
                 await validateRweview();
 
                 Navigator.of(context).push(

@@ -237,7 +237,8 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
       body: _loader ? Center(child: CircularProgressIndicator()) : SafeArea(
         top: false,
         bottom: false,
-        child: ListView(
+        child:SizedBox()
+      /*  ListView(
           padding: const EdgeInsets.only(top: 16, bottom: 16),
           children: <Widget>[
             Padding(
@@ -314,7 +315,7 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
               ),
             ),
           ],
-        ),
+        ),*/
       ),
     );
   }
