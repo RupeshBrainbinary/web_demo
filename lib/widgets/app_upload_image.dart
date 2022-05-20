@@ -47,6 +47,7 @@ class _AppUploadImageState extends State<AppUploadImage> {
   }
 
   Future<void> _uploadImage() async {
+    print("image");
     if (showAction) {
       setState(() {
         showAction = false;

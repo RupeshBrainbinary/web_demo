@@ -105,9 +105,9 @@ class _SubmitState extends State<Submit> {
     slug = await Api.validBusienss({
       "country": _country!.id,
       "category": _category!.id,
-      "clientVal": _business!.title,
-      "loc": locationController.text,
-      "city": cityController.text,
+     // "clientVal": _business!.title,
+      // "loc": locationController.text,
+      // "city": cityController.text,
       "client":UtilPreferences.getString(Preferences.clientId)
     });
     _loader = false;

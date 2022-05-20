@@ -1,12 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/models/model_user.dart';
+import 'package:web_demo/repository/user.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
+import 'package:http/http.dart' as http;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
@@ -40,6 +45,8 @@ class _EditProfileState extends State<EditProfile> {
   String? _validWebsite;
   String? _validInfo;
   bool channelEnable = false;
+  UserModel? userModel;
+  String? profile;
 
   @override
   void initState() {
@@ -57,7 +64,8 @@ class _EditProfileState extends State<EditProfile> {
     _textMobileController.text = map['mobile'] ?? '';
     _textAddressController.text = map['location'] ?? '';
     _textWebsiteController.text = map['chanel'] ?? '';
-    channelEnable =_textWebsiteController.text.isEmpty;
+    profile = map['avatar'];
+    channelEnable = _textWebsiteController.text.isEmpty;
     setState(() {});
   }
 
@@ -68,11 +76,38 @@ class _EditProfileState extends State<EditProfile> {
 
   ///On Image file
   void _onGetImage() async {
+    print("image");
     final image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _image = image;
       });
+      var request = new http.MultipartRequest("POST",
+          Uri.parse("https://www.thereviewclip.com/reviewer/uploadImage"));
+      request.fields['type'] = '1';
+      request.fields['client_id'] =
+          "${UtilPreferences.getString(Preferences.clientId)}";
+      http.MultipartFile multipartFile =
+          await http.MultipartFile.fromPath('logo', image.path);
+      request.files.add(multipartFile);
+      var response = await request.send();
+      print(response.statusCode);
+
+      // listen for response
+      response.stream.transform(utf8.decoder).listen((value) async {
+        print(value);
+        var jsonResp = json.decode(value);
+        print(jsonResp);
+        profile = jsonResp['data'];
+        if (value.isNotEmpty) {
+          userModel = await Api.getReviewerDetail(int.parse(
+              UtilPreferences.getString(Preferences.clientId.toString())!));
+          setState(() {});
+          UserRepository.saveUser(user: userModel!);
+        }
+      });
+      setState(() {});
+
     }
   }
 
@@ -114,17 +149,29 @@ class _EditProfileState extends State<EditProfile> {
 
   ///Build avatar
   Widget _buildImage() {
-    if (_image != null) {
-      return Container(
+    if (profile != null) {
+     return Container(
         width: 100,
         height: 100,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          image: DecorationImage(
+          /*image: DecorationImage(
+                        image: AssetImage(user!.avatar),
+                        fit: BoxFit.cover,
+                      ),*/
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(60),
+          child: CachedNetworkImage(
+            imageUrl: "https://www.thereviewclip.com/uploads/client_logo/"+ profile!,
             fit: BoxFit.cover,
-            image: FileImage(
-              File(_image!.path),
-            ),
+            errorWidget: (con, str, dy) {
+              return SizedBox();
+              /*return Image.asset(
+                            "assets/images/default_image.jpeg",
+                            fit: BoxFit.cover,
+                          );*/
+            },
           ),
         ),
       );

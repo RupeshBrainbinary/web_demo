@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:web_demo/api/http_manager.dart';
@@ -12,6 +13,7 @@ import 'package:web_demo/models/model_business.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/models/subscriber_model.dart';
 import 'package:web_demo/utils/utils.dart';
+import 'package:http/http.dart' as http;
 
 List<Subscribed> subscribedList = [];
 
@@ -53,8 +55,8 @@ class Api {
       "$domain/services/resetReviewerPassword";
   static const String subscribedListUrl =
       "$domain/reviewer_profile/subscribed_list";
-  static const String commonData =
-      "$domain/common/commonData";
+  static const String commonData = "$domain/common/commonData";
+    static const String uploadImage = "$domain/reviewer/uploadImage";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -219,6 +221,7 @@ class Api {
   }
 
   static Future<String?> validBusienss(params) async {
+    print(params);
     var result = await httpManager.post(url: validateBusiness, data: params);
     print(result);
     return result['data']['slug'];
@@ -405,7 +408,25 @@ class Api {
     subscribedList = model.data!.subscribed ?? [];
   }
 
-  static Future<Map<String,dynamic>> getCommonData() async {
+  static Future<dynamic> getuplodaImage(params) async {
+
+  try{
+    http.Response response =
+    await http.post(Uri.parse(uploadImage),body: params,encoding: Encoding.getByName("utf-8"));
+    return response.body;
+
+  }
+  catch(e){
+    print(e);
+  }
+
+
+    final result = await httpManager.post(url: uploadImage,formData: params);
+    print(result);
+    return result;
+  }
+
+  static Future<Map<String, dynamic>> getCommonData() async {
     final result = await httpManager.get(url: commonData);
     print(result);
     return result;
