@@ -148,13 +148,7 @@ class AppUserInfo extends StatelessWidget {
                       shape: BoxShape.circle,
                       color: Theme.of(context).primaryColor,
                     ),
-                    // child: Text(
-                    //   "${user!.rate}",
-                    //   style: const TextStyle(
-                    //     color: Colors.white,
-                    //     fontSize: 8,
-                    //   ),
-                    // ),
+
                   )
                 ],
               ),

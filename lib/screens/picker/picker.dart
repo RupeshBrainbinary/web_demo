@@ -27,11 +27,10 @@ class _PickerState extends State<Picker> {
   void initState() {
     super.initState();
   }
-  setController(){
-    _textPickerController = widget.picker.controller;
-    setState(() {
 
-    });
+  setController() {
+    _textPickerController = widget.picker.controller;
+    setState(() {});
   }
 
   @override
@@ -42,16 +41,16 @@ class _PickerState extends State<Picker> {
 
   ///On Filter Location
   void _onFilter(String text) {
-
     setState(() {
       _keyword = text;
+    });
+  }
 
+  void _onchange(String text) {
+    setState(() {
+      _keyword = text;
     });
-    Future.delayed(Duration(seconds: 6),(){
-      if(widget.picker.isShow==true){
-        Navigator.pop(context);
-      }
-    });
+    Navigator.pop(context);
   }
 
   ///Build List
@@ -98,7 +97,7 @@ class _PickerState extends State<Picker> {
           child: AppTextInput(
             hintText: Translate.of(context).translate('search'),
             onChanged: _onFilter,
-            onSubmitted: _onFilter,
+            onSubmitted: _onchange,
             controller: widget.picker.controller,
             trailing: GestureDetector(
               dragStartBehavior: DragStartBehavior.down,
@@ -144,11 +143,11 @@ class _PickerState extends State<Picker> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          widget.picker.title ?? Translate.of(context).translate('picker'),
+            widget.picker.title ?? Translate.of(context).translate('picker'),
             style: Theme.of(context)
                 .textTheme
-                .headline6!.copyWith(fontFamily: "ProximaNova")
-        ),
+                .headline6!
+                .copyWith(fontFamily: "ProximaNova")),
       ),
       body: SafeArea(
         child: _buildList(),

@@ -6,13 +6,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:web_demo/api/api.dart';
+import 'package:web_demo/blocs/app_bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model_user.dart';
 import 'package:web_demo/repository/user.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 import 'package:http/http.dart' as http;
-
+String? profile;
 class EditProfile extends StatefulWidget {
   const EditProfile({Key? key}) : super(key: key);
 
@@ -46,7 +47,7 @@ class _EditProfileState extends State<EditProfile> {
   String? _validInfo;
   bool channelEnable = false;
   UserModel? userModel;
-  String? profile;
+
 
   @override
   void initState() {
@@ -100,10 +101,12 @@ class _EditProfileState extends State<EditProfile> {
         print(jsonResp);
         profile = jsonResp['data'];
         if (value.isNotEmpty) {
+
           userModel = await Api.getReviewerDetail(int.parse(
               UtilPreferences.getString(Preferences.clientId.toString())!));
           setState(() {});
           UserRepository.saveUser(user: userModel!);
+          AppBloc.userCubit.onLoadUser();
         }
       });
       setState(() {});
