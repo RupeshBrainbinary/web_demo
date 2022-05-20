@@ -105,10 +105,7 @@ class _SubmitState extends State<Submit> {
     slug = await Api.validBusienss({
       "country": _country!.id,
       "category": _category!.id,
-     // "clientVal": _business!.title,
-      // "loc": locationController.text,
-      // "city": cityController.text,
-      "client":UtilPreferences.getString(Preferences.clientId)
+      "client":_business!.id
     });
     _loader = false;
     setState(() {});
@@ -273,7 +270,10 @@ class _SubmitState extends State<Submit> {
     if (item != null) {
       setState(() {
         _country = item;
+
       });
+      print("selected Country id $_country");
+      print(_country!.id);
       _categories = await Api.getCategory(_country!.id.toString());
       _category = null;
       _business = null;
@@ -562,7 +562,7 @@ class _SubmitState extends State<Submit> {
             const SizedBox(height: 8),
             AppPickerItem(
               title: Translate.of(context).translate('choose_country'),
-              value: _country == null ? null : _country!.title,
+              value: _country == null ? null :_country!.title ,
               onPressed: _onSelectCountry,
             ),
 
