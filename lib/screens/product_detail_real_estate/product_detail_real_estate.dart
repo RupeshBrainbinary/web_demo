@@ -493,7 +493,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 style: Theme.of(context).textTheme.headline5!.copyWith(
                     fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
               ),
-              InkWell(
+              /*InkWell(
                 onTap: () =>
                     {_onCompanyProfile(_detailPage!.review.profileSlug)},
                 // onTap: () {
@@ -512,7 +512,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     size: 20,
                   ),
                 ),
-              ),
+              ),*/
             ],
           ),
 
