@@ -113,7 +113,7 @@ class _AppState extends State<App> {
                       ),
                     );
                   }),
-                  autoPlayDelay: const Duration(seconds: 3),
+                  autoPlayDelay: const Duration(seconds: 1),
                 ),
               );
             },
