@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fijkplayer/fijkplayer.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/configs/config.dart';
@@ -29,7 +30,7 @@ class ProductDetailRealEstate extends StatefulWidget {
   }
 }
 
-FijkPlayer player = FijkPlayer();
+// FijkPlayer player = FijkPlayer();
 
 class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   final Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
@@ -44,9 +45,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   bool _favorite = false;
   ProductDetailRealEstatePageModel? _detailPage;
 
-  // late VideoPlayerController _controller;
-
-  // ChewieController? _chewieController;
+  late VideoPlayerController _controller;
+  late ChewieController _chewieController;
   Timer? _timer;
   bool _onTouch = true;
   String clientId = '';
@@ -57,24 +57,23 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   CommentRes? _commentRes;
   bool isDispose = false;
   bool isShow = false;
-
-  //MiniVideoPlayerController? viewPlayerController;
+  Future<void>? _initializeVideoPlayerFuture;
 
   @override
   void initState() {
     super.initState();
-    player = FijkPlayer();
+    //player = FijkPlayer();
     isDispose = false;
     _loadData();
   }
 
   @override
   void dispose() {
-    //_controller.dispose();
-    //_chewieController?.dispose();
+    _controller.dispose();
+    _chewieController.dispose();
     isDispose = true;
-    player.reset();
-    player = FijkPlayer();
+    //player.reset();
+    //player = FijkPlayer();
     _timer?.cancel();
     //viewPlayerController!.dealloc();
     super.dispose();
@@ -122,34 +121,56 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           path: _detailPage?.review.video ?? '',
           type: VideoType.network));*/
 
-      await setPlayerValue();
+      //await setPlayerValue();
       await Api.getIncreaseCount(_detailPage!.review.videoSlug);
       _detailPage?.review.views++;
 
-      /*_controller =
+      _controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '');
-      await Future.wait([
-        _controller.initialize(),
-      ]);
-
+      await Future.wait([_controller.initialize()]);
       _chewieController = ChewieController(
         videoPlayerController: _controller,
         autoPlay: true,
         looping: true,
+
+        /*additionalOptions: (context) {
+          return <OptionItem>[
+            OptionItem(
+              onTap: toggleVideo,
+              iconData: Icons.live_tv_sharp,
+              title: 'Toggle Video Src',
+            ),
+          ];
+        },*/
+        // subtitle: Subtitles(subtitles),
+        subtitleBuilder: (context, dynamic subtitle) => Container(
+          padding: const EdgeInsets.all(10.0),
+          child: subtitle is InlineSpan
+              ? RichText(
+            text: subtitle,
+          )
+              : Text(
+            subtitle.toString(),
+            style: const TextStyle(color: Colors.black),
+          ),
+        ),
+
         hideControlsTimer: const Duration(seconds: 1),
-      );*/
+      );
+
+      _initializeVideoPlayerFuture = _controller.initialize();
     }
 
     setState(() {});
   }
 
-  Future<void> setPlayerValue() async {
+  /*Future<void> setPlayerValue() async {
     player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
     player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
     await player.setOption(FijkOption.hostCategory, "request-screen-on", 1);
     await player.setOption(FijkOption.hostCategory, "request-audio-focus", 1);
     await player.setDataSource(_detailPage?.review.video ?? '', autoPlay: true);
-  }
+  }*/
 
   Future<void> getComments() async {
     _commentRes = await Api.getCommentsLikesData(widget.review!.videoSlug,
@@ -202,7 +223,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             padding: const EdgeInsets.only(bottom: 16),
             child: AppReviewItem(
               onPressed: () {
-                player.stop();
+                //player.stop();
                 setState(() {});
 
                 Future.delayed(Duration(seconds: 1), () {
@@ -248,12 +269,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   ///On navigate product detail
   Future<void> _onProductDetail(ReviewModel item) async {
-    await player.reset();
+    //await player.reset();
     Navigator.pushNamed(context, Routes.productDetail, arguments: item)
         .whenComplete(() async {
-      await player.reset();
+      /*await player.reset();
       await setPlayerValue();
-      setState(() {});
+      setState(() {});*/
     });
   }
 
@@ -472,7 +493,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 style: Theme.of(context).textTheme.headline5!.copyWith(
                     fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
               ),
-          /*    InkWell(
+              InkWell(
                 onTap: () =>
                     {_onCompanyProfile(_detailPage!.review.profileSlug)},
                 // onTap: () {
@@ -491,7 +512,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     size: 20,
                   ),
                 ),
-              ),*/
+              ),
             ],
           ),
 
@@ -711,10 +732,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         child: SizedBox(
                           width: 40,
                           height: 40,
-                          child: _commentRes == null ? SizedBox() : ClipRRect(
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
-                              imageUrl:"https://www.thereviewclip.com/uploads/client_logo/${_commentRes!.chanel!.avatar.toString()}",
+                              imageUrl: _commentRes == null ? 'null' : _commentRes!.chanel!.avatar.toString(),
                               fit: BoxFit.cover,
                               errorWidget: (con, str, dy) {
                                 return Image.asset(
@@ -975,21 +996,80 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   @override
   Widget build(BuildContext context) {
-    /*MiniVideoPlayer videoPlayer = MiniVideoPlayer(
-        onCreated: onViewPlayerCreated,
-        hiddenControlView: true,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height/2.5);*/
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text(widget.review?.comment ?? ""),
-      ),*/
       body: SafeArea(
         child: Column(
           children: [
             Stack(
               children: [
-                VisibilityDetector(
+                FutureBuilder(
+                  future: _initializeVideoPlayerFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _onTouch = true;
+                          });
+                          resetTimer();
+                        },
+                        child: SizedBox(
+                          height: 200,
+                          // Use the VideoPlayer widget to display the video.
+                          child: Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              VideoPlayer(_controller),
+                              VideoProgressIndicator(
+                                _controller,
+                                allowScrubbing: true,
+                                padding: const EdgeInsets.all(3),
+                                colors: VideoProgressColors(
+                                    playedColor:
+                                    Theme.of(context).primaryColor),
+                              ),
+                              // Add a play or pause button overlay
+                              Visibility(
+                                visible: (_onTouch),
+                                child: Container(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  alignment: Alignment.center,
+                                  child: FlatButton(
+                                    shape: const CircleBorder(
+                                        side: BorderSide(color: Colors.white)),
+                                    child: Icon(
+                                      _controller.value.isPlaying
+                                          ? Icons.pause
+                                          : Icons.play_arrow,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      resetTimer();
+                                      // pause while video is playing, play while video is pausing
+                                      setState(() {
+                                        _controller.value.isPlaying
+                                            ? _controller.pause()
+                                            : _controller.play();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox(
+                        height: 200,
+                        /*child: Center(
+                          child: CircularProgressIndicator(),
+                        ),*/
+                      );
+                    }
+                  },
+                ),
+                /*VisibilityDetector(
                   onVisibilityChanged: (VisibilityInfo info) {
                     if (info.visibleFraction == 0) {
                       player.pause();
@@ -1004,7 +1084,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     fit: FijkFit.fitHeight,
                     height: 200,
                   ),
-                ),
+                ),*/
                 Positioned(
                   top: 5,
                   left: 5,

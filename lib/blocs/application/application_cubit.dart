@@ -92,7 +92,7 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     }
 
     ///load categories
-    //await AppBloc.categoryCubit.loadCategories();
+    await AppBloc.categoryCubit.loadCategories();
   }
 
   ///On Complete Intro

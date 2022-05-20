@@ -201,9 +201,9 @@ class _ListProductRealEstateState extends State<ListProductRealEstate> {
 
   ///On navigate product detail
   Future<void> _onProductDetail(ReviewModel item) async {
-    await player.reset();
+    // await player.reset();
     Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
-      player.reset();
+      // player.reset();
     });
   }
 

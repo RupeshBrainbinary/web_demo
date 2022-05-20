@@ -157,9 +157,9 @@ class _ProductDetailTabState extends State<ProductDetailTab> {
 
   ///On navigate product detail
   Future<void> _onProductDetail(ProductModel item) async {
-    await player.reset();
+    // await player.reset();
     Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
-      player.reset();
+      // player.reset();
     });
   }
 
