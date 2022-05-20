@@ -133,7 +133,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
       _chewieController = ChewieController(
         videoPlayerController: _controller,
-        autoPlay: false,
+        autoPlay: true,
         looping: true,
         hideControlsTimer: const Duration(seconds: 1),
 
