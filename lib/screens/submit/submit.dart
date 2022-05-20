@@ -107,7 +107,8 @@ class _SubmitState extends State<Submit> {
       "category": _category!.id,
       "clientVal": _business!.title,
       "loc": locationController.text,
-      "city": cityController.text
+      "city": cityController.text,
+      "client":UtilPreferences.getString(Preferences.clientId)
     });
     _loader = false;
     setState(() {});
