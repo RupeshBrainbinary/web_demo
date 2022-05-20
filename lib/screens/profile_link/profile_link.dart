@@ -56,7 +56,7 @@ class _ProfileLinkState extends State<ProfileLink> {
                       border: Border.all(color: Theme.of(context).primaryColor)
                     ),
                     child: Text(
-                      map.isEmpty ? "" : map['data']['url'],
+                      map.isEmpty ? "" : map['data']['url'].toString(),
                       style: Theme.of(context)
                           .textTheme
                           .subtitle2!
