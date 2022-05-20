@@ -121,6 +121,7 @@ class _HomeState extends State<Home> {
       //await AppBloc.categoryCubit.loadCategories();
       _countrySelected = item;
 
+
       setState(() {});
     }
   }
@@ -443,6 +444,7 @@ class _HomeState extends State<Home> {
 
   ///Build category videos
   Widget _buildCategoryVideos(CategoryModel category) {
+    bool showZero = false;
     Widget content = SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -466,6 +468,7 @@ class _HomeState extends State<Home> {
       ///Empty
       if (_homePage!.popular.isEmpty ||
           _videoByCategory[category.id.toString()] == null) {
+        showZero = true;
         content = Container(
           alignment: Alignment.center,
           child: Text(
@@ -479,6 +482,7 @@ class _HomeState extends State<Home> {
       } else {
         List<ReviewModel> productPage =
             _videoByCategory[category.id.toString()]!;
+        showZero = productPage.isEmpty;
         content = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
@@ -529,7 +533,7 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                           fontFamily: "ProximaNova"),
                     ),
-                    Text(
+                    showZero ? Text("0 Videos"):Text(
                       "${category.count} Videos",
                       style: Theme.of(context)
                           .textTheme
@@ -564,6 +568,7 @@ class _HomeState extends State<Home> {
     Map<String, List<ReviewModel>> tempList = {};
     for (var cat in categoryList) {
       ResultApiModel res = await Api.getProduct(cat.id);
+      print(res);
       if (res.data != null) {
         List<ReviewModel> list =
             res.data!.map<ReviewModel>((e) => ReviewModel.fromJson(e)).toList();
