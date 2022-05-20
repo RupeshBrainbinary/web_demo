@@ -46,7 +46,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   ProductDetailRealEstatePageModel? _detailPage;
 
   late VideoPlayerController _controller;
-  late ChewieController _chewieController;
+  ChewieController? _chewieController;
   Timer? _timer;
   bool _onTouch = true;
   String clientId = '';
@@ -70,7 +70,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   @override
   void dispose() {
     _controller.dispose();
-    _chewieController.dispose();
+    _chewieController?.dispose();
     isDispose = true;
     //player.reset();
     //player = FijkPlayer();
@@ -127,38 +127,17 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
       _controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '');
-      await Future.wait([_controller.initialize()]);
+      await Future.wait([
+        _controller.initialize(),
+      ]);
+
       _chewieController = ChewieController(
         videoPlayerController: _controller,
-        autoPlay: true,
+        autoPlay: false,
         looping: true,
-
-        /*additionalOptions: (context) {
-          return <OptionItem>[
-            OptionItem(
-              onTap: toggleVideo,
-              iconData: Icons.live_tv_sharp,
-              title: 'Toggle Video Src',
-            ),
-          ];
-        },*/
-        // subtitle: Subtitles(subtitles),
-        subtitleBuilder: (context, dynamic subtitle) => Container(
-          padding: const EdgeInsets.all(10.0),
-          child: subtitle is InlineSpan
-              ? RichText(
-            text: subtitle,
-          )
-              : Text(
-            subtitle.toString(),
-            style: const TextStyle(color: Colors.black),
-          ),
-        ),
-
         hideControlsTimer: const Duration(seconds: 1),
-      );
 
-      _initializeVideoPlayerFuture = _controller.initialize();
+      );
     }
 
     setState(() {});
@@ -581,10 +560,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              Text(
-                _detailPage!.review.clientName,
-                style: Theme.of(context).textTheme.headline5!.copyWith(
-                    fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
+              SizedBox(
+                width: MediaQuery.of(context).size.width-35,
+                child: Text(
+                  _detailPage!.review.clientName,
+                  style: Theme.of(context).textTheme.headline5!.copyWith(
+                      fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
+                ),
               ),
               /*InkWell(
                 onTap: () =>
@@ -1095,72 +1077,32 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           children: [
             Stack(
               children: [
-                FutureBuilder(
-                  future: _initializeVideoPlayerFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            _onTouch = true;
-                          });
-                          resetTimer();
-                        },
-                        child: SizedBox(
-                          height: 200,
-                          // Use the VideoPlayer widget to display the video.
-                          child: Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              VideoPlayer(_controller),
-                              VideoProgressIndicator(
-                                _controller,
-                                allowScrubbing: true,
-                                padding: const EdgeInsets.all(3),
-                                colors: VideoProgressColors(
-                                    playedColor:
-                                    Theme.of(context).primaryColor),
-                              ),
-                              // Add a play or pause button overlay
-                              Visibility(
-                                visible: (_onTouch),
-                                child: Container(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  alignment: Alignment.center,
-                                  child: FlatButton(
-                                    shape: const CircleBorder(
-                                        side: BorderSide(color: Colors.white)),
-                                    child: Icon(
-                                      _controller.value.isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      resetTimer();
-                                      // pause while video is playing, play while video is pausing
-                                      setState(() {
-                                        _controller.value.isPlaying
-                                            ? _controller.pause()
-                                            : _controller.play();
-                                      });
-                                    },
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const SizedBox(
-                        height: 200,
-                        /*child: Center(
-                          child: CircularProgressIndicator(),
-                        ),*/
-                      );
+                _chewieController != null &&
+                    _chewieController!
+                        .videoPlayerController.value.isInitialized
+                    ? VisibilityDetector(
+                  key: const Key("unique key"),
+                  onVisibilityChanged: (VisibilityInfo info) {
+                    debugPrint(
+                        "${info.visibleFraction} of my widget is visible");
+                    if (info.visibleFraction == 0) {
+                      print("Pause Video");
+                      _chewieController?.pause();
                     }
                   },
+                  child: SizedBox(
+                    //aspectRatio: _controller.value.aspectRatio,
+                    height: 200,
+                    child: Chewie(
+                      controller: _chewieController!,
+                    ),
+                  ),
+                )
+                    : const SizedBox(
+                  height: 200,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
                 /*VisibilityDetector(
                   onVisibilityChanged: (VisibilityInfo info) {
