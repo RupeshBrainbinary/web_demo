@@ -309,7 +309,7 @@ class Api {
 
   static Future<dynamic> getLoadProfileLink() async {
     Map<String, dynamic> body = {
-      'client_id': UtilPreferences.getString(Preferences.clientId),
+      'cid': UtilPreferences.getString(Preferences.clientId),
     };
     final result = await httpManager.post(url: loadProfileLink, data: body);
     print(result);
@@ -324,7 +324,6 @@ class Api {
       "client_id": UtilPreferences.getString(Preferences.clientId)
     });
     Map<String, dynamic> map = result as Map<String, dynamic>;
-
     return result['data']
         .map<ReviewModel>((e) => ReviewModel.fromJson(e))
         .toList();
