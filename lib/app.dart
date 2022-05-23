@@ -133,7 +133,7 @@ Future<void> checkForUpdate(BuildContext context) async {
   String appName = packageInfo.buildNumber;
   Map<String, dynamic> res = await Api.getCommonData();
   if (res['status'] == 200) {
-    if (res['data']['version'] == packageInfo.version) {
+    if (res['data']['version'] != packageInfo.version) {
       return;
     }
     showDialog(

@@ -93,7 +93,12 @@ class _AppChannelItemState extends State<AppChannelItem> {
                     height: 4,
                     width: 12,
                   ),
-                  ElevatedButton(
+                  ElevatedButton(style: ElevatedButton.styleFrom(
+                    primary:  subscribedList
+                        .where((element) =>
+                    element.slug == widget.item!.slug)
+                        .isNotEmpty? Colors.grey:Colors.blue, // Background color
+                  ),
                       onPressed: widget.onSubscribe != null
                           ? widget.onSubscribe
                           : () async {
@@ -113,12 +118,12 @@ class _AppChannelItemState extends State<AppChannelItem> {
                                 isShow = false;
                               }
                               setState(() {});
-                              Fluttertoast.showToast(
+                          /*    Fluttertoast.showToast(
                                   msg: "Subscribed successfully", // message
                                   toastLength: Toast.LENGTH_SHORT, // length
                                   gravity: ToastGravity.BOTTOM_LEFT, // location
                                   timeInSecForIosWeb: 1 // duration
-                                  );
+                                  );*/
                             },
                       child: Text(
                         subscribedList
@@ -199,12 +204,12 @@ class _AppChannelItemState extends State<AppChannelItem> {
                           isShow = false;
                         }
                         setState(() {});
-                        Fluttertoast.showToast(
+                     /*   Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM_LEFT, // location
                             timeInSecForIosWeb: 1 // duration
-                            );
+                            );*/
                       },
                 child: Text(
                   subscribedList

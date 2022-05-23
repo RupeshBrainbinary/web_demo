@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:web_demo/api/http_manager.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/configs/preferences.dart';
@@ -51,12 +52,14 @@ class Api {
   static const String relatedClips =
       "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
   static const String subscribeVideo = "$domain/services/subscribe";
+  static const String channelNameUpdate = "$domain/reviewer/updateAccReviewerChanel";
   static const String resetReviewerPassword =
       "$domain/services/resetReviewerPassword";
   static const String subscribedListUrl =
       "$domain/reviewer_profile/subscribed_list";
   static const String commonData = "$domain/common/commonData";
     static const String uploadImage = "$domain/reviewer/uploadImage";
+    static const String profileUpdate = "$domain/reviewer/updateAccSettings";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -266,7 +269,7 @@ class Api {
     final result = await httpManager.post(
       url: topReviewsURL,
       data: {
-        'limit': 0,
+        'limit': 200,
         'status': 1,
       },
     );
@@ -289,7 +292,7 @@ class Api {
   ///Reviewers Profile
   static Future<List<ReviewModel>> getVideosByReviewer(int clientId) async {
     Map<String, dynamic> body = {
-      'limit': 100,
+      'limit': 200,
       'start': 0,
       'lgd': 1,
       'client_id': clientId
@@ -321,7 +324,7 @@ class Api {
 
   static Future<List<ReviewModel>> getMyVideos() async {
     final result = await httpManager.post(url: myvideos, data: {
-      "limit": "100",
+      "limit": "200",
       "start": "0",
       "lgd": "1",
       "client_id": UtilPreferences.getString(Preferences.clientId)
@@ -390,6 +393,18 @@ class Api {
     print(result);
     return result;
   }
+  static Future<dynamic> channelsName(String channel) async {
+
+    Map<String, dynamic> body = {
+      'client_id': UtilPreferences.getString(Preferences.clientId),
+      'channel':channel,
+    };
+    final result = await httpManager.post(url: channelNameUpdate, data: body);
+    print(result);
+    String message = result["msg"];
+    Fluttertoast.showToast(msg: message);
+    return result;
+  }
 
   static Future<dynamic> resetPassword(String email) async {
     final result = await httpManager.post(url: resetReviewerPassword, data: {
@@ -431,8 +446,19 @@ class Api {
     print(result);
     return result;
   }
-
+  static Future<Map<String, dynamic>> profileUpdateData(String aboutCompany,String mob) async {
+    Map<String, dynamic> body = {
+      'mobileno':mob,
+      'aboutCompany':aboutCompany,
+    };
+    final result = await httpManager.post(url: profileUpdate,data: body);
+    print(result);
+    String message = result["msg"];
+    Fluttertoast.showToast(msg: message);
+    return result;
+  }
   ///Singleton factory
+  ///
   static final Api _instance = Api._internal();
 
   factory Api() {

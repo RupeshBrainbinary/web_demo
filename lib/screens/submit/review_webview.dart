@@ -46,8 +46,10 @@ class _ReviewWebViewState extends State<ReviewWebView> {
       print("===> $uri");
       if (uri.toString().contains("success=1")) {
         final snackBar = SnackBar(
-          content: Text(
-            "Review Recorded Successfully",
+          content: Center(
+            child: Text(
+              "Thanks for submitting your Video Review. We are processing your video. It will get published in few minutes.",
+            ),
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -56,8 +58,10 @@ class _ReviewWebViewState extends State<ReviewWebView> {
       } else {
         if (uri.toString().contains("success=0")) {
           final snackBar = SnackBar(
-            content: Text(
-              "Review not Recorded Successfully please try again later",
+            content: Center(
+              child: Text(
+                "Review not Recorded Successfully please try again later",
+              ),
             ),
           );
           flutterWebViewPlugin.close();

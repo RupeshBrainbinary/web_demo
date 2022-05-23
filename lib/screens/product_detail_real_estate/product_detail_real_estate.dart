@@ -862,7 +862,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     height: 4,
                     width: 12,
                   ),
-                  ElevatedButton(
+                  ElevatedButton(style: ElevatedButton.styleFrom(
+                    primary:  (_commentRes != null && subscribedList
+                        .where((element) =>
+                    element.name == _commentRes!.chanel!.name)
+                        .isNotEmpty)? Colors.grey:Colors.blue, // Background color
+                  ),
                       onPressed: ()async{
                         final result = await Api.subscribe({
                           "id":UtilPreferences.getString(Preferences.clientId),
@@ -879,14 +884,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           isShow = false;
                         }
                         setState(() {
-
                         });
-                        Fluttertoast.showToast(
+                      /*  Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM_LEFT, // location
                             timeInSecForIosWeb: 1 // duration
-                            );
+                            );*/
                       },
                       child: Text( (_commentRes != null && subscribedList
                           .where((element) =>

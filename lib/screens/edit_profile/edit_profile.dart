@@ -46,6 +46,8 @@ class _EditProfileState extends State<EditProfile> {
   String? _validWebsite;
   String? _validInfo;
   bool channelEnable = false;
+  bool mobNumber = false;
+  bool loding= false;
   UserModel? userModel;
 
 
@@ -59,14 +61,14 @@ class _EditProfileState extends State<EditProfile> {
     Map<String, dynamic> map = jsonDecode(
       UtilPreferences.getString(Preferences.user) ?? '',
     );
-
     _textNameController.text = map['name'] ?? '';
     _textEmailController.text = map['email'] ?? '';
-    _textMobileController.text = map['mobile'] ?? '';
+    _textMobileController.text =  map['mobile'] ?? '';
     _textAddressController.text = map['location'] ?? '';
     _textWebsiteController.text = map['chanel'] ?? '';
     profile = map['avatar'];
     channelEnable = _textWebsiteController.text.isEmpty;
+    mobNumber = _textMobileController.text.isEmpty;
     setState(() {});
   }
 
@@ -135,19 +137,31 @@ class _EditProfileState extends State<EditProfile> {
       _validWebsite = UtilValidator.validate(
         _textWebsiteController.text,
       );*/
+      _validMobile = UtilValidator.validate(_textMobileController.text);
       _validInfo = UtilValidator.validate(
         _textInfoController.text,
       );
     });
+
 
     if (/*_validName == null &&
         _validEmail == null &&
         _validMobile == null &&
         _validAddress == null &&
         _validWebsite == null &&*/
-        _validInfo == null) {
-      Navigator.pop(context);
+    _validMobile == null  && _validInfo == null) {
     }
+  if(_textMobileController.text.isNotEmpty &&_textInfoController.text.isNotEmpty){
+           setState(() {
+             loding =true;
+           });
+           await  Api.profileUpdateData(_textInfoController.text, _textMobileController.text);
+
+    setState(() {
+      loding = false;
+    });
+           Navigator.pop(context);
+  }
   }
 
   ///Build avatar
@@ -179,7 +193,6 @@ class _EditProfileState extends State<EditProfile> {
         ),
       );
     }
-
     return Container(
       width: 100,
       height: 100,
@@ -211,9 +224,9 @@ class _EditProfileState extends State<EditProfile> {
           ),
         ],
       ),
-      body: SafeArea(
+      body: loding ==  true?const Center(child: CircularProgressIndicator(),):SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
+          child:   Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,7 +331,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
-                  enable: true,
+                  enable: mobNumber,
                   hintText: Translate.of(context).translate('input_number'),
                   errorText: _validMobile,
                   focusNode: _focusMobile,

@@ -206,6 +206,12 @@ class _AppReviewerInfoState extends State<AppReviewerInfo> {
                     width: 12,
                   ),
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary:  subscribedList
+                            .where((element) =>
+                        element.slug == widget.user!.slug)
+                            .isNotEmpty? Colors.grey:Colors.blue, // Background color
+                      ),
                       onPressed: () async {
                         final result = await Api.subscribe({
                           "id": UtilPreferences.getString(Preferences.clientId),
@@ -222,12 +228,12 @@ class _AppReviewerInfoState extends State<AppReviewerInfo> {
                           isShow = false;
                         }
                         setState(() {});
-                        Fluttertoast.showToast(
+                      /*  Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM_LEFT, // location
                             timeInSecForIosWeb: 1 // duration
-                            );
+                            );*/
                       },
                       child: Text( subscribedList
                           .where((element) =>

@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
@@ -18,6 +20,10 @@ class AppContainer extends StatefulWidget {
 
 class _AppContainerState extends State<AppContainer> {
   String _selected = Routes.home;
+  TextEditingController channalName = TextEditingController();
+  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  bool loding = false;
+
 
   @override
   void initState() {
@@ -26,7 +32,20 @@ class _AppContainerState extends State<AppContainer> {
     }
     super.initState();
   }
-
+ /* Future<void> channelNameUpdate() async {
+    _countryList = await Api.getCountryList();
+    _country = _countryList.first;
+    _categories = await Api.getCategory(_country!.id.toString());
+    *//*_category = _categories.first;
+    Map<String, dynamic> params = {
+      "country": _country!.id,
+      "category": _category!.id,
+    };
+    _bussinessList = await Api.getBusinessList(params);
+    _business = _bussinessList.first;
+    busines.text = _business!.location;*//*
+    setState(() {});
+  }*/
   ///check route need auth
   bool _requireAuth(String route) {
     switch (route) {
@@ -102,9 +121,152 @@ class _AppContainerState extends State<AppContainer> {
       );
       if (result == null) return;
     }
-    Navigator.pushNamed(context, Routes.submit);
+ _modalBottomSheetMenu();
+     // Navigator.pushNamed(context, Routes.submit);
   }
+  void _modalBottomSheetMenu(){
+ /*   showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Form(key: _formKey,
+            child: Dialog(
+              alignment: Alignment.center,
+              child: Container(color: Colors.white,
+                height: 350,
+                child: Column(mainAxisSize: MainAxisSize.min,
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Align(
+                            alignment: Alignment.topLeft,
+                            child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  print("back  == == back");
+                                },
+                                child: Icon(
+                                  Icons.clear,
+                                  color: Colors.black87,
+                                ))),
+                      ),
+                      Container(width: 230,
+                        child: TextFormField(validator:(value) {
+                          if(value!.isEmpty)
+                          {
+                            return "Enter Channel Name";
+                          }
+                        },
+                          controller: channalName,
+                          decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),),
+                              filled: true,
+                              hintStyle: TextStyle(color: Colors.blue),
+                              hintText: "channels Name",
+                            fillColor: Colors.black12
+                              ),
+                        ),
+                      ),
+                      TextButton(onPressed: () {
+                        if (_formKey.currentState!.validate()) {
 
+                        }
+
+                      }, child: Text("Submit")),
+
+                    ]),
+              ),
+            ),
+          );
+        });*/
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Form(key: _formKey,
+            child: AlertDialog(
+              title: Text("Channel Name",style: TextStyle(fontWeight: FontWeight.bold),),
+              content: Column(mainAxisSize: MainAxisSize.min,children: [
+                Container(width: 230,
+                  child: TextFormField(validator:(value) {
+                    if(value!.isEmpty)
+                    {
+                      return "Enter Channel Name";
+                    }
+                  },
+                    controller: channalName,
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),),
+                        filled: true,
+                        hintStyle: TextStyle(color: Colors.grey),
+                        hintText: "channel Name",
+                        fillColor: Colors.black12
+                    ),
+                  ),
+                ),
+                SizedBox(height: 5,),
+                Container(
+                  width: 200,
+                  child: ElevatedButton( style: ElevatedButton.styleFrom( primary: Colors.grey, // background (button) color
+                      onPrimary: Colors.black,
+                   // background (button) color
+                  // foreground (text) color
+                  ),onPressed: () async {
+                     Navigator.pop(context);
+                     }, child: const Text("Cancle",style: TextStyle(color:Colors.black),)),
+                ),
+                Container(
+                 width: 200,
+                  child: ElevatedButton(style: ElevatedButton.styleFrom(
+                    primary:Color(0xffff7f50), // background (button) color
+                    onPrimary: Colors.black, // foreground (text) color
+                  ),onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      setState(() {
+                        loding = false;
+                      });
+                      await Api.channelsName(channalName.text);
+                      setState(() {
+                        loding = true;
+                      });
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context, Routes.submit);
+                      channalName.clear();
+                    }
+
+                  }, child: Text("Submit")),
+                ),
+              /*  TextButton(onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    setState(() {
+                      loding = false;
+                    });
+                    await Api.channelsName(channalName.text);
+                   setState(() {
+                     loding = true;
+                   });
+                      Navigator.pushNamed(context, Routes.submit);
+                  *//*   Navigator.push(context,MaterialPageRoute(builder: (context) {
+                       return const Submit();
+                     },));*//*
+                     channalName.clear();
+                  }
+                }, child:Text("Submit"))*/
+              ],),
+            /*  actions: <Widget>[
+                FlatButton(
+                  child: Text("Close"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],*/
+            ),
+          );
+        }
+    );
+  }
   ///Build Item Menu onCategoryList
   Widget _buildMenuItem({
     required String route,

@@ -487,8 +487,13 @@ class _ChannelDetailState extends State<ChannelDetail> {
                     width: 12,
                   ),
                   ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary:  subscribedList
+                            .where((element) =>
+                        element.slug == widget.channel!.slug)
+                            .isNotEmpty? Colors.grey:Colors.blue, // Background color
+                      ),
                       onPressed: ()async {
-
                         final result = await Api.subscribe({
                           "id":UtilPreferences.getString(Preferences.clientId),
                           "reviewer":_detailPage!.review.id.toString(),
@@ -506,12 +511,12 @@ class _ChannelDetailState extends State<ChannelDetail> {
                         setState(() {
 
                         });
-                        Fluttertoast.showToast(
+                  /*      Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM_LEFT, // location
                             timeInSecForIosWeb: 1 // duration
-                            );
+                            );*/
                       },
                       child: Text( subscribedList
                           .where((element) =>
