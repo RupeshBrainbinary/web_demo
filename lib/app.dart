@@ -141,7 +141,8 @@ Future<void> checkForUpdate(BuildContext context) async {
       builder: (context) => AlertDialog(
         title: Text(res['data']['Title'].toString()),
         content: Text(
-            "${res['data']['content']} from ${packageInfo.version} to ${res['data']['version']}"),
+            // "${res['data']['content']} from ${packageInfo.version} to ${res['data']['version']}"),
+            "${res['data']['content']}"),
         actions: [
           res['data']['force_update'] == 0
               ? AppButton(

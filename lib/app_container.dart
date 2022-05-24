@@ -118,7 +118,7 @@ class _AppContainerState extends State<AppContainer> {
       _selected = route;
     });
   }
-
+String? textError;
   ///On handle submit post
   void _onSubmit(bool authenticated) async {
     if (!authenticated) {
@@ -138,7 +138,7 @@ class _AppContainerState extends State<AppContainer> {
         Navigator.pushNamed(context, Routes.submit);
 
       }
-
+    // _modalBottomSheetMenu();
 
   }
   void _modalBottomSheetMenu(){
@@ -147,11 +147,11 @@ class _AppContainerState extends State<AppContainer> {
         builder: (BuildContext context) {
           return Form(key: _formKey,
             child: AlertDialog(
-              title: Center(child: Text("Create Channel",style: TextStyle(fontWeight: FontWeight.bold),)),
+              title: Center(child: Text("Create Review Channel",style: TextStyle(fontWeight: FontWeight.bold),)),
               content: Column(mainAxisSize: MainAxisSize.min,children: [
                 Text("To Record/Upload reviews you have to create a Channel.please Enter channel Name and start recording reviews..",style: TextStyle(fontSize: 15),),
-                SizedBox(height: 5,),
-                Container(width: 230,
+                SizedBox(height: 20,),
+                Container(width: 200,
                   child: TextFormField(validator:(value) {
                     if(value!.isEmpty)
                     {
@@ -161,7 +161,7 @@ class _AppContainerState extends State<AppContainer> {
                     controller: channalName,
                     decoration: InputDecoration(
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),),
+                          borderRadius: BorderRadius.circular(0),),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey),
                         hintText: "Enter Channel Name",
@@ -169,17 +169,7 @@ class _AppContainerState extends State<AppContainer> {
                     ),
                   ),
                 ),
-                SizedBox(height: 5,),
-              /*  Container(
-                  width: 200,
-                  child: ElevatedButton( style: ElevatedButton.styleFrom( primary: Colors.grey, // background (button) color
-                      onPrimary: Colors.black,
-                   // background (button) color
-                  // foreground (text) color
-                  ),onPressed: () async {
-                     Navigator.pop(context);
-                     }, child: const Text("Cancle",style: TextStyle(color:Colors.black),)),
-                ),*/
+                SizedBox(height: 10,),
                 Container(
                  width: 200,
                   child: ElevatedButton(style: ElevatedButton.styleFrom(
@@ -201,31 +191,9 @@ class _AppContainerState extends State<AppContainer> {
 
                   }, child: Text("Submit")),
                 ),
-              /*  TextButton(onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      loding = false;
-                    });
-                    await Api.channelsName(channalName.text);
-                   setState(() {
-                     loding = true;
-                   });
-                      Navigator.pushNamed(context, Routes.submit);
-                  *//*   Navigator.push(context,MaterialPageRoute(builder: (context) {
-                       return const Submit();
-                     },));*//*
-                     channalName.clear();
-                  }
-                }, child:Text("Submit"))*/
+
               ],),
-            /*  actions: <Widget>[
-                FlatButton(
-                  child: Text("Close"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],*/
+
             ),
           );
         }

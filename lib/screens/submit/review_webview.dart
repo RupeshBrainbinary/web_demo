@@ -49,7 +49,7 @@ class _ReviewWebViewState extends State<ReviewWebView> {
       if (uri.toString().contains("success=1")) {
         final snackBar = SnackBar(
           content: Center(
-            child: Container(height: 250,color: Colors.black,
+            child: Container(height: 250,color: Color(0xff585858),
               child: Column(mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [

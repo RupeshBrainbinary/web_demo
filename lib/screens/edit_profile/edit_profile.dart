@@ -65,12 +65,12 @@ setState(() {
   loding =true;
 });
     UserModel? user = await Api.getReviewerDetail(int.parse(UtilPreferences.getString(Preferences.clientId) ?? '0'));
-    _textNameController.text = user.name ?? '';
-    _textEmailController.text = user.email ?? '';
-    _textMobileController.text =  user.mobile ?? '';
-    _textAddressController.text = user.location ?? '';
-    _textWebsiteController.text = user.chanel ?? '';
-_textInfoController.text = user.about ?? "";
+    _textNameController.text = user.name;
+    _textEmailController.text = user.email ;
+    _textMobileController.text =  user.mobile;
+    _textAddressController.text = user.location ;
+    _textWebsiteController.text = user.chanel ;
+_textInfoController.text = user.about ;
 
     profile = user.avatar;
     channelEnable = _textWebsiteController.text.isEmpty;

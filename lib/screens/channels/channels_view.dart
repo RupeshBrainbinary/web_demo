@@ -129,9 +129,7 @@ class _ChannelsViewState extends State<ChannelsView> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
-
         centerTitle: true,
-
         title: Text(
           Translate.of(context).translate('Explore Review Channels',),
           style: Theme.of(context)
