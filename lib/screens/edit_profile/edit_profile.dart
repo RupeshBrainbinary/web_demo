@@ -46,7 +46,7 @@ class _EditProfileState extends State<EditProfile> {
   String? _validWebsite;
   String? _validInfo;
   bool channelEnable = false;
-  bool mobNumber = false;
+  // bool mobNumber = false;
   bool loding= false;
   UserModel? userModel;
 
@@ -58,18 +58,27 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _loadData() async {
-    Map<String, dynamic> map = jsonDecode(
+    /*Map<String, dynamic> map = jsonDecode(
       UtilPreferences.getString(Preferences.user) ?? '',
-    );
-    _textNameController.text = map['name'] ?? '';
-    _textEmailController.text = map['email'] ?? '';
-    _textMobileController.text =  map['mobile'] ?? '';
-    _textAddressController.text = map['location'] ?? '';
-    _textWebsiteController.text = map['chanel'] ?? '';
-    profile = map['avatar'];
+    );*/
+setState(() {
+  loding =true;
+});
+    UserModel? user = await Api.getReviewerDetail(int.parse(UtilPreferences.getString(Preferences.clientId) ?? '0'));
+    _textNameController.text = user.name ?? '';
+    _textEmailController.text = user.email ?? '';
+    _textMobileController.text =  user.mobile ?? '';
+    _textAddressController.text = user.location ?? '';
+    _textWebsiteController.text = user.chanel ?? '';
+_textInfoController.text = user.about ?? "";
+
+    profile = user.avatar;
     channelEnable = _textWebsiteController.text.isEmpty;
-    mobNumber = _textMobileController.text.isEmpty;
-    setState(() {});
+/*    mobNumber = _textMobileController.text.isEmpty;*/
+    setState(() {
+      loding = false;
+    });
+
   }
 
   @override
@@ -155,7 +164,7 @@ class _EditProfileState extends State<EditProfile> {
            setState(() {
              loding =true;
            });
-           await  Api.profileUpdateData(_textInfoController.text, _textMobileController.text);
+           await  Api.profileUpdateData(_textNameController.text,_textEmailController.text,_textAddressController.text,_textInfoController.text, _textMobileController.text);
 
     setState(() {
       loding = false;
@@ -331,7 +340,7 @@ class _EditProfileState extends State<EditProfile> {
                 ),
                 const SizedBox(height: 8),
                 AppTextInput(
-                  enable: mobNumber,
+                  enable: true,
                   hintText: Translate.of(context).translate('input_number'),
                   errorText: _validMobile,
                   focusNode: _focusMobile,

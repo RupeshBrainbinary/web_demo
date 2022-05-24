@@ -5,6 +5,7 @@ import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/models/model_user.dart';
 import 'package:web_demo/screens/screen.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -24,13 +25,20 @@ class _AppContainerState extends State<AppContainer> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   bool loding = false;
 
-
+  String? channelName ;
   @override
   void initState() {
     if(updateLoaded == false){
       checkForUpdate(context);
     }
+    getChannelName();
     super.initState();
+  }
+  Future<void> getChannelName()
+  async {
+    UserModel? user = await Api.getReviewerDetail(int.parse(UtilPreferences.getString(Preferences.clientId) ?? '0'));
+    channelName = user.chanel;
+    UtilPreferences.setString(Preferences.channelName, user.chanel );
   }
  /* Future<void> channelNameUpdate() async {
     _countryList = await Api.getCountryList();
@@ -121,72 +129,28 @@ class _AppContainerState extends State<AppContainer> {
       );
       if (result == null) return;
     }
- _modalBottomSheetMenu();
-     // Navigator.pushNamed(context, Routes.submit);
+    if(channelName!.isEmpty)
+      {
+        _modalBottomSheetMenu();
+      }
+    else
+      {
+        Navigator.pushNamed(context, Routes.submit);
+
+      }
+
+
   }
   void _modalBottomSheetMenu(){
- /*   showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Form(key: _formKey,
-            child: Dialog(
-              alignment: Alignment.center,
-              child: Container(color: Colors.white,
-                height: 350,
-                child: Column(mainAxisSize: MainAxisSize.min,
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Align(
-                            alignment: Alignment.topLeft,
-                            child: InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  print("back  == == back");
-                                },
-                                child: Icon(
-                                  Icons.clear,
-                                  color: Colors.black87,
-                                ))),
-                      ),
-                      Container(width: 230,
-                        child: TextFormField(validator:(value) {
-                          if(value!.isEmpty)
-                          {
-                            return "Enter Channel Name";
-                          }
-                        },
-                          controller: channalName,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10.0),),
-                              filled: true,
-                              hintStyle: TextStyle(color: Colors.blue),
-                              hintText: "channels Name",
-                            fillColor: Colors.black12
-                              ),
-                        ),
-                      ),
-                      TextButton(onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-
-                        }
-
-                      }, child: Text("Submit")),
-
-                    ]),
-              ),
-            ),
-          );
-        });*/
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return Form(key: _formKey,
             child: AlertDialog(
-              title: Text("Channel Name",style: TextStyle(fontWeight: FontWeight.bold),),
+              title: Center(child: Text("Create Channel",style: TextStyle(fontWeight: FontWeight.bold),)),
               content: Column(mainAxisSize: MainAxisSize.min,children: [
+                Text("To Record/Upload reviews you have to create a Channel.please Enter channel Name and start recording reviews..",style: TextStyle(fontSize: 15),),
+                SizedBox(height: 5,),
                 Container(width: 230,
                   child: TextFormField(validator:(value) {
                     if(value!.isEmpty)
@@ -200,13 +164,13 @@ class _AppContainerState extends State<AppContainer> {
                           borderRadius: BorderRadius.circular(10.0),),
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey),
-                        hintText: "channel Name",
+                        hintText: "Enter Channel Name",
                         fillColor: Colors.black12
                     ),
                   ),
                 ),
                 SizedBox(height: 5,),
-                Container(
+              /*  Container(
                   width: 200,
                   child: ElevatedButton( style: ElevatedButton.styleFrom( primary: Colors.grey, // background (button) color
                       onPrimary: Colors.black,
@@ -215,7 +179,7 @@ class _AppContainerState extends State<AppContainer> {
                   ),onPressed: () async {
                      Navigator.pop(context);
                      }, child: const Text("Cancle",style: TextStyle(color:Colors.black),)),
-                ),
+                ),*/
                 Container(
                  width: 200,
                   child: ElevatedButton(style: ElevatedButton.styleFrom(

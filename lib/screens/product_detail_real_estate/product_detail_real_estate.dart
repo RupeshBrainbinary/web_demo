@@ -865,24 +865,25 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   ElevatedButton(style: ElevatedButton.styleFrom(
                     primary:  (_commentRes != null && subscribedList
                         .where((element) =>
-                    element.name == _commentRes!.chanel!.name)
+                    element.slug == _commentRes!.chanel!.slug)
                         .isNotEmpty)? Colors.grey:Colors.blue, // Background color
                   ),
                       onPressed: ()async{
                         final result = await Api.subscribe({
                           "id":UtilPreferences.getString(Preferences.clientId),
-                          "reviewer":_detailPage!.review.id.toString(),
+                          // "reviewer":_detailPage!.review.id.toString(),
+                          "reviewer":_commentRes!.chanel!.id.toString(),
                           "xhr":"1"
                         });
                         print(result);
                         print(jsonDecode(result));
                         var jsonResp = jsonDecode(result);
-                        if (jsonResp['status'] == 1) {
+
                           isShow = true;
                           await Api.getSubscribedList();
-                        } else {
+
                           isShow = false;
-                        }
+
                         setState(() {
                         });
                       /*  Fluttertoast.showToast(
@@ -894,7 +895,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                       },
                       child: Text( (_commentRes != null && subscribedList
                           .where((element) =>
-                      element.name == _commentRes!.chanel!.name)
+                      element.slug == _commentRes!.chanel!.slug)
                           .isNotEmpty) ? 'Subscribed' : 'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontFamily: "ProximaNova", color: Colors.white))),

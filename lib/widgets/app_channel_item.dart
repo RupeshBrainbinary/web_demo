@@ -186,6 +186,12 @@ class _AppChannelItemState extends State<AppChannelItem> {
                         .copyWith(fontFamily: "ProximaNova"),
                   ),
             trailing: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary:  subscribedList
+                      .where((element) =>
+                  element.slug == widget.item!.slug)
+                      .isNotEmpty? Colors.grey:Colors.blue, // Background color
+                ),
                 onPressed: widget.onSubscribe != null
                     ? widget.onSubscribe
                     : () async {

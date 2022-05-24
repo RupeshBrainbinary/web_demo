@@ -82,7 +82,6 @@ class _SignInState extends State<SignIn> {
         await UtilPreferences.setString(
           Preferences.clientId,
           result.id.toString(),
-
         );
         await AppBloc.authenticateCubit.onSave(result);
         isLoading = false;
@@ -127,7 +126,6 @@ class _SignInState extends State<SignIn> {
       CommonToast().toats(context, "signInError");
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

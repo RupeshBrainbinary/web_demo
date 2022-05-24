@@ -69,9 +69,11 @@ class Api {
       result = await httpManager.post(
           url: getReviewerSettings, data: {'client_id': map['client_id']});
     }
+
     // final result = await UtilData.login();
     return ResultApiModel.fromJson(
         result is String ? jsonDecode(result) : result);
+
   }
 
   ///SignUp api
@@ -205,7 +207,7 @@ class Api {
     final result = await httpManager.post(url: topReviewsURL, data: {
       "country_id": UtilPreferences.getInt(Preferences.countryId) ?? 1,
       "category_id": categoryId,
-      //"limit": 1,
+      "limit": 200,
     });
     return ResultApiModel.fromJson(result);
   }
@@ -446,8 +448,12 @@ class Api {
     print(result);
     return result;
   }
-  static Future<Map<String, dynamic>> profileUpdateData(String aboutCompany,String mob) async {
+  static Future<Map<String, dynamic>> profileUpdateData(String name,String companyEmail , String location ,String aboutCompany,String mob) async {
     Map<String, dynamic> body = {
+      "client_id":UtilPreferences.getString(Preferences.clientId),
+      "name":name ,
+      "companyemail":companyEmail,
+      "location":location,
       'mobileno':mob,
       'aboutCompany':aboutCompany,
     };

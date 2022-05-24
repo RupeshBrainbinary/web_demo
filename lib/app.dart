@@ -133,7 +133,7 @@ Future<void> checkForUpdate(BuildContext context) async {
   String appName = packageInfo.buildNumber;
   Map<String, dynamic> res = await Api.getCommonData();
   if (res['status'] == 200) {
-    if (res['data']['version'] != packageInfo.version) {
+    if (res['data']['version'] == packageInfo.version) {
       return;
     }
     showDialog(
@@ -143,7 +143,7 @@ Future<void> checkForUpdate(BuildContext context) async {
         content: Text(
             "${res['data']['content']} from ${packageInfo.version} to ${res['data']['version']}"),
         actions: [
-          res['data']['force_update'] == 1
+          res['data']['force_update'] == 0
               ? AppButton(
                   "Maybe Later",
                   onPressed: () {
@@ -155,7 +155,7 @@ Future<void> checkForUpdate(BuildContext context) async {
           AppButton(
             "Update",
             onPressed: () async {
-              await launchUrl(Uri.parse(res['data']['link'].toString()));
+              await launchUrl(Uri.parse(res['data']['playstore_link'].toString()));
             },
             type: ButtonType.text,
           ),

@@ -14,6 +14,7 @@ class Preferences {
   static const String search = 'search';
   static const String keyboardHeight = 'keyboardHeight';
   static const String countryId = 'countryId';
+  static const String channelName = 'channelName';
 
   static Future<void> setPreferences() async {
     instance = await SharedPreferences.getInstance();

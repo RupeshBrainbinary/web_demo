@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -47,8 +49,20 @@ class _ReviewWebViewState extends State<ReviewWebView> {
       if (uri.toString().contains("success=1")) {
         final snackBar = SnackBar(
           content: Center(
-            child: Text(
-              "Thanks for submitting your Video Review. We are processing your video. It will get published in few minutes.",
+            child: Container(height: 250,color: Colors.black,
+              child: Column(mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Thanks for submitting your Video Review.",style: TextStyle(color: Colors.white),
+                  ),const SizedBox(height: 15,),
+                  Container(margin: EdgeInsets.only(left: 25),
+                    child: const Text(
+                      "We are processing your video. It will get published in few minutes.",style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
