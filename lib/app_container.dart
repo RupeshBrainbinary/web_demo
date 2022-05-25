@@ -25,7 +25,7 @@ class _AppContainerState extends State<AppContainer> {
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   bool loding = false;
 
-  String? channelName ;
+  String? channelName1 ;
   @override
   void initState() {
     if(updateLoaded == false){
@@ -37,7 +37,7 @@ class _AppContainerState extends State<AppContainer> {
   Future<void> getChannelName()
   async {
     UserModel? user = await Api.getReviewerDetail(int.parse(UtilPreferences.getString(Preferences.clientId) ?? '0'));
-    channelName = user.chanel;
+    channelName1 = user.chanel;
     UtilPreferences.setString(Preferences.channelName, user.chanel );
   }
  /* Future<void> channelNameUpdate() async {
@@ -129,7 +129,7 @@ String? textError;
       );
       if (result == null) return;
     }
-    if(channelName!.isEmpty)
+    if(channelName1!.isEmpty)
       {
         _modalBottomSheetMenu();
       }
@@ -138,7 +138,7 @@ String? textError;
         Navigator.pushNamed(context, Routes.submit);
 
       }
-    // _modalBottomSheetMenu();
+     // _modalBottomSheetMenu();
 
   }
   void _modalBottomSheetMenu(){
@@ -149,9 +149,26 @@ String? textError;
             child: AlertDialog(
               title: Center(child: Text("Create Review Channel",style: TextStyle(fontWeight: FontWeight.bold),)),
               content: Column(mainAxisSize: MainAxisSize.min,children: [
-                Text("To Record/Upload reviews you have to create a Channel.please Enter channel Name and start recording reviews..",style: TextStyle(fontSize: 15),),
+                Text("To Record/Upload reviews you have to create a Review Channel. Please enter Channel Name & start recording reviews…",style: TextStyle(fontSize: 15),),
                 SizedBox(height: 20,),
-                Container(width: 200,
+                SizedBox(
+                  height: 60,width: 200,
+                  child: TextFormField(controller: channalName,
+                    // maxLines: 1,
+                    decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(0),),
+                          filled: true,
+                          hintStyle: TextStyle(color: Colors.grey),
+                          hintText: "Enter Channel Name",
+                          helperText: "",
+                        contentPadding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                          fillColor: Colors.black12
+                      ),
+                    validator: (value) => (value!.isEmpty) ? 'Enter Channel Name' : null,
+                  ),
+                ),
+              /*  Container(width: 200,
                   child: TextFormField(validator:(value) {
                     if(value!.isEmpty)
                     {
@@ -168,10 +185,10 @@ String? textError;
                         fillColor: Colors.black12
                     ),
                   ),
-                ),
-                SizedBox(height: 10,),
-                Container(
-                 width: 200,
+                ),*/
+                const SizedBox(height: 5,),
+                SizedBox(
+                 width: 200,height: 40,
                   child: ElevatedButton(style: ElevatedButton.styleFrom(
                     primary:Color(0xffff7f50), // background (button) color
                     onPrimary: Colors.black, // foreground (text) color

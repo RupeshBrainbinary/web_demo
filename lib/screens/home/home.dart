@@ -181,6 +181,13 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.only(left: 8, right: 8),
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
+        List<ReviewModel> list = [];
+
+        for(int i=0; i<15; i++){
+          if(_homePage!.popular.length > i){
+            list.add(_homePage!.popular[i]);
+          }
+        }
         final item = categoryList[index];
         // print(item);
         return Padding(
@@ -298,6 +305,7 @@ class _HomeState extends State<Home> {
 
       ///Empty
       if (_homePage!.channels.isEmpty) {
+
         content = Container(
           alignment: Alignment.center,
           child: Text(
@@ -378,13 +386,19 @@ class _HomeState extends State<Home> {
           ),
         );
       } else {
+        List<ReviewModel> list = [];
+        for(int i=0; i<15; i++){
+          if(_homePage!.popular.length > i){
+            list.add(_homePage!.popular[i]);
+          }
+        }
         content = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: _homePage!.popular
+              children: list
                   .map((item) => Container(
                         width: 200,
                         padding: const EdgeInsets.only(left: 8, right: 8),
@@ -480,8 +494,14 @@ class _HomeState extends State<Home> {
           ),
         );
       } else {
-        List<ReviewModel> productPage =
-            _videoByCategory[category.id.toString()]!;
+  /*      List<ReviewModel> productPage =
+            _videoByCategory[category.id.toString()]!;*/
+        List<ReviewModel> productPage = [];
+        for(int i=0; i<15; i++){
+          if(  _videoByCategory[category.id.toString()]!.length > i){
+            productPage.add(_videoByCategory[category.id.toString()]![i]);
+          }
+        }
         showZero = productPage.isEmpty;
         content = SingleChildScrollView(
           scrollDirection: Axis.horizontal,
