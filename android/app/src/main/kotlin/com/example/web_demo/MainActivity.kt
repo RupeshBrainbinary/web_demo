@@ -1,4 +1,4 @@
-package com.example.web_demo
+package com.app.reviewclip
 
 import io.flutter.embedding.android.FlutterActivity
 
