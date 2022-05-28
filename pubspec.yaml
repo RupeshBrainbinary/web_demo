@@ -67,7 +67,7 @@ dependencies:
   share_plus: ^4.0.4
   path_provider: ^2.0.10
   #fijkplayer: ^0.10.1
-  #native_video_view: ^1.0.5
+  native_video_view: ^1.0.5
   flutter_inappwebview: ^5.4.3+7
   permission_handler: ^9.2.0
   http:

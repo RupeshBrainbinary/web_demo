@@ -126,7 +126,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       _detailPage?.review.views++;
 
       _controller =
-          VideoPlayerController.network(_detailPage?.review.video ?? '');
+          VideoPlayerController.network(_detailPage?.review.video ?? '', );
       await Future.wait([
         _controller.initialize(),
       ]);
