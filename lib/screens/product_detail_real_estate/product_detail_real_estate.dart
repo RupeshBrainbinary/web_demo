@@ -2,20 +2,20 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:video_player/video_player.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
+import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/comment_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/product_detail_real_estate_page_model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/vlc_player_with_controls.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -45,8 +45,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   bool _favorite = false;
   ProductDetailRealEstatePageModel? _detailPage;
 
-  late VideoPlayerController _controller;
-  ChewieController? _chewieController;
+  /*late VideoPlayerController _controller;
+  ChewieController? _chewieController;*/
+  VlcPlayerController? _controller;
   Timer? _timer;
   bool _onTouch = true;
   String clientId = '';
@@ -56,7 +57,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   final FocusNode reportFocusNode = FocusNode();
   CommentRes? _commentRes;
   bool isDispose = false;
-  bool isShow = false;
+  bool showControls = false;
   Future<void>? _initializeVideoPlayerFuture;
 
   @override
@@ -68,12 +69,19 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
-    _controller.dispose();
-    _chewieController?.dispose();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    /*_controller.dispose();
+    _chewieController?.dispose();*/
     isDispose = true;
     //player.reset();
     //player = FijkPlayer();
+    _controller?.dispose();
     _timer?.cancel();
     //viewPlayerController!.dealloc();
     super.dispose();
@@ -125,7 +133,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       await Api.getIncreaseCount(_detailPage!.review.videoSlug);
       _detailPage?.review.views++;
 
-      _controller =
+      /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '', );
       await Future.wait([
         _controller.initialize(),
@@ -137,7 +145,30 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         looping: true,
         hideControlsTimer: const Duration(seconds: 1),
 
-      );
+      );*/
+      _controller = VlcPlayerController.network(
+        _detailPage?.review.video ?? '',
+        hwAcc: HwAcc.full,
+        options: VlcPlayerOptions(
+          advanced: VlcAdvancedOptions([
+            VlcAdvancedOptions.networkCaching(2000),
+          ]),
+          subtitle: VlcSubtitleOptions([
+            VlcSubtitleOptions.boldStyle(true),
+            VlcSubtitleOptions.fontSize(30),
+            VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
+            VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
+            // works only on externally added subtitles
+            VlcSubtitleOptions.color(VlcSubtitleColor.navy),
+          ]),
+          http: VlcHttpOptions([
+            VlcHttpOptions.httpReconnect(true),
+          ]),
+          rtp: VlcRtpOptions([
+            VlcRtpOptions.rtpOverRtsp(true),
+          ]),
+        ),
+      )..addOnInitListener(() {});
     }
 
     setState(() {});
@@ -200,8 +231,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           final item = relatedVideos[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16),
-            child:InkWell(
-              onTap: (){
+            child: InkWell(
+              onTap: () {
                 //player.stop();
                 setState(() {});
 
@@ -237,15 +268,20 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                             style: Theme.of(context)
                                 .textTheme
                                 .subtitle2!
-                                .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "ProximaNova"),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            item.comment,overflow: TextOverflow.ellipsis,
+                            item.comment,
+                            overflow: TextOverflow.ellipsis,
                             style: Theme.of(context)
                                 .textTheme
                                 .caption!
-                                .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                                .copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "ProximaNova"),
                           ),
                           const SizedBox(height: 4),
                           Row(
@@ -269,18 +305,27 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                                 ),
                                 ignoreGestures: true,
                                 onRatingUpdate: (double value) {},
-                              ),Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 height: 15,
                                 width: 1.5,
-                                color: Theme.of(context).textTheme.caption!.color,
-                              ),SizedBox(width: MediaQuery.of(context).size.width /4,
+                                color:
+                                    Theme.of(context).textTheme.caption!.color,
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 4,
                                 child: Text(
-                                  item.channelName,overflow: TextOverflow.ellipsis,maxLines: 1,
+                                  item.channelName,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!
-                                      .copyWith(fontWeight: FontWeight.bold,fontFamily: "ProximaNova"),
+                                      .copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "ProximaNova"),
                                 ),
                               ),
                             ],
@@ -561,7 +606,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             children: [
               const SizedBox(height: 8),
               SizedBox(
-                width: MediaQuery.of(context).size.width-35,
+                width: MediaQuery.of(context).size.width - 35,
                 child: Text(
                   _detailPage!.review.clientName,
                   style: Theme.of(context).textTheme.headline5!.copyWith(
@@ -810,7 +855,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
-                              imageUrl: _commentRes == null ? 'null' : "https://www.thereviewclip.com/uploads/client_logo/${_commentRes!.chanel!.avatar.toString()}",
+                              imageUrl: _commentRes == null
+                                  ? 'null'
+                                  : "https://www.thereviewclip.com/uploads/client_logo/${_commentRes!.chanel!.avatar.toString()}",
                               fit: BoxFit.cover,
                               errorWidget: (con, str, dy) {
                                 return Image.asset(
@@ -862,41 +909,47 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     height: 4,
                     width: 12,
                   ),
-                  ElevatedButton(style: ElevatedButton.styleFrom(
-                    primary:  (_commentRes != null && subscribedList
-                        .where((element) =>
-                    element.slug == _commentRes!.chanel!.slug)
-                        .isNotEmpty)? Colors.grey:Colors.blue, // Background color
-                  ),
-                      onPressed: ()async{
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: (_commentRes != null &&
+                                subscribedList
+                                    .where((element) =>
+                                        element.slug ==
+                                        _commentRes!.chanel!.slug)
+                                    .isNotEmpty)
+                            ? Colors.grey
+                            : Colors.blue, // Background color
+                      ),
+                      onPressed: () async {
                         final result = await Api.subscribe({
-                          "id":UtilPreferences.getString(Preferences.clientId),
+                          "id": UtilPreferences.getString(Preferences.clientId),
                           // "reviewer":_detailPage!.review.id.toString(),
-                          "reviewer":_commentRes!.chanel!.id.toString(),
-                          "xhr":"1"
+                          "reviewer": _commentRes!.chanel!.id.toString(),
+                          "xhr": "1"
                         });
                         print(result);
                         print(jsonDecode(result));
                         var jsonResp = jsonDecode(result);
 
-                          isShow = true;
-                          await Api.getSubscribedList();
+                        await Api.getSubscribedList();
 
-                          isShow = false;
-
-                        setState(() {
-                        });
-                      /*  Fluttertoast.showToast(
+                        setState(() {});
+                        /*  Fluttertoast.showToast(
                             msg: "Subscribed successfully", // message
                             toastLength: Toast.LENGTH_SHORT, // length
                             gravity: ToastGravity.BOTTOM_LEFT, // location
                             timeInSecForIosWeb: 1 // duration
                             );*/
                       },
-                      child: Text( (_commentRes != null && subscribedList
-                          .where((element) =>
-                      element.slug == _commentRes!.chanel!.slug)
-                          .isNotEmpty) ? 'Subscribed' : 'Subscribe',
+                      child: Text(
+                          (_commentRes != null &&
+                                  subscribedList
+                                      .where((element) =>
+                                          element.slug ==
+                                          _commentRes!.chanel!.slug)
+                                      .isNotEmpty)
+                              ? 'Subscribed'
+                              : 'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
                               fontFamily: "ProximaNova", color: Colors.white))),
                 ],
@@ -1077,54 +1130,130 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body:  SafeArea(
         child: Column(
           children: [
             Stack(
               children: [
-                _chewieController != null &&
-                    _chewieController!
-                        .videoPlayerController.value.isInitialized
-                    ? VisibilityDetector(
-                  key: const Key("unique key"),
-                  onVisibilityChanged: (VisibilityInfo info) {
-                    debugPrint(
-                        "${info.visibleFraction} of my widget is visible");
-                    if (info.visibleFraction == 0) {
-                      print("Pause Video");
-                      _chewieController?.pause();
-                    }
-                  },
-                  child: SizedBox(
-                    //aspectRatio: _controller.value.aspectRatio,
-                    height: 200,
-                    child: Chewie(
-                      controller: _chewieController!,
-                    ),
-                  ),
-                )
-                    : const SizedBox(
+                SizedBox(
                   height: 200,
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  width: width,
+                  child: _controller == null
+                      ? Center(child: CircularProgressIndicator())
+                      : VlcPlayerWithControls(
+                    controller: _controller!,
+                    onStopRecording: (recordPath) {
+                      // setState(() {});
+                    },
+                  ), /*Stack(
+                              children: [
+                                GestureDetector(
+                                  onTap: (){
+                                    if(showControls == false){
+                                      _controller!.pause();
+                                      showControls = true;
+                                      setState(() {});
+                                      Future.delayed(Duration(seconds: 3), () {
+                                        showControls = false;
+                                        setState(() {});
+                                      });
+                                    }
+                                  },
+                                  child: VlcPlayer(
+                                    controller: _controller!,
+                                    aspectRatio: 16 / 9,
+                                    placeholder:
+                                        Center(child: CircularProgressIndicator()),
+                                  ),
+                                ),
+                                Center(
+                                  */ /*child: IconButton(
+                                    icon: Icon(_controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
+                                    onPressed: ()async{
+                                      _controller!.value.isPlaying
+                                      ? await _controller!.pause()
+                                      : await _controller!.play();
+                                    },
+                                  ),*/ /*
+                                  child: FutureBuilder<bool?>(
+                                    future: _controller!.isPlaying(),
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData ||
+                                          snapshot.data == null ||
+                                          snapshot.data! == false) {
+                                        return IconButton(
+                                          onPressed: () {
+                                            if (snapshot.hasData &&
+                                                snapshot.data != null) {
+                                              _controller!.play();
+                                            }
+                                          },
+                                          icon: Icon(Icons.play_arrow),
+                                        );
+                                      } else {
+                                        return IconButton(
+                                          onPressed: () {
+                                            _controller!.pause();
+                                            showControls = true;
+                                            setState(() {});
+                                            Future.delayed(Duration(seconds: 3),
+                                                () {
+                                              showControls = false;
+                                              setState(() {});
+                                            });
+                                          },
+                                          icon: Icon(Icons.pause),
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),*/
                 ),
+                /*_chewieController != null &&
+                        _chewieController!
+                            .videoPlayerController.value.isInitialized
+                        ? VisibilityDetector(
+                      key: const Key("unique key"),
+                      onVisibilityChanged: (VisibilityInfo info) {
+                        debugPrint(
+                            "${info.visibleFraction} of my widget is visible");
+                        if (info.visibleFraction == 0) {
+                          print("Pause Video");
+                          _chewieController?.pause();
+                        }
+                      },
+                      child: SizedBox(
+                        //aspectRatio: _controller.value.aspectRatio,
+                        height: 200,
+                        child: Chewie(
+                          controller: _chewieController!,
+                        ),
+                      ),
+                    )
+                        : const SizedBox(
+                      height: 200,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),*/
                 /*VisibilityDetector(
-                  onVisibilityChanged: (VisibilityInfo info) {
-                    if (info.visibleFraction == 0) {
-                      player.pause();
-                    }
-                  },
-                  key: Key(_detailPage?.review.video ?? ''),
-                  child: FijkView(
-                    player: player,
-                    panelBuilder: fijkPanel2Builder(snapShot: true),
-                    fsFit: FijkFit.cover,
-                    color: Colors.black,
-                    fit: FijkFit.fitHeight,
-                    height: 200,
-                  ),
-                ),*/
+                      onVisibilityChanged: (VisibilityInfo info) {
+                        if (info.visibleFraction == 0) {
+                          player.pause();
+                        }
+                      },
+                      key: Key(_detailPage?.review.video ?? ''),
+                      child: FijkView(
+                        player: player,
+                        panelBuilder: fijkPanel2Builder(snapShot: true),
+                        fsFit: FijkFit.cover,
+                        color: Colors.black,
+                        fit: FijkFit.fitHeight,
+                        height: 200,
+                      ),
+                    ),*/
                 Positioned(
                   top: 5,
                   left: 5,
@@ -1140,14 +1269,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   ),
                 ),
               ],
-            ),
-            Expanded(
+            ),Expanded(
                 child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: _buildContent(),
-              ),
-            )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: _buildContent(),
+                  ),
+                )),
           ],
         ),
       ),

@@ -12,6 +12,9 @@ import 'package:web_demo/screens/screen.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_button.dart';
 
+double height = 0;
+double width = 0;
+
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
@@ -87,6 +90,8 @@ class _AppState extends State<App> {
                         },
                         child: BlocBuilder<ApplicationCubit, ApplicationState>(
                           builder: (context, application) {
+                            height = MediaQuery.of(context).size.height;
+                            width = MediaQuery.of(context).size.width;
                             /*return ReviewWebView(
                              rate: 3,
                              comment: 'test',
@@ -156,7 +161,8 @@ Future<void> checkForUpdate(BuildContext context) async {
           AppButton(
             "Update",
             onPressed: () async {
-              await launchUrl(Uri.parse(res['data']['playstore_link'].toString()));
+              await launchUrl(
+                  Uri.parse(res['data']['playstore_link'].toString()));
             },
             type: ButtonType.text,
           ),
