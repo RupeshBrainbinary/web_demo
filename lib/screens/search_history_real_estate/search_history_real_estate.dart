@@ -15,7 +15,8 @@ import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class SearchHistoryRealEstate extends StatefulWidget {
-  const SearchHistoryRealEstate({Key? key}) : super(key: key);
+  List<ReviewModel>  videoCatagoryes;
+SearchHistoryRealEstate({Key? key, required this.videoCatagoryes}) : super(key: key) ;
 
   @override
   _SearchHistoryRealEstateState createState() {
@@ -80,7 +81,7 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
     });
   }
 
-  ///Build list tag
+/*  ///Build list tag
   List<Widget> _listTag(BuildContext context) {
     if (_historyPage == null) {
       return List.generate(6, (index) => index).map(
@@ -163,22 +164,23 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
         );
       },
     ).toList();
-  }
+  }*/
 
   Future<void> _getAllSearchData() async {
     _loader = true;
     setState(() {});
     searchList = [];
-    final result = await Api.onSearchData();
-    if (result.success) {
+    // final result = await Api.onSearchData();
+ /*   if (result.success) {
       List<ReviewModel> list = result.data.map<ReviewModel>((item) {
         return ReviewModel.fromJson(item);
       }).toList();
       searchList.addAll(list);
-    }
-    CategoryPageModel? categoryPageModel =
-        await CategoryRepository.loadCategories();
-    if (categoryPageModel != null) {
+    }*/
+    searchList.addAll(widget.videoCatagoryes);
+    /*  CategoryPageModel? categoryPageModel =
+        await CategoryRepository.loadCategories();*/
+ /*   if (categoryPageModel != null) {
       for (var cat in categoryPageModel.categories) {
         ResultApiModel result2 = await Api.getProduct(cat.id);
         if (result2.data != null) {
@@ -188,7 +190,7 @@ class _SearchHistoryRealEstateState extends State<SearchHistoryRealEstate> {
           searchList.addAll(list);
         }
       }
-    }
+    }*/
     _delegate = RealEstateSearchDelegate(onProductDetail: _onProductDetail,searchList: searchList);
     _loader = false;
     setState(() {});

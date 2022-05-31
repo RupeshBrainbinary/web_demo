@@ -91,7 +91,7 @@ class Routes {
       case searchHistory:
         return MaterialPageRoute(
           builder: (context) {
-            return const SearchHistoryRealEstate();
+            return  SearchHistoryRealEstate(videoCatagoryes: [],);
           },
           fullscreenDialog: true,
         );

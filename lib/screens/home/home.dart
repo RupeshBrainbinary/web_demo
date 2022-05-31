@@ -10,6 +10,7 @@ import 'package:web_demo/models/screen_models/category_page_model.dart';
 import 'package:web_demo/models/screen_models/home_real_estate_page_model.dart';
 import 'package:web_demo/repository/category_repository.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
+import 'package:web_demo/screens/search_history_real_estate/search_history_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -99,7 +100,17 @@ class _HomeState extends State<Home> {
 
   ///On search
   void _onSearch() {
-    Navigator.pushNamed(context, Routes.searchHistory);
+    if(_videoByCategory.isEmpty){
+      return;
+    }
+    List<ReviewModel> list = [];
+    for (var element in _videoByCategory.values) {
+      list.addAll(element);
+    }
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return  SearchHistoryRealEstate(videoCatagoryes: list);
+    },));
+    // Navigator.pushNamed(context, Routes.searchHistory);
   }
 
   ///On select country
