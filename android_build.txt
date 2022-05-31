@@ -1,0 +1,5 @@
+versionName => 1.2.0
+versionCode => 3
+JKS => Project / review-clip-key.jks
+password => 123456
+Key_alias => key0
