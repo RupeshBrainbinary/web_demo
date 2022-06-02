@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
+import 'package:web_demo/blocs/deeplink_bloc.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/models/model_review.dart';
+import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/screen.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_button.dart';
@@ -25,10 +30,58 @@ class App extends StatefulWidget {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _AppState extends State<App> {
+  String? deepLinkUrl;
+
   @override
   void initState() {
     super.initState();
+    deepLinkInt();
     AppBloc.applicationCubit.onSetup();
+  }
+
+  Future<void> deepLinkInt() async {
+    Uri? uri = await getInitialUri();
+    if (uri != null) {
+      deepLinkUrl = uri.path;
+    }
+    DeepLinkBloc _bloc = DeepLinkBloc();
+    _bloc.state.listen((event) {
+      changePage(event);
+    });
+  }
+
+  void changePage(String url) {
+    try {
+      /*String linkPid = url.split("app.reviewclip.com/").last;
+      String page = linkPid.split('/').first;
+      if (page == 'review') {*/
+      if (true) {
+        ReviewModel model = ReviewModel.fromJson({
+          "me": "",
+          "id": 16694,
+          "v": 31,
+          "l": 0,
+          "un": "Searching Samayal",
+          "loc": "India",
+          "cn": "Hotel Kannappa",
+          "climg": "https://www.thereviewclip.com/images/logo-ph.jpg",
+          "cl": "Coimbatore",
+          "st": 1,
+          "cd": "22nd April - 2022",
+          "img":
+              "https://reviewclip-test.s3.ap-south-1.amazonaws.com/e1d8ecb33a738216aca3952dff7d4f58.jpg",
+          "video":
+              "https://reviewclip-test.s3.amazonaws.com/e1d8ecb33a738216aca3952dff7d4f58.mp4",
+          "rt": 4,
+          "vsl": "brTDGSB8",
+          "cmt": "Authentic Dishes I Fish Fingers Must Try",
+          "psl": "hotel_kannappa",
+          "em": 1
+        });
+        navigatorKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => ProductDetailRealEstate(review: model)));
+      }
+    } on PlatformException {}
   }
 
   @override
@@ -66,6 +119,8 @@ class _AppState extends State<App> {
                 darkTheme: theme.darkTheme,
                 onGenerateRoute: Routes.generateRoute,
                 locale: lang,
+                initialRoute: Routes.appContainer,
+                // initialRoute: '/',
                 localizationsDelegates: const [
                   Translate.delegate,
                   GlobalMaterialLocalizations.delegate,
@@ -106,6 +161,11 @@ class _AppState extends State<App> {
                                           Preferences.clientId) ==
                                       '') {
                                 return SignIn(from: 'intro');
+                              }
+                              if (deepLinkUrl != null) {
+                                Future.delayed(Duration(milliseconds: 50), () {
+                                  changePage(deepLinkUrl!);
+                                });
                               }
                               return const AppContainer();
                             }

@@ -9,7 +9,6 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
@@ -22,8 +21,9 @@ import 'package:web_demo/widgets/widget.dart';
 
 class ProductDetailRealEstate extends StatefulWidget {
   final ReviewModel? review;
+  final String? slug;
 
-  const ProductDetailRealEstate({Key? key, this.review}) : super(key: key);
+  const ProductDetailRealEstate({Key? key, this.review, this.slug}) : super(key: key);
 
   @override
   _ProductDetailRealEstateState createState() {
@@ -94,71 +94,75 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     //if (result.success) {
     // print(result.data);
     //_detailPage = ProductDetailRealEstatePageModel.fromJson(result.data);
-    if (null != widget.review) {
-      clientId = UtilPreferences.getString(Preferences.clientId) ?? '';
+    clientId = UtilPreferences.getString(Preferences.clientId) ?? '';
+    if (widget.review != null) {
       _detailPage = ProductDetailRealEstatePageModel(review: widget.review!);
-      _controller = VlcPlayerController.network(
-        _detailPage?.review.video ?? '',
-        hwAcc: HwAcc.full,
-        options: VlcPlayerOptions(
-          advanced: VlcAdvancedOptions([
-            VlcAdvancedOptions.networkCaching(2000),
-          ]),
-          subtitle: VlcSubtitleOptions([
-            VlcSubtitleOptions.boldStyle(true),
-            VlcSubtitleOptions.fontSize(30),
-            VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
-            VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
-            // works only on externally added subtitles
-            VlcSubtitleOptions.color(VlcSubtitleColor.navy),
-          ]),
-          http: VlcHttpOptions([
-            VlcHttpOptions.httpReconnect(true),
-          ]),
-          rtp: VlcRtpOptions([
-            VlcRtpOptions.rtpOverRtsp(true),
-          ]),
-        ),
-      );
-      setState(() {});
-      _favorite = _detailPage!.review.favorite;
-      _initPosition = CameraPosition(
-        target: LatLng(
-          _detailPage!.review.location!.lat,
-          _detailPage!.review.location!.long,
-        ),
-        zoom: 15.4746,
-      );
-      final markerID = MarkerId(_detailPage!.review.id.toString());
-      final marker = Marker(
-        markerId: markerID,
-        position: LatLng(
-          _detailPage!.review.location!.lat,
-          _detailPage!.review.location!.long,
-        ),
-        infoWindow: InfoWindow(title: _detailPage?.review.clientName),
-      );
-      _markers[markerID] = marker;
-      Api.getRelatedVideo().then((result) {
-        if (result.success) {
-          relatedVideos = result.data.map<ReviewModel>((item) {
-            return ReviewModel.fromJson(item);
-          }).toList();
-          setState(() {});
-        }
-      });
-      await getComments();
+    } else {
+      /*_detailPage.review.sl
+      _detailPage = */
+    }
+    _controller = VlcPlayerController.network(
+      _detailPage?.review.video ?? '',
+      hwAcc: HwAcc.full,
+      options: VlcPlayerOptions(
+        advanced: VlcAdvancedOptions([
+          VlcAdvancedOptions.networkCaching(2000),
+        ]),
+        subtitle: VlcSubtitleOptions([
+          VlcSubtitleOptions.boldStyle(true),
+          VlcSubtitleOptions.fontSize(30),
+          VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
+          VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
+          // works only on externally added subtitles
+          VlcSubtitleOptions.color(VlcSubtitleColor.navy),
+        ]),
+        http: VlcHttpOptions([
+          VlcHttpOptions.httpReconnect(true),
+        ]),
+        rtp: VlcRtpOptions([
+          VlcRtpOptions.rtpOverRtsp(true),
+        ]),
+      ),
+    );
+    setState(() {});
+    _favorite = _detailPage!.review.favorite;
+    _initPosition = CameraPosition(
+      target: LatLng(
+        _detailPage!.review.location!.lat,
+        _detailPage!.review.location!.long,
+      ),
+      zoom: 15.4746,
+    );
+    final markerID = MarkerId(_detailPage!.review.id.toString());
+    final marker = Marker(
+      markerId: markerID,
+      position: LatLng(
+        _detailPage!.review.location!.lat,
+        _detailPage!.review.location!.long,
+      ),
+      infoWindow: InfoWindow(title: _detailPage?.review.clientName),
+    );
+    _markers[markerID] = marker;
+    Api.getRelatedVideo().then((result) {
+      if (result.success) {
+        relatedVideos = result.data.map<ReviewModel>((item) {
+          return ReviewModel.fromJson(item);
+        }).toList();
+        setState(() {});
+      }
+    });
+    await getComments();
 
-      /*   listVideos.add(VideoData(
+    /*   listVideos.add(VideoData(
           name: 'Network Video 1',
           path: _detailPage?.review.video ?? '',
           type: VideoType.network));*/
 
-      //await setPlayerValue();
-      await Api.getIncreaseCount(_detailPage!.review.videoSlug);
-      _detailPage?.review.views++;
+    //await setPlayerValue();
+    await Api.getIncreaseCount(_detailPage!.review.videoSlug);
+    _detailPage?.review.views++;
 
-      /*_controller =
+    /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '', );
       await Future.wait([
         _controller.initialize(),
@@ -171,7 +175,6 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         hideControlsTimer: const Duration(seconds: 1),
 
       );*/
-    }
 
     setState(() {});
   }
@@ -200,12 +203,12 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [0, 1, 2, 3, 4, 5, 6, 7, 8]
               .map((e) => Container(
-            width: 200,
-            padding: const EdgeInsets.only(left: 8, right: 8),
-            child: AppReviewItem(
-              type: ProductViewType.gird,
-            ),
-          ))
+                    width: 200,
+                    padding: const EdgeInsets.only(left: 8, right: 8),
+                    child: AppReviewItem(
+                      type: ProductViewType.gird,
+                    ),
+                  ))
               .toList(),
         ),
       ),
@@ -236,7 +239,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             padding: const EdgeInsets.only(bottom: 16),
             child: InkWell(
               onTap: () {
-                if(_controller != null){
+                if (_controller != null) {
                   _controller!.pause();
                 }
                 //player.stop();
@@ -275,8 +278,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                                 .textTheme
                                 .subtitle2!
                                 .copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "ProximaNova"),
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "ProximaNova"),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -286,8 +289,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                                 .textTheme
                                 .caption!
                                 .copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontFamily: "ProximaNova"),
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: "ProximaNova"),
                           ),
                           const SizedBox(height: 4),
                           Row(
@@ -314,11 +317,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                               ),
                               Container(
                                 margin:
-                                const EdgeInsets.symmetric(horizontal: 10),
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 height: 15,
                                 width: 1.5,
                                 color:
-                                Theme.of(context).textTheme.caption!.color,
+                                    Theme.of(context).textTheme.caption!.color,
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width / 4,
@@ -330,8 +333,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                                       .textTheme
                                       .caption!
                                       .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "ProximaNova"),
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "ProximaNova"),
                                 ),
                               ),
                             ],
@@ -718,7 +721,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                            Theme.of(context).primaryColor.withOpacity(.8),
+                                Theme.of(context).primaryColor.withOpacity(.8),
                           ),
                           child: const Icon(
                             Icons.thumb_up_alt,
@@ -741,14 +744,14 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     children: [
                       InkWell(
                         onTap:
-                        _onShare, // _phoneAction(_detailPage!.product.phone);
+                            _onShare, // _phoneAction(_detailPage!.product.phone);
                         child: Container(
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                            Theme.of(context).primaryColor.withOpacity(.8),
+                                Theme.of(context).primaryColor.withOpacity(.8),
                           ),
                           child: const Icon(
                             Icons.share,
@@ -778,7 +781,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                            Theme.of(context).primaryColor.withOpacity(.8),
+                                Theme.of(context).primaryColor.withOpacity(.8),
                           ),
                           child: const Icon(
                             Icons.message,
@@ -809,7 +812,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color:
-                            Theme.of(context).primaryColor.withOpacity(.8),
+                                Theme.of(context).primaryColor.withOpacity(.8),
                           ),
                           child: Icon(
                             Icons.report,
@@ -918,11 +921,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         primary: (_commentRes != null &&
-                            subscribedList
-                                .where((element) =>
-                            element.slug ==
-                                _commentRes!.chanel!.slug)
-                                .isNotEmpty)
+                                subscribedList
+                                    .where((element) =>
+                                        element.slug ==
+                                        _commentRes!.chanel!.slug)
+                                    .isNotEmpty)
                             ? Colors.grey
                             : Colors.blue, // Background color
                       ),
@@ -949,11 +952,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                       },
                       child: Text(
                           (_commentRes != null &&
-                              subscribedList
-                                  .where((element) =>
-                              element.slug ==
-                                  _commentRes!.chanel!.slug)
-                                  .isNotEmpty)
+                                  subscribedList
+                                      .where((element) =>
+                                          element.slug ==
+                                          _commentRes!.chanel!.slug)
+                                      .isNotEmpty)
                               ? 'Subscribed'
                               : 'Subscribe',
                           style: Theme.of(context).textTheme.button!.copyWith(
@@ -1147,11 +1150,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   child: _controller == null
                       ? Center(child: CircularProgressIndicator())
                       : VlcPlayerWithControls(
-                    controller: _controller!,
-                    onStopRecording: (recordPath) {
-                      // setState(() {});
-                    },
-                  ), /*Stack(
+                          controller: _controller!,
+                          onStopRecording: (recordPath) {
+                            // setState(() {});
+                          },
+                        ), /*Stack(
                               children: [
                                 GestureDetector(
                                   onTap: (){
@@ -1278,11 +1281,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             ),
             Expanded(
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: _buildContent(),
-                  ),
-                )),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: _buildContent(),
+              ),
+            )),
           ],
         ),
       ),
@@ -1298,4 +1301,3 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     });
   }
 }
-

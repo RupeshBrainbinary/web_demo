@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web_demo/app_container.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
 import 'package:web_demo/screens/home/home_category_list.dart';
@@ -8,6 +9,7 @@ import 'package:web_demo/screens/screen.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_history_real_estate.dart';
 
 class Routes {
+  static const String appContainer = "/";
   static const String home = "/home";
   static const String discovery = "/discovery";
   static const String wishList = "/wishList";
@@ -47,6 +49,12 @@ class Routes {
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case appContainer:
+        return MaterialPageRoute(
+          builder: (context) {
+            return AppContainer();
+          },
+        );
       case signIn:
         return MaterialPageRoute(
           builder: (context) {
@@ -91,7 +99,9 @@ class Routes {
       case searchHistory:
         return MaterialPageRoute(
           builder: (context) {
-            return  SearchHistoryRealEstate(videoCatagoryes: [],);
+            return SearchHistoryRealEstate(
+              videoCatagoryes: [],
+            );
           },
           fullscreenDialog: true,
         );
@@ -282,7 +292,7 @@ class Routes {
       case submit:
         return MaterialPageRoute(
           builder: (context) {
-            return  Submit();
+            return Submit();
           },
           fullscreenDialog: true,
         );
@@ -294,7 +304,6 @@ class Routes {
           },
           fullscreenDialog: true,
         );
-
 
       default:
         return MaterialPageRoute(
