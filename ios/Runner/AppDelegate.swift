@@ -32,7 +32,7 @@ import Flutter
        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-   override func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+    override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
       eventChannel?.setStreamHandler(linkStreamHandler)
       return linkStreamHandler.handleLink(url.absoluteString)
     }

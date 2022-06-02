@@ -1,15 +1,15 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:web_demo/api/api.dart';
-import 'package:web_demo/blocs/bloc.dart';
+import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
 import 'package:web_demo/models/screen_models/category_page_model.dart';
 import 'package:web_demo/models/screen_models/home_real_estate_page_model.dart';
 import 'package:web_demo/repository/category_repository.dart';
-import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_history_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -100,16 +100,18 @@ class _HomeState extends State<Home> {
 
   ///On search
   void _onSearch() {
-    if(_videoByCategory.isEmpty){
+    if (_videoByCategory.isEmpty) {
       return;
     }
     List<ReviewModel> list = [];
     for (var element in _videoByCategory.values) {
       list.addAll(element);
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return  SearchHistoryRealEstate(videoCatagoryes: list);
-    },));
+    Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return SearchHistoryRealEstate(videoCatagoryes: list);
+      },
+    ));
     // Navigator.pushNamed(context, Routes.searchHistory);
   }
 
@@ -131,7 +133,6 @@ class _HomeState extends State<Home> {
       _getVideoByCategory(categoryList);
       //await AppBloc.categoryCubit.loadCategories();
       _countrySelected = item;
-
 
       setState(() {});
     }
@@ -194,8 +195,8 @@ class _HomeState extends State<Home> {
       itemBuilder: (context, index) {
         List<ReviewModel> list = [];
 
-        for(int i=0; i<15; i++){
-          if(_homePage!.popular.length > i){
+        for (int i = 0; i < 15; i++) {
+          if (_homePage!.popular.length > i) {
             list.add(_homePage!.popular[i]);
           }
         }
@@ -316,7 +317,6 @@ class _HomeState extends State<Home> {
 
       ///Empty
       if (_homePage!.channels.isEmpty) {
-
         content = Container(
           alignment: Alignment.center,
           child: Text(
@@ -398,8 +398,8 @@ class _HomeState extends State<Home> {
         );
       } else {
         List<ReviewModel> list = [];
-        for(int i=0; i<15; i++){
-          if(_homePage!.popular.length > i){
+        for (int i = 0; i < 15; i++) {
+          if (_homePage!.popular.length > i) {
             list.add(_homePage!.popular[i]);
           }
         }
@@ -441,7 +441,7 @@ class _HomeState extends State<Home> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Divider(
-                thickness:4,
+                thickness: 4,
                 height: 1.0,
               ),
               SizedBox(
@@ -463,6 +463,32 @@ class _HomeState extends State<Home> {
           ),
         ),
         content
+      ],
+    );
+  }
+
+  ///Build Popular
+  Widget _buildBanners() {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: const Divider(
+            thickness: 4,
+            height: 1.0,
+          ),
+        ),
+        SizedBox(
+          height: height * 0.25,
+          width: width,
+          child: CarouselSlider.builder(
+            itemCount: 15,
+            itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex){
+              return Image.asset('assets/images/about-us.jpg');
+            },
+            options: CarouselOptions(),
+          ),
+        ),
       ],
     );
   }
@@ -505,11 +531,11 @@ class _HomeState extends State<Home> {
           ),
         );
       } else {
-  /*      List<ReviewModel> productPage =
+        /*      List<ReviewModel> productPage =
             _videoByCategory[category.id.toString()]!;*/
         List<ReviewModel> productPage = [];
-        for(int i=0; i<15; i++){
-          if(  _videoByCategory[category.id.toString()]!.length > i){
+        for (int i = 0; i < 15; i++) {
+          if (_videoByCategory[category.id.toString()]!.length > i) {
             productPage.add(_videoByCategory[category.id.toString()]![i]);
           }
         }
@@ -564,13 +590,15 @@ class _HomeState extends State<Home> {
                           fontWeight: FontWeight.bold,
                           fontFamily: "ProximaNova"),
                     ),
-                    showZero ? Text("0 Videos"):Text(
-                      "${category.count} Videos",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontFamily: "ProximaNova"),
-                    ),
+                    showZero
+                        ? Text("0 Videos")
+                        : Text(
+                            "${category.count} Videos",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(fontFamily: "ProximaNova"),
+                          ),
                   ],
                 ),
               ),
@@ -644,6 +672,8 @@ class _HomeState extends State<Home> {
                   ),
                   const SizedBox(height: 8),
                   _buildPopular(),
+                  const SizedBox(height: 8),
+                  _buildBanners(),
                   const SizedBox(height: 8),
                   _buildChannels(),
                   const SizedBox(height: 8),

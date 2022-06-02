@@ -1,3 +1,4 @@
+/*
 // ignore_for_file: camel_case_types
 
 import 'dart:typed_data';
@@ -210,7 +211,8 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                       ),
                     ),
                     SizedBox(width: 15),
-                    /*IconButton(
+                    */
+/*IconButton(
                       icon: Icon(Icons.fullscreen),
                       color: Colors.white,
                       onPressed: () {
@@ -222,7 +224,8 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                               [DeviceOrientation.landscapeLeft]);
                         }
                       },
-                    ),*/
+                    ),*//*
+
                   ],
                 ),
               ),
@@ -469,3 +472,4 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
     );
   }
 }
+*/
