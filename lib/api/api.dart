@@ -1,20 +1,23 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:web_demo/api/http_manager.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/configs/preferences.dart';
+import 'package:web_demo/models/banner_model.dart';
 import 'package:web_demo/models/comapny_model.dart';
 import 'package:web_demo/models/comment_model.dart';
+import 'package:web_demo/models/get_acc_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_business.dart';
 import 'package:web_demo/models/reviewer_profile_model.dart';
 import 'package:web_demo/models/subscriber_model.dart';
+import 'package:web_demo/models/video_model.dart';
 import 'package:web_demo/utils/utils.dart';
-import 'package:http/http.dart' as http;
 
 List<Subscribed> subscribedList = [];
 
@@ -52,14 +55,18 @@ class Api {
   static const String relatedClips =
       "$domain/services/getTopReviews?limit=100&start=0&lgd=false&status=1";
   static const String subscribeVideo = "$domain/services/subscribe";
-  static const String channelNameUpdate = "$domain/reviewer/updateAccReviewerChanel";
+  static const String channelNameUpdate =
+      "$domain/reviewer/updateAccReviewerChanel";
   static const String resetReviewerPassword =
       "$domain/services/resetReviewerPassword";
   static const String subscribedListUrl =
       "$domain/reviewer_profile/subscribed_list";
   static const String commonData = "$domain/common/commonData";
-    static const String uploadImage = "$domain/reviewer/uploadImage";
-    static const String profileUpdate = "$domain/reviewer/updateAccSettings";
+  static const String uploadImage = "$domain/reviewer/uploadImage";
+  static const String profileUpdate = "$domain/reviewer/updateAccSettings";
+  static const String bannerData = "$domain/common/bannerData";
+  static const String getVideo = "$domain/review/getVideo";
+  static const String getAccSettings = "$domain/profile/getAccSettings";
 
   ///Login api
   static Future<dynamic> login(params) async {
@@ -73,7 +80,6 @@ class Api {
     // final result = await UtilData.login();
     return ResultApiModel.fromJson(
         result is String ? jsonDecode(result) : result);
-
   }
 
   ///SignUp api
@@ -244,7 +250,7 @@ class Api {
     return result;
   }
 
-  static Future<dynamic> validReview({params,String? link}) async {
+  static Future<dynamic> validReview({params, String? link}) async {
     var result = await httpManager.post(url: link!, data: params);
     if (result == null) {}
     print(result);
@@ -395,11 +401,11 @@ class Api {
     print(result);
     return result;
   }
-  static Future<dynamic> channelsName(String channel) async {
 
+  static Future<dynamic> channelsName(String channel) async {
     Map<String, dynamic> body = {
       'client_id': UtilPreferences.getString(Preferences.clientId),
-      'channel':channel,
+      'channel': channel,
     };
     final result = await httpManager.post(url: channelNameUpdate, data: body);
     print(result);
@@ -426,19 +432,15 @@ class Api {
   }
 
   static Future<dynamic> getuplodaImage(params) async {
+    try {
+      http.Response response = await http.post(Uri.parse(uploadImage),
+          body: params, encoding: Encoding.getByName("utf-8"));
+      return response.body;
+    } catch (e) {
+      print(e);
+    }
 
-  try{
-    http.Response response =
-    await http.post(Uri.parse(uploadImage),body: params,encoding: Encoding.getByName("utf-8"));
-    return response.body;
-
-  }
-  catch(e){
-    print(e);
-  }
-
-
-    final result = await httpManager.post(url: uploadImage,formData: params);
+    final result = await httpManager.post(url: uploadImage, formData: params);
     print(result);
     return result;
   }
@@ -448,21 +450,65 @@ class Api {
     print(result);
     return result;
   }
-  static Future<Map<String, dynamic>> profileUpdateData(String name,String companyEmail , String location ,String aboutCompany,String mob) async {
+
+  static Future<Map<String, dynamic>> profileUpdateData(
+      String name,
+      String companyEmail,
+      String location,
+      String aboutCompany,
+      String mob) async {
     Map<String, dynamic> body = {
-      "client_id":UtilPreferences.getString(Preferences.clientId),
-      "name":name ,
-      "companyemail":companyEmail,
-      "location":location,
-      'mobileno':mob,
-      'aboutCompany':aboutCompany,
+      "client_id": UtilPreferences.getString(Preferences.clientId),
+      "name": name,
+      "companyemail": companyEmail,
+      "location": location,
+      'mobileno': mob,
+      'aboutCompany': aboutCompany,
     };
-    final result = await httpManager.post(url: profileUpdate,data: body);
+    final result = await httpManager.post(url: profileUpdate, data: body);
     print(result);
     String message = result["msg"];
     Fluttertoast.showToast(msg: message);
     return result;
   }
+
+  /// banner
+  static Future<BannerModel?> getBannerList() async {
+    try {
+      final result = await httpManager.get(url: bannerData);
+      return BannerModel.fromJson(result);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  /// banner
+  static Future<VideoModel?> getVideoModel(String videoSlug) async {
+    try {
+      final result = await httpManager.post(url: getVideo,data: {
+        'video_slug': videoSlug,
+      },);
+      return VideoModel.fromJson(result);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
+  /// banner
+  static Future<GetAccModel?> getAccSettingsData(String clientId) async {
+    try {
+      final result = await httpManager.post(url: getAccSettings,data: {
+        'client_id': clientId,
+      },);
+      return GetAccModel.fromJson(result);
+    } catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
+
   ///Singleton factory
   ///
   static final Api _instance = Api._internal();

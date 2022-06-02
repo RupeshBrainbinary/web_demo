@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -11,7 +10,6 @@ import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/blocs/deeplink_bloc.dart';
 import 'package:web_demo/configs/config.dart';
-import 'package:web_demo/models/model_review.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/screen.dart';
 import 'package:web_demo/utils/utils.dart';
@@ -51,37 +49,15 @@ class _AppState extends State<App> {
   }
 
   void changePage(String url) {
-    try {
-      /*String linkPid = url.split("app.reviewclip.com/").last;
-      String page = linkPid.split('/').first;
-      if (page == 'review') {*/
-      if (true) {
-        ReviewModel model = ReviewModel.fromJson({
-          "me": "",
-          "id": 16694,
-          "v": 31,
-          "l": 0,
-          "un": "Searching Samayal",
-          "loc": "India",
-          "cn": "Hotel Kannappa",
-          "climg": "https://www.thereviewclip.com/images/logo-ph.jpg",
-          "cl": "Coimbatore",
-          "st": 1,
-          "cd": "22nd April - 2022",
-          "img":
-              "https://reviewclip-test.s3.ap-south-1.amazonaws.com/e1d8ecb33a738216aca3952dff7d4f58.jpg",
-          "video":
-              "https://reviewclip-test.s3.amazonaws.com/e1d8ecb33a738216aca3952dff7d4f58.mp4",
-          "rt": 4,
-          "vsl": "brTDGSB8",
-          "cmt": "Authentic Dishes I Fish Fingers Must Try",
-          "psl": "hotel_kannappa",
-          "em": 1
-        });
+    String linkPid = url.split("app.reviewclip.com/").last;
+    String page = linkPid.split('/').first;
+    if (page == 'review') {
+      String videoSlug = linkPid.split('/').last;
+      if (videoSlug.isNotEmpty) {
         navigatorKey.currentState!.push(MaterialPageRoute(
-            builder: (context) => ProductDetailRealEstate(review: model)));
+            builder: (context) => ProductDetailRealEstate(slug: videoSlug)));
       }
-    } on PlatformException {}
+    }
   }
 
   @override

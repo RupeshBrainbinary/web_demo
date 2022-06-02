@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +6,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/models/banner_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_channel.dart';
 import 'package:web_demo/models/screen_models/category_page_model.dart';
 import 'package:web_demo/models/screen_models/home_real_estate_page_model.dart';
 import 'package:web_demo/repository/category_repository.dart';
 import 'package:web_demo/screens/search_history_real_estate/search_history_real_estate.dart';
+import 'package:web_demo/screens/submit/submit.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -31,6 +34,7 @@ class _HomeState extends State<Home> {
   TextEditingController country = TextEditingController();
   Map<String, List<ReviewModel>> _videoByCategory = {};
   List<CategoryModel> categoryList = [];
+  List<BannerData> bannerList = [];
 
   @override
   void initState() {
@@ -66,6 +70,10 @@ class _HomeState extends State<Home> {
                 element.id == UtilPreferences.getInt(Preferences.countryId))
             .first;
       }
+    }
+    BannerModel? bannerModel = await Api.getBannerList();
+    if (bannerModel != null) {
+      bannerList = bannerModel.bannerData ?? [];
     }
     CategoryPageModel? categoryPageModel =
         await CategoryRepository.loadCategories();
@@ -469,6 +477,9 @@ class _HomeState extends State<Home> {
 
   ///Build Popular
   Widget _buildBanners() {
+    if (bannerList.isEmpty) {
+      return SizedBox();
+    }
     return Column(
       children: [
         Padding(
@@ -478,15 +489,38 @@ class _HomeState extends State<Home> {
             height: 1.0,
           ),
         ),
+        SizedBox(height: 5),
         SizedBox(
-          height: height * 0.25,
+          height: width * 0.5,
           width: width,
           child: CarouselSlider.builder(
-            itemCount: 15,
-            itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex){
-              return Image.asset('assets/images/about-us.jpg');
+            itemCount: bannerList.length,
+            itemBuilder: (BuildContext context, int index, int pageIndex) {
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: InkWell(
+                  onTap: (){
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => Submit(bannerId: bannerList[index].banner!.clentId)));
+                  },
+                  child: CachedNetworkImage(
+                    imageUrl: bannerList[index].banner!.clentBanner.toString(),
+                    progressIndicatorBuilder: (con, str, progress) {
+                      return Container(
+                        height: width * 0.55,
+                        width: width,
+                        color: Colors.white,
+                      );
+                    },
+                  ),
+                ),
+              );
             },
-            options: CarouselOptions(),
+            options: CarouselOptions(
+              viewportFraction: 1,
+              aspectRatio: 2.5,
+              autoPlay: true,
+              enableInfiniteScroll: false,
+            ),
           ),
         ),
       ],

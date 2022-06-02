@@ -4,6 +4,7 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
+import 'package:web_demo/models/get_acc_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/model_business.dart';
 import 'package:web_demo/screens/submit/review_webview.dart';
@@ -11,8 +12,11 @@ import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
 class Submit extends StatefulWidget {
+  final String? bannerId;
+
   const Submit({
     Key? key,
+    this.bannerId,
   }) : super(key: key);
 
   @override
@@ -92,6 +96,10 @@ class _SubmitState extends State<Submit> {
   int rating = 0;
   bool _loader = false;
   String? slug = '';
+  GetAccModel getAccModel = GetAccModel();
+  bool loader = false;
+  String? videoError;
+  String? ratingError;
 
   @override
   void initState() {
@@ -106,11 +114,11 @@ class _SubmitState extends State<Submit> {
       "country": _country!.id,
       "category": _category!.id,
     };
-    if(_business == null){
+    if (_business == null) {
       map['loc'] = locationController.text;
       map["clientVal"] = busines.text;
       map['city'] = cityController.text;
-    }else{
+    } else {
       map['client'] = _business!.id;
     }
     slug = await Api.validBusienss(map);
@@ -141,9 +149,32 @@ class _SubmitState extends State<Submit> {
   }
 
   Future<void> _loadData() async {
+    loader = true;
+    setState(() {});
     _countryList = await Api.getCountryList();
     _country = _countryList.first;
+    if (widget.bannerId != null) {
+      getAccModel =
+          await Api.getAccSettingsData(widget.bannerId!) ?? GetAccModel();
+      _country = _countryList
+          .where(
+              (element) => element.id.toString() == getAccModel.data!.country)
+          .first;
+    }
     _categories = await Api.getCategory(_country!.id.toString());
+    if (widget.bannerId != null) {
+      _category = _categories
+          .where(
+              (element) => element.id.toString() == getAccModel.data!.category)
+          .first;
+      _bussinessList = await Api.getBusinessList({
+        "country": _country!.id,
+        "category": _category!.id,
+      });
+      _business = _bussinessList
+          .where((element) => element.id.toString() == getAccModel.data!.id)
+          .first;
+    }
     /*_category = _categories.first;
     Map<String, dynamic> params = {
       "country": _country!.id,
@@ -152,6 +183,7 @@ class _SubmitState extends State<Submit> {
     _bussinessList = await Api.getBusinessList(params);
     _business = _bussinessList.first;
     busines.text = _business!.location;*/
+    loader = false;
     setState(() {});
   }
 
@@ -573,10 +605,13 @@ class _SubmitState extends State<Submit> {
                   fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
             ),
             const SizedBox(height: 8),
-            AppPickerItem(
-              title: Translate.of(context).translate('choose_country'),
-              value: _country == null ? null : _country!.title,
-              onPressed: _onSelectCountry,
+            AbsorbPointer(
+              absorbing: widget.bannerId != null,
+              child: AppPickerItem(
+                title: Translate.of(context).translate('choose_country'),
+                value: _country == null ? null : _country!.title,
+                onPressed: _onSelectCountry,
+              ),
             ),
 
             /*        AppTextInput(
@@ -646,10 +681,13 @@ class _SubmitState extends State<Submit> {
                   fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
             ),
             const SizedBox(height: 8),
-            AppPickerItem(
-              title: Translate.of(context).translate('choose_category'),
-              value: _category == null ? null : _category!.title,
-              onPressed: _onSelectCategory,
+            AbsorbPointer(
+              absorbing: widget.bannerId != null,
+              child: AppPickerItem(
+                title: Translate.of(context).translate('choose_category'),
+                value: _category == null ? null : _category!.title,
+                onPressed: _onSelectCategory,
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -661,10 +699,13 @@ class _SubmitState extends State<Submit> {
                   .copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            AppPickerItem(
-              title: Translate.of(context).translate('add_business'),
-              value: _business == null ? busines.text : _business!.title,
-              onPressed: _onSelectBusiness,
+            AbsorbPointer(
+              absorbing: widget.bannerId != null,
+              child: AppPickerItem(
+                title: Translate.of(context).translate('add_business'),
+                value: _business == null ? busines.text : _business!.title,
+                onPressed: _onSelectBusiness,
+              ),
             ),
             const SizedBox(height: 16),
             // Text(
@@ -752,6 +793,15 @@ class _SubmitState extends State<Submit> {
               hintText: Translate.of(context).translate('input_title'),
               controller: videoController,
             ),
+            videoError == null
+                ? SizedBox()
+                : Text(
+              videoError.toString(),
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.red,
+              ),
+            ),
             const SizedBox(height: 16),
             Text(
               Translate.of(context).translate('star_rating'),
@@ -778,15 +828,38 @@ class _SubmitState extends State<Submit> {
                     );
                   }),
             ),
+            ratingError == null
+                ? SizedBox()
+                : Text(
+                    ratingError.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
             const SizedBox(height: 16),
             AppButton(
               Translate.of(context).translate('continue_record'),
               onPressed: () async {
+                if (videoController.text.isEmpty) {
+                  videoError = "Input your title";
+                }else{
+                  videoError = null;
+                }
+                if (rating == 0) {
+                  ratingError = "Input your rating";
+                }else{
+                  ratingError = null;
+                }
+                if (videoError != null || ratingError != null) {
+                  setState(() {});
+                  return;
+                }
+
                 //if (isShow == false) {
-                  await validateBusiness();
+                await validateBusiness();
                 //}
                 await validateRweview();
-
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => ReviewWebView(
@@ -1311,11 +1384,13 @@ class _SubmitState extends State<Submit> {
             )
           ],*/
         ),
-        body: SafeArea(
-          child: _loader
-              ? const Center(child: CircularProgressIndicator())
-              : _buildContent(),
-        ),
+        body: loader
+            ? Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: _loader
+                    ? const Center(child: CircularProgressIndicator())
+                    : _buildContent(),
+              ),
       ),
     );
   }

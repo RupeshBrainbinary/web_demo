@@ -2,20 +2,21 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/comment_model.dart';
 import 'package:web_demo/models/model.dart';
 import 'package:web_demo/models/screen_models/product_detail_real_estate_page_model.dart';
+import 'package:web_demo/models/video_model.dart';
+import 'package:web_demo/screens/product_detail_real_estate/vlc_player_with_controls.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/widget.dart';
 
@@ -32,12 +33,13 @@ class ProductDetailRealEstate extends StatefulWidget {
   }
 }
 
+// FijkPlayer player = FijkPlayer();
+
 class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   final Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
 
   /* late List<VideoData> listVideos;*/
 
-  FijkPlayer player = FijkPlayer();
   CameraPosition _initPosition = const CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
@@ -48,7 +50,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   /*late VideoPlayerController _controller;
   ChewieController? _chewieController;*/
-  // VlcPlayerController? _controller;
+  VlcPlayerController? _controller;
   Timer? _timer;
   bool _onTouch = true;
   String clientId = '';
@@ -64,8 +66,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   @override
   void initState() {
     super.initState();
-    // player = FijkPlayer();
     //player = FijkPlayer();
+    isDispose = false;
     _loadData();
   }
 
@@ -76,14 +78,13 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   @override
   void dispose() {
-    isDispose = true;
-    player.release();
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     /*_controller.dispose();
     _chewieController?.dispose();*/
+    isDispose = true;
     //player.reset();
     //player = FijkPlayer();
-    // _controller?.dispose();
+    _controller?.dispose();
     _timer?.cancel();
     //viewPlayerController!.dealloc();
     super.dispose();
@@ -99,14 +100,11 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     if (widget.review != null) {
       _detailPage = ProductDetailRealEstatePageModel(review: widget.review!);
     } else {
+      _detailPage = await getVideoDetailFromApi(widget.slug.toString());
       /*_detailPage.review.sl
       _detailPage = */
     }
-
-    await player.setDataSource(_detailPage?.review.video ?? '',
-        autoPlay: true);
-
-    /*_controller = VlcPlayerController.network(
+    _controller = VlcPlayerController.network(
       _detailPage?.review.video ?? '',
       hwAcc: HwAcc.full,
       options: VlcPlayerOptions(
@@ -128,7 +126,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           VlcRtpOptions.rtpOverRtsp(true),
         ]),
       ),
-    );*/
+    );
     setState(() {});
     _favorite = _detailPage!.review.favorite;
     _initPosition = CameraPosition(
@@ -184,6 +182,36 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     setState(() {});
   }
 
+  Future<ProductDetailRealEstatePageModel> getVideoDetailFromApi(String videoSlug) async {
+    VideoModel? videoModel = await Api.getVideoModel(videoSlug);
+    ReviewModel? reviewModel;
+    if (videoModel != null) {
+      V v = videoModel.v ?? V();
+      Channel c = videoModel.chanel ?? Channel();
+      reviewModel = ReviewModel(
+        id: int.parse(v.id.toString()),
+        views: int.parse(v.views.toString()),
+        likes: int.parse(v.likes.toString()),
+        clientName: v.clientName.toString(),
+        clientImage: v.logoImage.toString(),
+        clientLocation: v.location.toString(),
+        comment: v.comment.toString(),
+        image: v.thumbUrl.toString(),
+        video: v.videoUrl.toString(),
+        rate: double.parse(v.rating.toString()),
+        channelName: c.chanel.toString(),
+        place: c.location.toString(),
+        profileSlug: v.profileSlug.toString(),
+        videoSlug: v.videoSlug.toString(),
+        location:
+            LocationModel(title: "Dindigul", lat: 10.365581, long: 77.970657),
+        reviewDate: v.createdDate.toString(),
+        favorite: false,
+      );
+    }
+    return ProductDetailRealEstatePageModel(review: reviewModel!);
+  }
+
   /*Future<void> setPlayerValue() async {
     player.setOption(FijkOption.hostCategory, "enable-snapshot", 1);
     player.setOption(FijkOption.playerCategory, "mediacodec-all-videos", 1);
@@ -193,7 +221,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }*/
 
   Future<void> getComments() async {
-    _commentRes = await Api.getCommentsLikesData(widget.review!.videoSlug,
+    _commentRes = await Api.getCommentsLikesData(_detailPage!.review.videoSlug,
         UtilPreferences.getString(Preferences.clientId) ?? '');
     setState(() {});
   }
@@ -244,9 +272,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             padding: const EdgeInsets.only(bottom: 16),
             child: InkWell(
               onTap: () {
-                /*if (_controller != null) {
+                if (_controller != null) {
                   _controller!.pause();
-                }*/
+                }
                 //player.stop();
                 setState(() {});
 
@@ -1152,32 +1180,14 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                 SizedBox(
                   height: 200,
                   width: width,
-                  child: VisibilityDetector(
-                    onVisibilityChanged: (VisibilityInfo info) {
-                      if (info.visibleFraction == 0) {
-                        player.pause();
-                      }
-                    },
-                    key: Key(_detailPage?.review.video ?? ''),
-                    child: FijkView(
-                      player: player,
-                      panelBuilder: fijkPanel2Builder(snapShot: true),
-                      fsFit: FijkFit.cover,
-                      color: Colors.black,
-                      fit: FijkFit.fitHeight,
-                      width: width,
-                      height: 200,
-                    ),
-                  ),
-                  /*child: _controller == null
+                  child: _controller == null
                       ? Center(child: CircularProgressIndicator())
                       : VlcPlayerWithControls(
                           controller: _controller!,
                           onStopRecording: (recordPath) {
                             // setState(() {});
                           },
-                        ),*/
-                  /*Stack(
+                        ), /*Stack(
                               children: [
                                 GestureDetector(
                                   onTap: (){
