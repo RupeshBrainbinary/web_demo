@@ -98,6 +98,11 @@ class _SubmitState extends State<Submit> {
   String? slug = '';
   GetAccModel getAccModel = GetAccModel();
   bool loader = false;
+  String? countryError;
+  String? categoryError;
+  String? businessError;
+  String? locationError;
+  String? cityError;
   String? videoError;
   String? ratingError;
 
@@ -522,6 +527,70 @@ class _SubmitState extends State<Submit> {
     return true;
   }
 
+  bool validation() {
+    countryError = UtilValidator.validate(
+      _textPhoneController.text,
+    );
+
+    if (_country == null) {
+      countryError = "Choose country";
+    } else {
+      countryError = null;
+    }
+
+    if (_category == null) {
+      categoryError = "Choose categories";
+    } else {
+      categoryError = null;
+    }
+
+    if (_business == null && busines.text.isEmpty) {
+      businessError = "Add Business";
+    } else {
+      businessError = null;
+    }
+
+    if (isShow) {
+      if (locationController.text.isEmpty) {
+        locationError = "Input your location";
+      } else {
+        locationError = null;
+      }
+
+      if (cityController.text.isEmpty) {
+        cityError = "Input your city";
+      } else {
+        cityError = null;
+      }
+    }else{
+      locationError = null;
+      cityError = null;
+    }
+
+    if (videoController.text.isEmpty) {
+      videoError = "Input your title";
+    } else {
+      videoError = null;
+    }
+
+    if (rating == 0) {
+      ratingError = "Input your rating";
+    } else {
+      ratingError = null;
+    }
+    setState(() {});
+    if (countryError == null &&
+        categoryError == null &&
+        businessError == null &&
+        locationError == null &&
+        cityError == null &&
+        videoError == null &&
+        ratingError == null) {
+      return true;
+    }
+    return false;
+  }
+
   ///Build gallery
   Widget _buildGallery() {
     DecorationImage? decorationImage;
@@ -613,6 +682,15 @@ class _SubmitState extends State<Submit> {
                 onPressed: _onSelectCountry,
               ),
             ),
+            countryError == null
+                ? SizedBox()
+                : Text(
+                    countryError.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
 
             /*        AppTextInput(
               hintText: Translate.of(context).translate('input_title'),
@@ -689,6 +767,15 @@ class _SubmitState extends State<Submit> {
                 onPressed: _onSelectCategory,
               ),
             ),
+            categoryError == null
+                ? SizedBox()
+                : Text(
+                    categoryError.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
             const SizedBox(height: 16),
 
             Text(
@@ -707,6 +794,15 @@ class _SubmitState extends State<Submit> {
                 onPressed: _onSelectBusiness,
               ),
             ),
+            businessError == null
+                ? SizedBox()
+                : Text(
+                    businessError.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
             const SizedBox(height: 16),
             // Text(
             //   Translate.of(context).translate('facilities'),
@@ -759,6 +855,15 @@ class _SubmitState extends State<Submit> {
                             Translate.of(context).translate('input_title'),
                         controller: locationController,
                       ),
+                      locationError == null
+                          ? SizedBox()
+                          : Text(
+                              locationError.toString(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
                       const SizedBox(height: 16),
                       Text(
                         Translate.of(context).translate('city'),
@@ -775,6 +880,15 @@ class _SubmitState extends State<Submit> {
                             Translate.of(context).translate('input_title'),
                         controller: cityController,
                       ),
+                      cityError == null
+                          ? SizedBox()
+                          : Text(
+                              cityError.toString(),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.red,
+                              ),
+                            ),
                       const SizedBox(height: 16),
                     ],
                   )
@@ -796,12 +910,12 @@ class _SubmitState extends State<Submit> {
             videoError == null
                 ? SizedBox()
                 : Text(
-              videoError.toString(),
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.red,
-              ),
-            ),
+                    videoError.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.red,
+                    ),
+                  ),
             const SizedBox(height: 16),
             Text(
               Translate.of(context).translate('star_rating'),
@@ -841,18 +955,7 @@ class _SubmitState extends State<Submit> {
             AppButton(
               Translate.of(context).translate('continue_record'),
               onPressed: () async {
-                if (videoController.text.isEmpty) {
-                  videoError = "Input your title";
-                }else{
-                  videoError = null;
-                }
-                if (rating == 0) {
-                  ratingError = "Input your rating";
-                }else{
-                  ratingError = null;
-                }
-                if (videoError != null || ratingError != null) {
-                  setState(() {});
+                if (validation() == false) {
                   return;
                 }
 

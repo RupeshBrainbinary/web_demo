@@ -62,7 +62,8 @@ class ReviewModel {
   }
 
   String shareLink() {
-    return "https://app.reviewclip.com/review/$videoSlug";
+    // return "https://app.reviewclip.com/review/$videoSlug";
+    return "https://www.thereviewclip.com/review/$profileSlug/$videoSlug";
   }
 }
 

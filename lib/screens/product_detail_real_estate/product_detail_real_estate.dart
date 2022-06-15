@@ -9,6 +9,7 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app.dart';
 import 'package:web_demo/configs/config.dart';
@@ -1182,12 +1183,20 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   width: width,
                   child: _controller == null
                       ? Center(child: CircularProgressIndicator())
-                      : VlcPlayerWithControls(
-                          controller: _controller!,
-                          onStopRecording: (recordPath) {
-                            // setState(() {});
-                          },
-                        ), /*Stack(
+                      : VisibilityDetector(
+                    onVisibilityChanged: (VisibilityInfo info) {
+                      if (info.visibleFraction == 0) {
+                        _controller?.pause();
+                      }
+                    },
+                        key: Key("null"),
+                        child: VlcPlayerWithControls(
+                            controller: _controller!,
+                            onStopRecording: (recordPath) {
+                              // setState(() {});
+                            },
+                          ),
+                      ), /*Stack(
                               children: [
                                 GestureDetector(
                                   onTap: (){

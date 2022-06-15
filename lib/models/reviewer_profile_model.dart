@@ -94,7 +94,7 @@ class ProfileStats {
     totalVideos: json["total_videos"],
     avatar: json["avatar"],
     about: json["about"],
-    replays: json["replays"],
+    replays: json["replays"] is int ? json["replays"].toString() : json["replays"],
     createdDate: json["created_date"],
   );
 

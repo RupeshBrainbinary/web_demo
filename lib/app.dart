@@ -8,7 +8,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/app_container.dart';
 import 'package:web_demo/blocs/bloc.dart';
-import 'package:web_demo/blocs/deeplink_bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/screens/screen.dart';
@@ -28,7 +27,7 @@ class App extends StatefulWidget {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 class _AppState extends State<App> {
-  String? deepLinkUrl;
+  String? deepLinkPath;
 
   @override
   void initState() {
@@ -40,22 +39,33 @@ class _AppState extends State<App> {
   Future<void> deepLinkInt() async {
     Uri? uri = await getInitialUri();
     if (uri != null) {
-      deepLinkUrl = uri.path;
+      deepLinkPath = uri.path;
     }
-    DeepLinkBloc _bloc = DeepLinkBloc();
+    /*DeepLinkBloc _bloc = DeepLinkBloc();
     _bloc.state.listen((event) {
       changePage(event);
+    });*/
+    uriLinkStream.listen((event) {
+      if (event != null) {
+        changePage(event.path);
+      }
     });
   }
 
-  void changePage(String url) {
-    String linkPid = url.split("app.reviewclip.com/").last;
-    String page = linkPid.split('/').first;
+  void changePage(String path) {
+    List<String> pathList = path.split('/');
+    String page = pathList[1];
     if (page == 'review') {
-      String videoSlug = linkPid.split('/').last;
+      String videoSlug = pathList.last;
       if (videoSlug.isNotEmpty) {
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => ProductDetailRealEstate(slug: videoSlug)));
+      }
+    } else if (page == 'reviewer_profile') {
+      String profileSlug = pathList.last;
+      if (profileSlug.isNotEmpty) {
+        navigatorKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => ProfileReviewer(slug: profileSlug)));
       }
     }
   }
@@ -138,9 +148,10 @@ class _AppState extends State<App> {
                                       '') {
                                 return SignIn(from: 'intro');
                               }
-                              if (deepLinkUrl != null) {
+                              if (deepLinkPath != null) {
                                 Future.delayed(Duration(milliseconds: 50), () {
-                                  changePage(deepLinkUrl!);
+                                  changePage(deepLinkPath!);
+                                  deepLinkPath = null;
                                 });
                               }
                               return const AppContainer();
