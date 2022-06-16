@@ -32,10 +32,11 @@ class CompanyModel {
   int? version;
   Address? address;
   ProfileStats? profileStats;
-  List<dynamic>? movieDetails;
+  dynamic movieDetails;
   int? wc;
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) => CompanyModel(
+
     session: json["session"] == null ? null : List<dynamic>.from(json["session"].map((x) => x)),
     clientId: json["client_id"],
     profileSlug: json["profile_slug"],
@@ -45,7 +46,8 @@ class CompanyModel {
     version: json["version"],
     address: json["address"] == null ? null : Address.fromJson(json["address"]),
     profileStats: json["profileStats"] == null ? null : ProfileStats.fromJson(json["profileStats"]),
-    movieDetails: json["movieDetails"] == null ? null : List<dynamic>.from(json["movieDetails"].map((x) => x)),
+    // movieDetails: json["movieDetails"] == null ? null : List<dynamic>.from(json["movieDetails"].map((x) => x)),
+    movieDetails: json["movieDetails"],
     wc: json["wc"],
   );
 

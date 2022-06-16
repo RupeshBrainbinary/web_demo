@@ -65,7 +65,7 @@ class Api {
   static const String uploadImage = "$domain/reviewer/uploadImage";
   static const String profileUpdate = "$domain/reviewer/updateAccSettings";
   static const String bannerData = "$domain/common/bannerData";
-  static const String getVideo = "$domain/review/getVideo";
+      static const String getVideo = "$domain/review/getVideo";
   static const String getAccSettings = "$domain/profile/getAccSettings";
 
   ///Login api
@@ -483,7 +483,7 @@ class Api {
     }
   }
 
-  /// banner
+  /// video Model
   static Future<VideoModel?> getVideoModel(String videoSlug) async {
     try {
       final result = await httpManager.post(url: getVideo,data: {

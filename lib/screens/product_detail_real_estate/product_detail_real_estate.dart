@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:share/share.dart';
+import 'package:image_downloader/image_downloader.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:web_demo/api/api.dart';
@@ -47,7 +50,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   );
 
   bool _favorite = false;
-  ProductDetailRealEstatePageModel? _detailPage;
+  VideoModel? _detailPage;
 
   /*late VideoPlayerController _controller;
   ChewieController? _chewieController;*/
@@ -98,15 +101,14 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     // print(result.data);
     //_detailPage = ProductDetailRealEstatePageModel.fromJson(result.data);
     clientId = UtilPreferences.getString(Preferences.clientId) ?? '';
-    if (widget.review != null) {
+    _detailPage = await getVideoDetailFromApi(widget.review != null ? widget.review!.videoSlug : widget.slug.toString());
+    /*if (widget.review != null) {
       _detailPage = ProductDetailRealEstatePageModel(review: widget.review!);
     } else {
       _detailPage = await getVideoDetailFromApi(widget.slug.toString());
-      /*_detailPage.review.sl
-      _detailPage = */
-    }
+    }*/
     _controller = VlcPlayerController.network(
-      _detailPage?.review.video ?? '',
+      _detailPage?.v?.videoUrl ?? '',
       hwAcc: HwAcc.full,
       options: VlcPlayerOptions(
         advanced: VlcAdvancedOptions([
@@ -129,8 +131,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       ),
     );
     setState(() {});
-    _favorite = _detailPage!.review.favorite;
-    _initPosition = CameraPosition(
+    _favorite = widget.review == null ? false : widget.review!.favorite;
+    /*_initPosition = CameraPosition(
       target: LatLng(
         _detailPage!.review.location!.lat,
         _detailPage!.review.location!.long,
@@ -146,7 +148,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       ),
       infoWindow: InfoWindow(title: _detailPage?.review.clientName),
     );
-    _markers[markerID] = marker;
+    _markers[markerID] = marker;*/
     Api.getRelatedVideo().then((result) {
       if (result.success) {
         relatedVideos = result.data.map<ReviewModel>((item) {
@@ -163,8 +165,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
           type: VideoType.network));*/
 
     //await setPlayerValue();
-    await Api.getIncreaseCount(_detailPage!.review.videoSlug);
-    _detailPage?.review.views++;
+    await Api.getIncreaseCount(_detailPage!.v!.videoSlug!);
+    _detailPage!.v!.views = (int.parse(_detailPage!.v!.views!)+1).toString();
 
     /*_controller =
           VideoPlayerController.network(_detailPage?.review.video ?? '', );
@@ -183,10 +185,10 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
     setState(() {});
   }
 
-  Future<ProductDetailRealEstatePageModel> getVideoDetailFromApi(String videoSlug) async {
+  Future<VideoModel?> getVideoDetailFromApi(String videoSlug) async {
     VideoModel? videoModel = await Api.getVideoModel(videoSlug);
     ReviewModel? reviewModel;
-    if (videoModel != null) {
+    /*if (videoModel != null) {
       V v = videoModel.v ?? V();
       Channel c = videoModel.chanel ?? Channel();
       reviewModel = ReviewModel(
@@ -209,8 +211,9 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         reviewDate: v.createdDate.toString(),
         favorite: false,
       );
-    }
-    return ProductDetailRealEstatePageModel(review: reviewModel!);
+    }*/
+    // return ProductDetailRealEstatePageModel(review: reviewModel!);
+    return videoModel;
   }
 
   /*Future<void> setPlayerValue() async {
@@ -222,7 +225,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
   }*/
 
   Future<void> getComments() async {
-    _commentRes = await Api.getCommentsLikesData(_detailPage!.review.videoSlug,
+    _commentRes = await Api.getCommentsLikesData(_detailPage!.v!.videoSlug!,
         UtilPreferences.getString(Preferences.clientId) ?? '');
     setState(() {});
   }
@@ -412,19 +415,22 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
 
   ///On navigate gallery
   void _onPhotoPreview() {
-    Navigator.pushNamed(
+    /*Navigator.pushNamed(
       context,
       Routes.gallery,
       arguments: _detailPage!.review,
-    );
+    );*/
   }
 
   ///On Share
   void _onShare() async {
-    await Share.share(
-      _detailPage!.review.shareLink(),
-      subject: 'Review Clip',
-    );
+    var imageId = await ImageDownloader.downloadImage(_detailPage!.v!.thumbUrl.toString());
+    if (imageId == null) {
+      return;
+    }
+    var path = await ImageDownloader.findPath(imageId);
+    String content = _detailPage!.v!.comment.toString() + '\n\n' + _detailPage!.v!.shareLink().toString();
+    await Share.shareFiles([path.toString()],text: content);
   }
 
   ///On navigate product detail
@@ -444,8 +450,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       context,
       Routes.review,
       arguments: {
-        'videoSlug': _detailPage!.review.videoSlug,
-        'videoId': _detailPage!.review.id,
+        'videoSlug': _detailPage!.v!.videoSlug,
+        'videoId': _detailPage!.v!.id,
       },
     ).whenComplete(() {
       getComments();
@@ -478,8 +484,8 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
       _favorite = !_favorite;
     });*/
     if (like == false) {
-      Api.likeVideo(_detailPage!.review.id.toString(), clientId);
-      _detailPage?.review.likes++;
+      Api.likeVideo(_detailPage!.v!.id.toString(), clientId);
+      _detailPage!.v!.likes = (int.parse(_detailPage!.v!.likes ?? '0')+1).toString();
       like = true;
       setState(() {});
     }
@@ -541,7 +547,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                               final response = await Api.postReportData(
                                 clientId: clientId,
                                 comment: _reportController.text,
-                                videoId: _detailPage!.review.id.toString(),
+                                videoId: _detailPage!.v!.id.toString(),
                               );
                               if (response['status'] == 200) {
                                 _reportController.clear();
@@ -635,7 +641,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                _detailPage!.review.comment,
+                _detailPage!.v!.comment.toString(),
                 style: Theme.of(context).textTheme.subtitle1!.copyWith(
                     color: Theme.of(context).colorScheme.secondary,
                     fontFamily: "ProximaNova",
@@ -648,17 +654,20 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              SizedBox(
-                width: MediaQuery.of(context).size.width - 35,
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: 50,
+                  maxWidth: width - 65,
+                ),
                 child: Text(
-                  _detailPage!.review.clientName,
+                  _detailPage!.v!.clientName.toString(),
                   style: Theme.of(context).textTheme.headline5!.copyWith(
                       fontWeight: FontWeight.bold, fontFamily: "ProximaNova"),
                 ),
               ),
-              /*InkWell(
+              InkWell(
                 onTap: () =>
-                    {_onCompanyProfile(_detailPage!.review.profileSlug)},
+                    {_onCompanyProfile(_detailPage!.v!.profileSlug.toString())},
                 // onTap: () {
                 //   _phoneAction(_detailPage!.product.phone);
                 // }
@@ -675,7 +684,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                     size: 20,
                   ),
                 ),
-              ),*/
+              ),
             ],
           ),
 
@@ -699,7 +708,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
               Row(
                 children: [
                   AppTag(
-                    "${_detailPage!.review.rate}",
+                    "${_detailPage!.v!.rating}",
                     type: TagType.rate,
                     onPressed: _onReview,
                   ),
@@ -707,7 +716,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                   InkWell(
                     onTap: _onReview,
                     child: RatingBar.builder(
-                      initialRating: _detailPage!.review.rate,
+                      initialRating: double.parse(_detailPage!.v!.rating ??'0'),
                       minRating: 1,
                       allowHalfRating: true,
                       unratedColor: Colors.amber.withAlpha(100),
@@ -730,7 +739,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         const SizedBox(width: 4),
                         Text(
                           //'   |   ${_detailPage!.review.views} Views    |   ${_detailPage!.review.likes} Likes    |    ${_detailPage!.review.reviewDate}',
-                          '   |   ${_detailPage!.review.views} Views    |    ${_detailPage!.review.reviewDate}',
+                          '   |   ${_detailPage!.v!.views} Views    |    ${_detailPage!.v!.createdDate}',
                           style: Theme.of(context)
                               .textTheme
                               .caption!
@@ -765,7 +774,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                         ),
                       ),
                       Text(
-                        _detailPage!.review.likes.toString() + ' Likes',
+                        _detailPage!.v!.likes.toString() + ' Likes',
                         style: Theme.of(context)
                             .textTheme
                             .button!
@@ -924,7 +933,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _detailPage!.review.channelName,
+                              _detailPage!.chanel!.chanel.toString(),
                               style: Theme.of(context)
                                   .textTheme
                                   .button!
@@ -932,7 +941,7 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              _detailPage!.review.place,
+                              _detailPage!.chanel!.location.toString(),
                               style: Theme.of(context)
                                   .textTheme
                                   .caption!

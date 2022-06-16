@@ -306,4 +306,9 @@ class V {
     "thumb_url": thumbUrl == null ? null : thumbUrl,
     "purl": purl == null ? null : purl,
   };
+
+  String shareLink() {
+    // return "https://app.reviewclip.com/review/$videoSlug";
+    return "https://www.thereviewclip.com/review/$profileSlug/$videoSlug";
+  }
 }
