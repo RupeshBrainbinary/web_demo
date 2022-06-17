@@ -637,18 +637,16 @@ class _ProductDetailRealEstateState extends State<ProductDetailRealEstate> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                _detailPage!.v!.comment.toString(),
-                style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontFamily: "ProximaNova",
-                    fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+           SizedBox(
+             width: width,
+             child: Text(
+               _detailPage!.v!.comment.toString(),
+               style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                   color: Theme.of(context).colorScheme.secondary,
+                   fontFamily: "ProximaNova",
+                   fontWeight: FontWeight.bold),
+             ),
+           ),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.start,

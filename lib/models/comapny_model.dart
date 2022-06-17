@@ -64,6 +64,10 @@ class CompanyModel {
     "movieDetails": movieDetails == null ? null : List<dynamic>.from(movieDetails!.map((x) => x)),
     "wc": wc,
   };
+
+  String shareLink(String slug) {
+    return "https://www.thereviewclip.com/profile/$slug";
+  }
 }
 
 class Address {

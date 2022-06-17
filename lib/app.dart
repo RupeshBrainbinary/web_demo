@@ -67,6 +67,12 @@ class _AppState extends State<App> {
         navigatorKey.currentState!.push(MaterialPageRoute(
             builder: (context) => ProfileReviewer(slug: profileSlug)));
       }
+    } else if (page == 'profile') {
+      String profileSlug = pathList.last;
+      if (profileSlug.isNotEmpty) {
+        navigatorKey.currentState!.push(MaterialPageRoute(
+            builder: (context) => ProfileCompany(slug: profileSlug)));
+      }
     }
   }
 

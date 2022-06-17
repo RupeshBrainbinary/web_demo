@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:share/share.dart';
+import 'package:image_downloader/image_downloader.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:web_demo/api/api.dart';
 import 'package:web_demo/blocs/bloc.dart';
 import 'package:web_demo/configs/config.dart';
 import 'package:web_demo/models/comapny_model.dart';
 import 'package:web_demo/models/model.dart';
-import 'package:web_demo/screens/product_detail_real_estate/product_detail_real_estate.dart';
 import 'package:web_demo/utils/utils.dart';
 import 'package:web_demo/widgets/app_comp_performance.dart';
 import 'package:web_demo/widgets/widget.dart';
@@ -30,7 +30,7 @@ class _ProfileCompanyState extends State<ProfileCompany> {
     zoom: 14.4746,
   );
   ResultApiModel? resultApiModel;
-  List<ReviewModel> reviewModel=[];
+  List<ReviewModel> reviewModel = [];
 
   bool _favorite = false;
 
@@ -51,10 +51,26 @@ class _ProfileCompanyState extends State<ProfileCompany> {
 
   ///On Share
   void _onShare() async {
-    await Share.share(
+    /*await Share.share(
       'https://codecanyon.net/item/listar-flux-mobile-directory-listing-app-template-for-flutter/25559387',
       subject: 'Review Clip',
-    );
+    );*/
+
+    var imageId = await ImageDownloader.downloadImage(
+        _detailPage!.profileStats!.avatar.toString());
+    if (imageId == null) {
+      return;
+    }
+    var path = await ImageDownloader.findPath(imageId);
+    String content = "Company: " +
+        _detailPage!.profileStats!.displayName.toString() +
+        '\n' +
+        "Location: " +
+        _detailPage!.address!.location.toString() +
+        '\n\n' +
+        "Link: " +
+        _detailPage!.shareLink(widget.slug);
+    await Share.shareFiles([path.toString()], text: content);
   }
 
   ///On logout
@@ -65,7 +81,8 @@ class _ProfileCompanyState extends State<ProfileCompany> {
   ///On navigate product detail
   Future<void> _onProductDetail(ReviewModel item) async {
     // await player.reset();
-    Navigator.pushNamed(context, Routes.productDetail, arguments: item).whenComplete((){
+    Navigator.pushNamed(context, Routes.productDetail, arguments: item)
+        .whenComplete(() {
       // player.reset();
     });
   }
@@ -210,8 +227,9 @@ class _ProfileCompanyState extends State<ProfileCompany> {
   void _loadData() async {
     _loader = true;
     setState(() {});
+
     _detailPage = await Api.getCompanyDetail(slug: widget.slug);
-    reviewModel=  await Api.getRelatedClips({
+    reviewModel = await Api.getRelatedClips({
       "client_id": UtilPreferences.getString(Preferences.clientId).toString()
     });
     print("data");
@@ -516,6 +534,39 @@ class _ProfileCompanyState extends State<ProfileCompany> {
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(width: 15),
+                                  InkWell(
+                                    onTap: _onShare,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 40,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Theme.of(context)
+                                                .primaryColor
+                                                .withOpacity(.8),
+                                          ),
+                                          child: const Icon(
+                                            Icons.share,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Text(
+                                          "Share",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall!
+                                              .copyWith(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ),
                               const SizedBox(width: 8),
@@ -806,6 +857,7 @@ class _ProfileCompanyState extends State<ProfileCompany> {
             ),
     );
   }
+
   Widget _buildRelatedVideos() {
     final deviceWidth = MediaQuery.of(context).size.width;
     const itemHeight = 230;
