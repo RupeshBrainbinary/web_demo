@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
       ),
       body: BlocBuilder<UserCubit, UserModel?>(
         builder: (context, user) {
-          if(user == null){
+          if (user == null) {
             return SizedBox();
           }
           return SafeArea(
@@ -207,9 +207,11 @@ class _ProfileState extends State<Profile> {
                           ),
                           onPressed: () {
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const ProfileLink()));
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => ProfileLink(slug: user.slug),
+                              ),
+                            );
                           },
                         ),
                         /* AppListTitle(
@@ -285,9 +287,11 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         AppListTitle(
-                          title: Translate.of(context).translate('Terms of Use'),
+                          title:
+                              Translate.of(context).translate('Terms of Use'),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => TermsConditionsScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => TermsConditionsScreen()));
                           },
                           trailing: RotatedBox(
                             quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
@@ -298,9 +302,11 @@ class _ProfileState extends State<Profile> {
                           ),
                         ),
                         AppListTitle(
-                          title: Translate.of(context).translate('Privacy Policy'),
+                          title:
+                              Translate.of(context).translate('Privacy Policy'),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PrivacyPolicyScreen()));
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => PrivacyPolicyScreen()));
                           },
                           trailing: RotatedBox(
                             quarterTurns: UtilLanguage.isRTL() ? 2 : 0,
