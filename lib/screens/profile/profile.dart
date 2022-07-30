@@ -85,7 +85,7 @@ class _ProfileState extends State<Profile> {
       body: BlocBuilder<UserCubit, UserModel?>(
         builder: (context, user) {
           if (user == null) {
-            return SizedBox();
+            return const SizedBox();
           }
           return SafeArea(
             child: SingleChildScrollView(
@@ -125,20 +125,21 @@ class _ProfileState extends State<Profile> {
                       child: FutureBuilder<ReviewerProfileModel>(
                         future: Api.reviewersProfile(user.slug),
                         builder: (context, snap) {
-                          if (!snap.hasData)
+                          if (!snap.hasData) {
                             return AppProfilePerformance(
                               "0",
                               "0",
                               "0",
                               user: user,
                             );
-                          else
+                          } else {
                             return AppProfilePerformance(
                               snap.data!.subscribers!.length.toString(),
                               snap.data!.profileStats!.totalVideos.toString(),
                               snap.data!.profileStats!.replays,
                               user: user,
                             );
+                          }
                         },
                       ),
                     ),

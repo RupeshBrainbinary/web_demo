@@ -32,8 +32,9 @@ class _ProfileLinkState extends State<ProfileLink> {
     result = await Api.getLoadProfileLink();
     map = result as Map<String, dynamic>;
     await getReviewerData();
-    _loader = false;
+
     setState(() {});
+    _loader = false;
   }
 
   Future<void> getReviewerData() async {

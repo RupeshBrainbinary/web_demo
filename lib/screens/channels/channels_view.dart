@@ -22,6 +22,8 @@ class ChannelsView extends StatefulWidget {
 class _ChannelsViewState extends State<ChannelsView> {
   ChannelPageModel? _listPage;
   bool isShow = false;
+  TextEditingController searchController = TextEditingController();
+  String _keyword = '';
 
   @override
   void initState() {
@@ -44,6 +46,12 @@ class _ChannelsViewState extends State<ChannelsView> {
     }
   }
 
+  ///On Search Category
+  void _onSearch(String text) {
+    setState(() {
+      _keyword = text;
+    });
+  }
   ///On refresh
   Future<void> _onRefresh() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -72,54 +80,103 @@ class _ChannelsViewState extends State<ChannelsView> {
       );
     }
 
+    final data = _listPage!.channels.where(((item) {
+      if (_keyword.isEmpty) {
+        return true;
+      }
+      return item.channelName.toUpperCase()
+          .contains(_keyword.toUpperCase());
+    })).toList();
+
     return RefreshIndicator(
       onRefresh: _onRefresh,
-      child: ListView.separated(
-        itemCount: _listPage!.channels.length,
-        itemBuilder: (context, index) {
-          final item = _listPage!.channels[index];
-          return AppChannelItem(
-            type: ProductViewType.small,
-            item: item,
-            onPressed: () {
-              _onChannelDetail(item);
-            },
+      child: Column(
+        children: [
+          const SizedBox(height: 10,),
+          SizedBox(width: MediaQuery.of(context).size.width * 0.9,height: 40,
+            child: TextField(
+              onTap: () {
 
-           /* onSubscribe: () async {
-              final result = await Api.subscribe({
-                "id":UtilPreferences.getString(Preferences.clientId),
-                "reviewer":item.id.toString(),
-                "xhr":"1"
-              });
-              print(result);
-              print(jsonDecode(result));
-              var jsonResp = jsonDecode(result);
-              if (jsonResp['status'] == 1) {
-                isShow = true;
+              },
+              textAlignVertical: TextAlignVertical.center,
+              // onSubmitted: ,
+              controller: searchController,
+              // focusNode: focusNode,
+              onChanged:   _onSearch,
+              onSubmitted: _onSearch,
+              // obscureText: obscureText,
+              // keyboardType: keyboardType,
+              // textInputAction: textInputAction,
+              // maxLines: maxLines,
+              // enabled: enable,
 
-              }else{
-                isShow = false;
-              }
-              setState(() {
+              decoration:  InputDecoration(
+                contentPadding: const EdgeInsets.only(top: 2,left: 10),
+                hintText: "Search ...",
+                suffixIcon: InkWell(onTap: () {
+                  searchController.clear();
+                },
+                    child: const Icon(Icons.close)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
 
-              });
-              Fluttertoast.showToast(
-                  msg: "Subscribed successfully", // message
-                  toastLength: Toast.LENGTH_SHORT, // length
-                  gravity: ToastGravity.BOTTOM_LEFT, // location
-                  timeInSecForIosWeb: 1 // duration
-                  );
-            },*/
-            subTitleIn2Line: true,
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Divider(
-            color: Colors.grey,
-            thickness: 0.5,
-            height: 15.0,
-          );
-        },
+
+                  ),
+              ),
+              // autofocus: autofocus ?? false,
+            ),
+          ),
+          const SizedBox(height: 10,),
+          SizedBox(height: MediaQuery.of(context).size.height * 1,
+            child: ListView.separated(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final item =data[index];
+                return AppChannelItem(
+                  type: ProductViewType.small,
+                  item: item,
+                  onPressed: () {
+                    _onChannelDetail(item);
+                  },
+
+                 /* onSubscribe: () async {
+                    final result = await Api.subscribe({
+                      "id":UtilPreferences.getString(Preferences.clientId),
+                      "reviewer":item.id.toString(),
+                      "xhr":"1"
+                    });
+                    print(result);
+                    print(jsonDecode(result));
+                    var jsonResp = jsonDecode(result);
+                    if (jsonResp['status'] == 1) {
+                      isShow = true;
+
+                    }else{
+                      isShow = false;
+                    }
+                    setState(() {
+
+                    });
+                    Fluttertoast.showToast(
+                        msg: "Subscribed successfully", // message
+                        toastLength: Toast.LENGTH_SHORT, // length
+                        gravity: ToastGravity.BOTTOM_LEFT, // location
+                        timeInSecForIosWeb: 1 // duration
+                        );
+                  },*/
+                  subTitleIn2Line: true,
+                );
+              },
+              separatorBuilder: (context, index) {
+                return const Divider(
+                  color: Colors.grey,
+                  thickness: 0.5,
+                  height: 15.0,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -138,7 +195,9 @@ class _ChannelsViewState extends State<ChannelsView> {
         ),
       ),
       body: SafeArea(
-        child: _buildList(),
+        child:SingleChildScrollView(
+          child:  _buildList(),
+        )
       ),
     );
   }

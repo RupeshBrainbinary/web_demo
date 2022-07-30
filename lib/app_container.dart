@@ -22,7 +22,7 @@ class AppContainer extends StatefulWidget {
 class _AppContainerState extends State<AppContainer> {
   String _selected = Routes.home;
   TextEditingController channalName = TextEditingController();
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool loding = false;
 
   String? channelName1 ;

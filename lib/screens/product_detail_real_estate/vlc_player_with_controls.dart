@@ -132,7 +132,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                   child: VlcPlayer(
                     controller: _controller,
                     aspectRatio: 16 / 9,
-                    placeholder: Center(child: CircularProgressIndicator()),
+                    placeholder: const Center(child: CircularProgressIndicator()),
                   ),
                 ),
                 Positioned(
@@ -140,21 +140,19 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                   left: 10,
                   child: AnimatedOpacity(
                     opacity: recordingTextOpacity,
-                    duration: Duration(seconds: 1),
-                    child: Container(
-                      child: Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Icon(Icons.circle, color: Colors.red),
-                          SizedBox(width: 5),
-                          Text(
-                            'REC',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
+                    duration: const Duration(seconds: 1),
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
+                      children: const [
+                        Icon(Icons.circle, color: Colors.red),
+                        SizedBox(width: 5),
+                        Text(
+                          'REC',
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -162,7 +160,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
               ],
             ),
           ),
-          _controller.value.playingState == PlayingState.playing ? SizedBox() : Positioned(
+          _controller.value.playingState == PlayingState.playing ? const SizedBox() : Positioned(
             bottom: 0,
             child: Visibility(
               visible: widget.showControls,
@@ -176,8 +174,8 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                     IconButton(
                       color: Colors.white,
                       icon: _controller.value.isPlaying
-                          ? Icon(Icons.pause_circle_outline)
-                          : Icon(Icons.play_circle_outline),
+                          ? const Icon(Icons.pause_circle_outline)
+                          : const Icon(Icons.play_circle_outline),
                       onPressed: _togglePlaying,
                     ),
                     Expanded(
@@ -187,7 +185,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                         children: [
                           Text(
                             position,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                           Expanded(
                             child: Slider(
@@ -204,12 +202,12 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                           ),
                           Text(
                             duration,
-                            style: TextStyle(color: Colors.white),
+                            style: const TextStyle(color: Colors.white),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(width: 15),
+                    const SizedBox(width: 15),
                     /*IconButton(
                       icon: Icon(Icons.fullscreen),
                       color: Colors.white,
@@ -282,7 +280,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Select Subtitle'),
+            title: const Text('Select Subtitle'),
             content: Container(
               width: double.maxFinite,
               height: 250,
@@ -324,7 +322,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Select Audio'),
+            title: const Text('Select Audio'),
             content: Container(
               width: double.maxFinite,
               height: 250,
@@ -366,7 +364,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Display Devices'),
+            title: const Text('Display Devices'),
             content: Container(
               width: double.maxFinite,
               height: 250,
@@ -397,7 +395,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
       await _controller.castToRenderer(selectedCastDeviceName);
     } else {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('No Display Device Found!')));
+          .showSnackBar(const SnackBar(content: Text('No Display Device Found!')));
     }
   }
 
@@ -426,7 +424,7 @@ class VlcPlayerWithControlsState extends State<VlcPlayerWithControls>
                 context: context,
                 builder: (ctx) {
                   return AlertDialog(
-                    contentPadding: EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
                     content: Container(
                       child: Image.memory(snapshot),
                     ),
